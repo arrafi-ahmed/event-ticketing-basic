@@ -2,16 +2,16 @@
 node_modules
 /dist
 
-#api/public/club-logo/*
-#api/public/event-banner/*
-#api/public/user/*
-#api/public/tmp/*
-#
-## allow all the folders themselves to be tracked
-#!api/public/club-logo/.gitkeep
-#!api/public/event-banner/.gitkeep
-#!api/public/user/.gitkeep
-#!api/public/tmp/.gitkeep
+api/public/club-logo/*
+api/public/event-banner/*
+api/public/user/*
+api/public/tmp/*
+
+# allow all the folders themselves to be tracked
+!api/public/club-logo/.gitkeep
+!api/public/event-banner/.gitkeep
+!api/public/user/.gitkeep
+!api/public/tmp/.gitkeep
 
 # env files
 .env
