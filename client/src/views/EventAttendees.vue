@@ -153,7 +153,6 @@ onMounted(() => {
               <th v-if="!xs" class="text-start">Phone</th>
               <th v-if="!xs" class="text-start">Registration Time</th>
               <th class="text-start">Check-in Status</th>
-              <th class="text-start"></th>
             </tr>
           </thead>
           <tbody>

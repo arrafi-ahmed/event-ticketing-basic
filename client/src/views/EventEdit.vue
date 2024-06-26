@@ -217,7 +217,7 @@ onMounted(async () => {
                 clearable
                 density="compact"
                 hide-details="auto"
-                label="Upload Image"
+                label="Upload Banner"
                 prepend-icon=""
                 prepend-inner-icon="mdi-camera"
                 variant="solo-filled"

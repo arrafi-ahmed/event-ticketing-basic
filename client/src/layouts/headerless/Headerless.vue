@@ -19,7 +19,7 @@ function delay(ms) {
 
 onMounted(async () => {
   await nextTick();
-  await delay(500);
+  await delay(1000);
 
   // Initialize VANTA.FOG with options
   if (fogElement.value && !["sudo", "admin"].includes(currentUser.value.role)) {
