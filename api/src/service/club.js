@@ -9,7 +9,7 @@ exports.save = async ({ body, files, userId }) => {
     description: body.description,
     createdBy: userId,
   };
-  if (files.length > 0) {
+  if (files && files.length > 0) {
     newClub.logo = files[0].filename;
   }
   const [insertedClub] = await sql`

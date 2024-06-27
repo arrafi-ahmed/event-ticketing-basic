@@ -16,7 +16,7 @@ const currentUser = computed(() => store.getters["user/getCurrentUser"]);
 const drawer = ref(false);
 
 const calcHome = computed(() => store.getters["user/calcHome"]);
-const items = [{ title: "Home", to: calcHome.value }];
+const items = computed(() => [{ title: "Home", to: calcHome.value }]);
 const getFirstName = computed(() => currentUser.value.name?.split(" ")[0]);
 const getGreetings = computed(() => {
   const hour = new Date().getHours();
@@ -32,7 +32,7 @@ const getGreetings = computed(() => {
       container-class="clickable"
       img-class="mx-auto"
       img-src="logo.png"
-      @click="router.push({ name: 'signin' })"
+      @click="router.push({ name: calcHome })"
     ></logo>
 
     <template v-slot:append>
