@@ -12,7 +12,6 @@ const {
 const port = process.env.PORT || 3000;
 
 //middlewares
-app.use(userAgent);
 app.use(customCors);
 app.use(express.static(path.join(__dirname, "public")));
 
