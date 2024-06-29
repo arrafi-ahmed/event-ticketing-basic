@@ -1,10 +1,15 @@
 <script setup>
 import { useDisplay } from "vuetify";
-import { appName, getClientPublicImgUrl } from "@/others/util";
+import {
+  appName,
+  getApiPublicImgUrl,
+  getClientPublicImgUrl,
+} from "@/others/util";
+import { computed } from "vue";
 
 const { mobile } = useDisplay();
 const {
-  imgSrc,
+  imgSrcApi,
   imgSrcClient,
   title,
   imgClass,
@@ -13,8 +18,8 @@ const {
   maxWidth,
   maxHeight,
 } = defineProps({
-  imgSrc: { type: String },
-  imgSrcClient: { type: Boolean, default: true },
+  imgSrcApi: { type: Object },
+  imgSrcClient: { type: String },
   title: { type: String },
   imgClass: { type: String },
   containerClass: { type: String },
@@ -22,22 +27,31 @@ const {
   maxWidth: { type: Number },
   maxHeight: { type: Number },
 });
+
+const imgSrc = computed(() =>
+  imgSrcClient
+    ? getClientPublicImgUrl(imgSrcClient)
+    : imgSrcApi?.name
+    ? getApiPublicImgUrl(imgSrcApi.name, imgSrcApi.type)
+    : null
+);
 </script>
 
 <template>
-  <div :class="`d-flex align-center ${containerClass}`">
+  <div :class="`d-flex justify-center align-center ${containerClass}`">
+    <!--    c-{{ imgSrcClient }} a-{{ imgSrcApi?.name }}-->
     <v-img
       v-if="imgSrc"
       :class="`${imgClass}`"
       :max-height="maxHeight"
       :max-width="maxWidth"
-      :src="imgSrcClient ? getClientPublicImgUrl(imgSrc) : imgSrc"
+      :src="imgSrc"
       :width="width"
     ></v-img>
 
-    <div v-if="title" class="pl-2">
+    <div v-if="title" :class="{ 'pl-2': imgSrc }">
       <component :is="mobile ? 'h2' : 'h1'">
-        <span class="text-primary">{{ appName }}</span>
+        <span class="text-primary">{{ title || appName }}</span>
       </component>
     </div>
   </div>

@@ -4,6 +4,7 @@ import { computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { formatDate, getEventImageUrl } from "@/others/util";
 import { useRoute, useRouter } from "vue-router";
+import RemoveEntity from "@/components/RemoveEntity.vue";
 
 const store = useStore();
 const route = useRoute();
@@ -17,7 +18,7 @@ const deleteEvent = (eventId) => {
 };
 
 const fetchData = () => {
-  store.dispatch("event/setActiveEvents", currentUser.value.clubId);
+  store.dispatch("event/setEvents", currentUser.value.clubId);
 };
 onMounted(() => {
   fetchData();
@@ -28,11 +29,7 @@ onMounted(() => {
   <v-container>
     <v-row>
       <v-col>
-        <page-title
-          justify="space-between"
-          sub-title="All Events"
-          title="Dashboard Admin"
-        >
+        <page-title justify="space-between" sub-title="Admin" title="Dashboard">
           <v-menu>
             <template v-slot:activator="{ props }">
               <v-btn
@@ -48,6 +45,13 @@ onMounted(() => {
                 :to="{ name: 'event-add' }"
                 density="compact"
                 title="Add Event"
+              ></v-list-item>
+              <v-list-item
+                :to="{
+                  name: 'club-edit',
+                }"
+                density="compact"
+                title="Edit Club"
               ></v-list-item>
               <v-list-item
                 :to="{
@@ -134,11 +138,12 @@ onMounted(() => {
                         })
                       "
                     ></v-list-item>
-                    <v-list-item
-                      class="text-error"
-                      title="Delete"
-                      @click="deleteEvent(item.id)"
-                    ></v-list-item>
+                    <remove-entity
+                      custom-class="text-error"
+                      label="Delete"
+                      variant="list"
+                      @remove-entity="deleteEvent(item.id)"
+                    ></remove-entity>
                   </v-list>
                 </v-menu>
               </template>

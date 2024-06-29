@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getClubImageUrl, getCountryList, isValidEmail } from "@/others/util";
+import { getCountryList, isValidEmail } from "@/others/util";
 import { useStore } from "vuex";
 import Logo from "@/components/Logo.vue";
 import Phone from "@/components/Phone.vue";
@@ -11,6 +11,9 @@ const route = useRoute();
 const router = useRouter();
 
 const club = computed(() => store.state.club.club);
+const event = computed(() =>
+  store.getters["event/getEventById"](route.params.eventId)
+);
 const registrationInit = {
   registrationData: { name: null, email: null, phone: null, age: null },
   eventId: null,
@@ -38,7 +41,10 @@ const handleUpdatePhone = ({ formattedPhone }) => {
   registration.registrationData.phone = formattedPhone;
 };
 
-onMounted(() => {
+onMounted(async () => {
+  if (!event.value?.id) {
+    await store.dispatch("event/setEvent", route.params.eventId);
+  }
   if (!club.value.id) store.dispatch("club/setClub", route.params.clubId);
 });
 </script>
@@ -55,8 +61,7 @@ onMounted(() => {
         >
           <v-card-text>
             <logo
-              :img-src="getClubImageUrl(club.logo)"
-              :img-src-client="false"
+              :img-src-client="club.logo"
               :max-height="100"
               :max-width="300"
               :title="!club.logo ? club.name : null"
@@ -70,10 +75,10 @@ onMounted(() => {
               "
             ></logo>
             <v-card-title class="text-center text-wrap mt-5">
-              Compila il form per inviare la tua richiesta
+              {{ event.name }}
             </v-card-title>
             <v-card-subtitle class="text-center mb-8"
-              >Verifica che i dati inseriti siano corretti
+              >Register to send your request
             </v-card-subtitle>
             <v-form
               ref="form"

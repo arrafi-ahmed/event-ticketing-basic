@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { clientBaseUrl, getClubImageUrl, sendToWhatsapp } from "@/others/util";
+import { clientBaseUrl, sendToWhatsapp } from "@/others/util";
 import { useStore } from "vuex";
 import QRCodeVue3 from "qrcode-vue3";
 import { useTheme } from "vuetify";
@@ -44,8 +44,7 @@ onUnmounted(() => {
     <v-row align="center" justify="center">
       <v-col cols="12" md="5" sm="6">
         <logo
-          :img-src="getClubImageUrl(club.logo)"
-          :img-src-client="false"
+          :img-src-client="club.logo"
           :max-height="100"
           :max-width="300"
           :title="!club.logo ? club.name : null"

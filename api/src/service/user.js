@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid");
 const CustomError = require("../model/CustomError");
 const { sql } = require("../db");
-const { isAdmin } = require("../others/util");
+const { ifAdmin } = require("../others/util");
 
 exports.register = (payload) => {};
 
@@ -17,7 +17,7 @@ const generateAuthData = async (result) => {
       image: result.image,
     };
 
-    if (isAdmin(currentUser.role)) {
+    if (ifAdmin(currentUser.role)) {
       const [club] = await sql`select *
                                      from club
                                      where id = ${result.clubId}`;

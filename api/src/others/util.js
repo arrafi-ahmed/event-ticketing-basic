@@ -4,8 +4,8 @@ const path = require("path");
 const qr = require("qrcode");
 const { API_BASE_URL, VUE_BASE_URL, ANDROID_BASE_URL } = process.env;
 
-const isSudo = (role) => role === "sudo";
-const isAdmin = (role) => role === "admin";
+const ifSudo = (role) => role === "sudo";
+const ifAdmin = (role) => role === "admin";
 
 const formatTime = (inputTime) => {
   const date = new Date(inputTime);
@@ -111,7 +111,7 @@ module.exports = {
   removeImages,
   formatDate,
   formatTime,
-  isSudo,
-  isAdmin,
+  ifSudo,
+  ifAdmin,
   // logoSvgString,
 };

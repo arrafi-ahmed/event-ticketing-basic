@@ -69,7 +69,7 @@ function createUpload(prefix) {
     });
 
     busboy.on("field", function (fieldname, val) {
-      req.body[fieldname] = val;
+      if (fieldname !== "files") req.body[fieldname] = val;
     });
 
     busboy.on("finish", async () => {

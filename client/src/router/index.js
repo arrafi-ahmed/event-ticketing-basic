@@ -52,6 +52,15 @@ const routes = [
         },
       },
       {
+        path: "club/edit/:clubId?",
+        name: "club-edit",
+        component: () => import("@/views/ClubEdit.vue"),
+        meta: {
+          requiresAuth: true,
+          title: "Edit Club",
+        },
+      },
+      {
         path: "club/:clubId/credential",
         name: "credential-generate",
         component: () => import("@/views/CredentialGenerate.vue"),

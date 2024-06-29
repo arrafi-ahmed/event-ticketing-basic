@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getClubImageUrl, getEventImageUrl } from "@/others/util";
+import { getEventImageUrl } from "@/others/util";
 import { useStore } from "vuex";
 import Logo from "@/components/Logo.vue";
 
@@ -13,7 +13,7 @@ const events = computed(() => store.state.event.events);
 
 const fetchData = async () => {
   await Promise.all([
-    store.dispatch("event/setEvents", route.params.clubId),
+    store.dispatch("event/setActiveEvents", route.params.clubId),
     store.dispatch("club/setClub", route.params.clubId),
   ]);
 };
@@ -33,9 +33,8 @@ onMounted(() => {
         >
           <v-card-text>
             <logo
-              :img-src="getClubImageUrl(club.logo)"
-              :img-src-client="false"
-              :max-height="100"
+              :img-src-api="{ name: club.logo, type: 'club-logo' }"
+              :max-height="300"
               :max-width="300"
               :title="!club.logo ? club.name : null"
               container-class="clickable"
@@ -48,21 +47,22 @@ onMounted(() => {
               "
             ></logo>
             <v-card-title class="text-center text-wrap mt-5">
-              Prossimi eventi
+              Upcoming events
             </v-card-title>
             <v-card-subtitle class="text-center mb-8"
-              >Seleziona e prenota l'ingresso
+              >Select and book your entry
             </v-card-subtitle>
 
             <!--            event list-->
+            <!--              TODO: fix height:600-->
             <v-carousel
               v-if="events?.length > 0"
               :show-arrows="true"
               continuous
               cycle
-              height="600"
               hide-delimiters
             >
+              <!--                            height="600" -->
               <v-carousel-item
                 v-for="(item, index) in events"
                 :key="index"

@@ -5,12 +5,20 @@ const { removeImages } = require("../others/util");
 
 exports.save = async ({ body, files, userId }) => {
   const newClub = {
+    ...body,
     name: body.name,
     description: body.description,
     createdBy: userId,
   };
   if (files && files.length > 0) {
     newClub.logo = files[0].filename;
+  }
+  //remove logo
+  if (body.rmImage) {
+    await removeImages([body.rmImage]);
+    delete newClub.rmImage;
+
+    if (!newClub.logo) newClub.logo = null;
   }
   const [insertedClub] = await sql`
         insert into club ${sql(newClub)}
@@ -27,7 +35,7 @@ exports.getAllClubs = async () => {
         order by id desc `;
 };
 
-exports.getClub = async (clubId) => {
+exports.getClub = async ({ clubId }) => {
   return sql`
         select *
         from club

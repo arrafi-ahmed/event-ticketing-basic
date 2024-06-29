@@ -4,7 +4,7 @@ const ApiResponse = require("../model/ApiResponse");
 const { auth, isAdmin } = require("../middleware/auth");
 const { uploadEventBanner } = require("../middleware/upload");
 const compressImages = require("../middleware/compress");
-const { isSudo } = require("../others/util");
+const { ifSudo } = require("../others/util");
 
 router.post(
   "/save",
@@ -30,7 +30,7 @@ router.get("/getAllEvents", (req, res, next) => {
 });
 
 router.get("/getEventByEventIdnClubId", auth, (req, res, next) => {
-  const isRoleSudo = isSudo(req.currentUser.role);
+  const isRoleSudo = ifSudo(req.currentUser.role);
   eventService
     .getEventByEventIdnClubId({
       clubId: isRoleSudo ? req.query.clubId : req.currentUser.clubId,
@@ -41,7 +41,7 @@ router.get("/getEventByEventIdnClubId", auth, (req, res, next) => {
 });
 
 router.get("/removeEvent", auth, (req, res, next) => {
-  const isRoleSudo = isSudo(req.currentUser.role);
+  const isRoleSudo = ifSudo(req.currentUser.role);
   eventService
     .removeEvent({
       clubId: isRoleSudo ? req.query.clubId : req.currentUser.clubId,

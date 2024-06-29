@@ -5,6 +5,7 @@ import { useStore } from "vuex";
 import PageTitle from "@/components/PageTitle.vue";
 import { useDisplay } from "vuetify";
 import { getClubImageUrl } from "@/others/util";
+import RemoveEntity from "@/components/RemoveEntity.vue";
 
 const { mobile } = useDisplay();
 
@@ -42,8 +43,8 @@ onMounted(() => {
       <v-col>
         <page-title
           justify="space-between"
-          sub-title="Event"
-          title="Dashboard Sudo"
+          sub-title="Super Admin"
+          title="Dashboard"
         >
           <v-row align="center">
             <v-divider class="mx-2" inset vertical></v-divider>
@@ -137,10 +138,23 @@ onMounted(() => {
                           ></v-list-item>
 
                           <v-list-item
-                            class="text-error"
-                            title="Delete"
-                            @click="deleteClub(item.id)"
+                            title="Edit"
+                            @click="
+                              router.push({
+                                name: 'club-edit',
+                                params: { clubId: item.id },
+                              })
+                            "
                           ></v-list-item>
+
+                          <v-divider></v-divider>
+
+                          <remove-entity
+                            custom-class="text-error"
+                            label="Delete"
+                            variant="list"
+                            @remove-entity="deleteClub(item.id)"
+                          ></remove-entity>
                         </v-list>
                       </v-menu>
                     </template>

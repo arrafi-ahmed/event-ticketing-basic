@@ -24,6 +24,7 @@ const event = computed(() =>
 );
 
 const newEventInit = {
+  id: null,
   name: null,
   description: null,
   location: null,
@@ -40,7 +41,7 @@ const newEvent = reactive({ ...newEventInit });
 const form = ref(null);
 const isFormValid = ref(true);
 
-const handleBannerChange = (file) => {
+const handleBannerUpdate = (file) => {
   newEvent.banner = file;
 };
 const handleBannerClear = () => {
@@ -100,7 +101,11 @@ onMounted(async () => {
   <v-container>
     <v-row>
       <v-col>
-        <page-title justify="space-between" title="Edit Event">
+        <page-title
+          :sub-title="event.name"
+          justify="space-between"
+          title="Edit Event"
+        >
           <v-btn
             icon="mdi-arrow-left"
             variant="text"
@@ -217,11 +222,12 @@ onMounted(async () => {
                 clearable
                 density="compact"
                 hide-details="auto"
-                label="Upload Banner"
+                label="Update Banner"
                 prepend-icon=""
                 prepend-inner-icon="mdi-camera"
+                show-size
                 variant="solo-filled"
-                @update:modelValue="handleBannerChange"
+                @update:modelValue="handleBannerUpdate"
                 @click:clear="handleNewBannerClear"
               >
                 <template v-slot:selection="{}">

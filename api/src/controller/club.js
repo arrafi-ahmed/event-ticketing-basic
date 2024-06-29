@@ -6,24 +6,16 @@ const compressImages = require("../middleware/compress");
 const { uploadClubLogo } = require("../middleware/upload");
 const { log } = require("qrcode/lib/core/galois-field");
 const eventService = require("../service/event");
+const { ifSudo } = require("../others/util");
 
-router.post(
-  "/save",
-  auth,
-  isSudo,
-  uploadClubLogo,
-  compressImages,
-  (req, res, next) => {
-    clubService
-      .save({ body: req.body, files: req.files, userId: req.currentUser.id })
-      .then((results) => {
-        res
-          .status(200)
-          .json(new ApiResponse("Club created successfuly!", results));
-      })
-      .catch((err) => next(err));
-  }
-);
+router.post("/save", auth, uploadClubLogo, compressImages, (req, res, next) => {
+  clubService
+    .save({ body: req.body, files: req.files, userId: req.currentUser.id })
+    .then((results) => {
+      res.status(200).json(new ApiResponse("Club saved!", results));
+    })
+    .catch((err) => next(err));
+});
 
 router.get("/getAllClubs", auth, (req, res, next) => {
   clubService
@@ -32,9 +24,10 @@ router.get("/getAllClubs", auth, (req, res, next) => {
     .catch((err) => next(err));
 });
 
-router.get("/getClub", (req, res, next) => {
+router.get("/getClub", auth, (req, res, next) => {
+  const isRoleSudo = ifSudo(req.currentUser.role);
   clubService
-    .getClub(req.query.clubId)
+    .getClub({ clubId: isRoleSudo ? req.query.clubId : req.currentUser.clubId })
     .then((results) => res.status(200).json(new ApiResponse(null, results[0])))
     .catch((err) => next(err));
 });

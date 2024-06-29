@@ -3,7 +3,6 @@ process.env.TZ = "UTC";
 const express = require("express");
 const app = express();
 const path = require("path");
-const userAgent = require("./src/middleware/userAgent");
 const customCors = require("./src/middleware/customCors");
 const {
   globalErrHandler,

@@ -27,12 +27,11 @@ const getGreetings = computed(() => {
 <template>
   <v-app-bar :order="1" class="px-2 px-md-5" color="grey-lighten-3" dense flat>
     <logo
-      :title="false"
       :width="220"
       container-class="clickable"
       img-class="mx-auto"
-      img-src="logo.png"
-      @click="router.push({ name: calcHome })"
+      img-src-client="logo.png"
+      @click="router.push(calcHome)"
     ></logo>
 
     <template v-slot:append>

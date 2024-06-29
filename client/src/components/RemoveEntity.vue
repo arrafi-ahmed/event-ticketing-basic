@@ -2,16 +2,19 @@
 import { useDisplay } from "vuetify";
 import { ref } from "vue";
 
-const { mobile } = useDisplay();
+const { xs } = useDisplay();
 const dialog = ref(false);
-const { id, message, text, btnVariant, customClass, size } = defineProps({
-  id: {},
-  message: { default: "Are you sure?" },
-  text: {},
-  btnVariant: { default: "flat" },
-  customClass: {},
-  size: {},
-});
+const { id, message, label, variant, btnVariant, customClass, size, color } =
+  defineProps({
+    id: {},
+    message: { default: "Are you sure?" },
+    label: {},
+    btnVariant: { default: "flat" },
+    customClass: {},
+    size: {},
+    color: { default: "error" },
+    variant: { default: "btn" },
+  });
 const emit = defineEmits(["removeEntity"]);
 
 const remove = (id) => {
@@ -24,55 +27,69 @@ const remove = (id) => {
 };
 </script>
 <template>
-  <v-btn
-    v-if="mobile && text"
-    :class="customClass"
-    :size="size || 'small'"
-    :variant="btnVariant"
-    color="primary"
-    density="comfortable"
-    @click.stop="dialog = !dialog"
-  >
-    {{ text }}
-  </v-btn>
-  <v-btn
-    v-if="mobile && !text"
-    :class="customClass"
-    :size="size || 'small'"
-    :variant="btnVariant"
-    color="primary"
-    density="compact"
-    icon="mdi-close"
-    @click.stop="dialog = !dialog"
-  >
-  </v-btn>
-  <v-btn
-    v-if="!mobile"
-    :class="customClass"
-    :size="size || 'default'"
-    :variant="btnVariant"
-    color="primary"
-    density="default"
-    @click.stop="dialog = !dialog"
-    >{{ text || "Remove" }}
-  </v-btn>
+  <template v-if="variant === 'btn'">
+    <v-btn
+      v-if="xs && label"
+      :class="customClass"
+      :color="color"
+      :size="size || 'small'"
+      :variant="btnVariant"
+      density="comfortable"
+      @click.stop="dialog = !dialog"
+    >
+      {{ label }}
+    </v-btn>
+    <v-btn
+      v-if="xs && !label"
+      :class="customClass"
+      :color="color"
+      :size="size || 'small'"
+      :variant="btnVariant"
+      density="compact"
+      icon="mdi-close"
+      @click.stop="dialog = !dialog"
+    >
+    </v-btn>
+    <v-btn
+      v-if="!xs"
+      :class="customClass"
+      :color="color"
+      :size="size || 'default'"
+      :variant="btnVariant"
+      density="default"
+      @click.stop="dialog = !dialog"
+      >{{ label || "Remove" }}
+    </v-btn>
+  </template>
+  <template v-else-if="variant === 'list'">
+    <v-list-item
+      :class="customClass"
+      :color="color"
+      :density="xs ? 'compact' : 'default'"
+      :size="size || 'small'"
+      @click.stop="dialog = !dialog"
+    >
+      {{ label }}
+    </v-list-item>
+  </template>
+
   <v-dialog v-model="dialog" width="400">
     <v-card>
       <v-card-title>
-        <span>{{ text || "Remove" }}</span>
+        <span>{{ label || "Remove" }}</span>
       </v-card-title>
       <v-card-text>{{ message }}</v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
-          :density="mobile ? 'comfortable' : 'default'"
-          color="primary"
+          :color="color"
+          :density="xs ? 'comfortable' : 'default'"
           @click="remove(id)"
           >Yes
         </v-btn>
         <v-btn
-          :density="mobile ? 'comfortable' : 'default'"
-          color="primary"
+          :color="color"
+          :density="xs ? 'comfortable' : 'default'"
           @click="dialog = !dialog"
           >No
         </v-btn>

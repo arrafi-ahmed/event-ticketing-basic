@@ -15,8 +15,9 @@ exports.save = async ({ body, files, currentUser }) => {
   //remove banner
   if (body.rmImage) {
     await removeImages([body.rmImage]);
-    newEvent.banner = null;
     delete newEvent.rmImage;
+
+    if (!newEvent.banner) newEvent.banner = null;
   }
   if (!newEvent.id) {
     newEvent.registrationCount = 0;
