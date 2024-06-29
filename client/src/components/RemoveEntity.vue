@@ -65,7 +65,7 @@ const remove = (id) => {
     <v-list-item
       :class="customClass"
       :color="color"
-      :density="xs ? 'compact' : 'default'"
+      :density="xs ? 'compact' : 'comfortable'"
       :size="size || 'small'"
       @click.stop="dialog = !dialog"
     >

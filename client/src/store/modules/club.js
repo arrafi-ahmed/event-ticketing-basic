@@ -15,7 +15,12 @@ export const mutations = {
     state.club = payload;
   },
   saveClub(state, payload) {
-    state.clubs.unshift(payload);
+    const foundIndex = state.clubs.findIndex((item) => item.id == payload.id);
+    if (foundIndex !== -1) {
+      state.clubs[foundIndex] = payload;
+    } else {
+      state.clubs.unshift(payload);
+    }
   },
   removeClub(state, payload) {
     const foundIndex = state.clubs.findIndex(

@@ -138,6 +138,9 @@ onMounted(() => {
                         })
                       "
                     ></v-list-item>
+
+                    <v-divider></v-divider>
+
                     <remove-entity
                       custom-class="text-error"
                       label="Delete"
