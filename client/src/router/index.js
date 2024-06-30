@@ -66,7 +66,7 @@ const routes = [
         component: () => import("@/views/CredentialGenerate.vue"),
         meta: {
           requiresSudo: true,
-          title: "Add Club",
+          title: "Credentials",
         },
       },
       {
@@ -141,7 +141,7 @@ const routes = [
         name: "event-register",
         component: () => import("@/views/EventRegister.vue"),
         meta: {
-          title: "Register Event",
+          title: "Event Registration",
         },
       },
       {
@@ -149,7 +149,7 @@ const routes = [
         name: "club-single",
         component: () => import("@/views/ClubSingle.vue"),
         meta: {
-          title: "Club Events",
+          title: "Club",
         },
       },
     ],

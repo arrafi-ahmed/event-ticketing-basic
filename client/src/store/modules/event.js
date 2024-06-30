@@ -49,7 +49,12 @@ export const actions = {
   setActiveEvents({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .get("/api/event/getAllActiveEvents", { params: { clubId: request } })
+        .get("/api/event/getAllActiveEvents", {
+          params: {
+            clubId: request.clubId,
+            currentDate: request.currentDate,
+          },
+        })
         .then((response) => {
           commit("setEvents", response.data?.payload);
           resolve(response);

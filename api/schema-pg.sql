@@ -17,9 +17,9 @@ CREATE TABLE app_user
     id       SERIAL PRIMARY KEY,
     username VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    email    VARCHAR(255), -- added
+    email    VARCHAR(255),
     role     INT          NOT NULL REFERENCES role (id),
-    club_id  INT REFERENCES club (id)
+    club_id  INT REFERENCES club (id) ON DELETE CASCADE
 );
 
 ALTER TABLE club
@@ -56,7 +56,10 @@ CREATE TABLE checkin
     checkin_status  BOOLEAN,
     checkin_time    TIMESTAMP,
     registration_id INT NOT NULL REFERENCES registration (id) ON DELETE CASCADE,
-    checkedin_by   INT NOT NULL REFERENCES app_user (id)
+    checkedin_by    INT NOT NULL REFERENCES app_user (id)
 );
 
-INSERT INTO role (name) VALUES ('sudo'), ('admin'), ('attendee')
+INSERT INTO role (name)
+VALUES ('sudo'),
+       ('admin'),
+       ('attendee')

@@ -19,6 +19,7 @@ exports.save = async ({ body: { registration } }) => {
         set registration_count = registration_count + 1
         where id = ${registration.eventId}
         returning *;`;
+
   return insertedRegistration;
 };
 

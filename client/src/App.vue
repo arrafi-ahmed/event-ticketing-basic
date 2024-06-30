@@ -16,11 +16,11 @@ watch(route, (to) => {
   <progress-loader />
   <Toaster
     class="custom-toast"
-    position="bottom-left"
-    theme="dark"
     closeButton
     expand
+    position="bottom-left"
     richColors
+    theme="dark"
   />
   <router-view />
 </template>

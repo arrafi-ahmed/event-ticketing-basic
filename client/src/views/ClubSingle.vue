@@ -4,21 +4,27 @@ import { useRoute, useRouter } from "vue-router";
 import { getEventImageUrl } from "@/others/util";
 import { useStore } from "vuex";
 import Logo from "@/components/Logo.vue";
+import { useDisplay } from "vuetify";
 
 const store = useStore();
 const route = useRoute();
 const router = useRouter();
+const { xs } = useDisplay();
+
 const club = computed(() => store.state.club.club);
 const events = computed(() => store.state.event.events);
 
 const fetchData = async () => {
   await Promise.all([
-    store.dispatch("event/setActiveEvents", route.params.clubId),
+    store.dispatch("event/setActiveEvents", {
+      clubId: route.params.clubId,
+      currentDate: new Date().toLocaleDateString("en-CA"),
+    }),
     store.dispatch("club/setClub", route.params.clubId),
   ]);
 };
-onMounted(() => {
-  fetchData();
+onMounted(async () => {
+  await fetchData();
 });
 </script>
 <template>
@@ -26,6 +32,7 @@ onMounted(() => {
     <v-row align="center" justify="center">
       <v-col cols="12" sm="10">
         <v-card
+          v-if="club.id"
           class="mx-auto pa-5 my-2 rounded-xl bg-transparent"
           elevation="0"
           max-width="375"
@@ -34,7 +41,7 @@ onMounted(() => {
           <v-card-text>
             <logo
               :img-src-api="{ name: club.logo, type: 'club-logo' }"
-              :max-height="300"
+              :max-height="xs ? 100 : 300"
               :max-width="300"
               :title="!club.logo ? club.name : null"
               container-class="clickable"
@@ -53,24 +60,24 @@ onMounted(() => {
               >Select and book your entry
             </v-card-subtitle>
 
-            <!--            event list-->
-            <!--              TODO: fix height:600-->
             <v-carousel
               v-if="events?.length > 0"
               :show-arrows="true"
               continuous
               cycle
+              height="100%"
               hide-delimiters
+              width="100%"
             >
-              <!--                            height="600" -->
               <v-carousel-item
                 v-for="(item, index) in events"
                 :key="index"
                 height="100%"
+                rounded="lg"
               >
                 <v-sheet
                   :aspect-ratio="0.5"
-                  class="bg-transparent fill-height v-icon--clickable rounded-lg"
+                  class="bg-transparent fill-height v-icon--clickable"
                   height="100%"
                   @click="
                     () =>
@@ -84,10 +91,10 @@ onMounted(() => {
                     :aspect-ratio="0.563"
                     :cover="true"
                     :src="getEventImageUrl(item.banner)"
-                    class="rounded-t-lg"
+                    width="100%"
                   ></v-img>
 
-                  <div class="bg-primary text-center rounded-b-lg pa-3">
+                  <div class="bg-primary text-center pa-3">
                     <div class="font-weight-bold">{{ item.name }}</div>
                     <h5 class="font-weight-light text-truncate">
                       {{ item.description }}

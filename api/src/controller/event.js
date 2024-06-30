@@ -55,7 +55,10 @@ router.get("/removeEvent", auth, (req, res, next) => {
 
 router.get("/getAllActiveEvents", (req, res, next) => {
   eventService
-    .getAllActiveEvents({ clubId: req.query.clubId })
+    .getAllActiveEvents({
+      clubId: req.query.clubId,
+      currentDate: req.query.currentDate,
+    })
     .then((results) => res.status(200).json(new ApiResponse(null, results)))
     .catch((err) => next(err));
 });

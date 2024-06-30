@@ -58,10 +58,10 @@ exports.getAllEvents = async ({ clubId }) => {
         order by id desc`;
 };
 
-exports.getAllActiveEvents = async ({ clubId }) => {
-  const currentDate = new Date().toISOString().split("T")[0]; // Format the date as YYYY-MM-DD
+exports.getAllActiveEvents = async ({ clubId, currentDate }) => {
+  // const currentDate = new Date().toISOString().split("T")[0]; // Format the date as YYYY-MM-DD
 
-  return sql`
+  const results = await sql`
         SELECT *
         FROM event
         WHERE club_id = ${clubId}
@@ -69,4 +69,5 @@ exports.getAllActiveEvents = async ({ clubId }) => {
           AND registration_count < max_attendees
         ORDER BY id DESC;
     `;
+  return results;
 };
