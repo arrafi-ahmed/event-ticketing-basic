@@ -72,4 +72,15 @@ router.post("/scanByRegistrationId", auth, (req, res, next) => {
     .catch((err) => next(err));
 });
 
+router.get("/sendTicket", auth, (req, res, next) => {
+  registrationService
+    .sendTicket({
+      registrationId: req.query.registrationId,
+    })
+    .then((results) =>
+      res.status(200).json(new ApiResponse("Ticket sent to email!", results))
+    )
+    .catch((err) => next(err));
+});
+
 module.exports = router;

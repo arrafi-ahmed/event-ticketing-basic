@@ -43,9 +43,14 @@ const handleUpdatePhone = ({ formattedPhone }) => {
 
 onMounted(async () => {
   if (!event.value?.id) {
-    await store.dispatch("event/setEvent", route.params.eventId);
+    await store.dispatch(
+      "event/setEventByEventIdnClubId",
+      route.params.eventId
+    );
   }
-  if (!club.value.id) store.dispatch("club/setClub", route.params.clubId);
+  if (!club.value?.id) {
+    await store.dispatch("club/setClub", route.params.clubId);
+  }
 });
 </script>
 <template>
@@ -61,6 +66,7 @@ onMounted(async () => {
         >
           <v-card-text>
             <logo
+              v-if="club.logo"
               :img-src-api="{ name: club.logo, type: 'club-logo' }"
               :max-height="100"
               :max-width="300"
@@ -74,10 +80,10 @@ onMounted(async () => {
                 })
               "
             ></logo>
-            <v-card-title class="text-center text-wrap mt-5">
+            <v-card-title v-if="event" class="text-center text-wrap mt-5">
               {{ event.name }}
             </v-card-title>
-            <v-card-subtitle class="text-center mb-8"
+            <v-card-subtitle class="text-center mt-4 mb-8"
               >Register to send your request
             </v-card-subtitle>
             <v-form

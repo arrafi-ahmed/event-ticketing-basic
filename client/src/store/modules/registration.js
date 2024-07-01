@@ -132,6 +132,22 @@ export const actions = {
         });
     });
   },
+  sendTicket({ commit }, request) {
+    return new Promise((resolve, reject) => {
+      $axios
+        .get("/api/registration/sendTicket", {
+          params: {
+            registrationId: request.registrationId,
+          },
+        })
+        .then((response) => {
+          resolve(response.data?.payload);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
 };
 
 export const getters = {};

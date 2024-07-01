@@ -68,6 +68,10 @@ const handleDownloadAttendees = () => {
   });
 };
 
+const sendTicket = (registrationId) => {
+  store.dispatch("registration/sendTicket", { registrationId });
+};
+
 const fetchData = () => {
   store.dispatch("registration/setAttendees", route.params.eventId);
 };
@@ -153,6 +157,7 @@ onMounted(() => {
               <th v-if="!xs" class="text-start">Phone</th>
               <th v-if="!xs" class="text-start">Registration Time</th>
               <th class="text-start">Check-in Status</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -177,6 +182,24 @@ onMounted(() => {
                   }}
                 </v-chip>
               </td>
+              <v-menu>
+                <template v-slot:activator="{ props }">
+                  <v-btn
+                    class="ml-5"
+                    icon="mdi-dots-vertical"
+                    v-bind="props"
+                    variant="text"
+                  >
+                  </v-btn>
+                </template>
+                <v-list density="comfortable">
+                  <v-list-item
+                    @click="sendTicket(item.rId)"
+                    density="compact"
+                    title="Send Ticket"
+                  ></v-list-item>
+                </v-list>
+              </v-menu>
             </tr>
           </tbody>
         </v-table>

@@ -3,6 +3,8 @@ const { sql } = require("../db");
 const { v4: uuidv4 } = require("uuid");
 const exceljs = require("exceljs");
 const { formatTime } = require("../others/util");
+const emailContentService = require("../service/emailContent");
+const sendMailService = require("../service/sendMail");
 
 exports.save = async ({ body: { registration } }) => {
   registration.registrationTime = new Date();
@@ -20,7 +22,51 @@ exports.save = async ({ body: { registration } }) => {
         where id = ${registration.eventId}
         returning *;`;
 
+  //send to email
+  if (registration.registrationData.email) {
+    const { attachment, emailBody } =
+      await emailContentService.generateTicketContent(
+        insertedRegistration,
+        updatedEvent
+      );
+
+    await sendMailService.sendMailWAttachment(
+      registration.registrationData.email,
+      `Ticket for ${updatedEvent.name}`,
+      emailBody,
+      attachment
+    );
+  }
+
   return insertedRegistration;
+};
+
+exports.sendTicket = async ({ registrationId }) => {
+  const [result] = await sql`select *, r.id as r_id, e.id as e_id
+                               from registration r
+                                        join event e on r.event_id = e.id
+                               where r.id = ${registrationId}`;
+
+  const registration = {
+    id: result.rId,
+    registrationData: result.registrationData,
+    registrationTime: result.registrationTime,
+    qrUuid: result.qrUuid,
+  };
+  const event = {
+    id: result.eId,
+    name: result.name,
+  };
+
+  const { attachment, emailBody } =
+    await emailContentService.generateTicketContent(registration, event);
+
+  await sendMailService.sendMailWAttachment(
+    result.registrationData.email,
+    `Ticket for ${event.name}`,
+    emailBody,
+    attachment
+  );
 };
 
 exports.getAttendeesWcheckin = async ({ eventId }) => {

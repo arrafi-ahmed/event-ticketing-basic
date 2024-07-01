@@ -33,7 +33,7 @@ const handleSendToWhatsapp = () => {
   sendToWhatsapp(phone, message);
 };
 onMounted(() => {
-  if (!club.value.id) store.dispatch("club/setClub", route.params.clubId);
+  if (!club.value?.id) store.dispatch("club/setClub", route.params.clubId);
 });
 onUnmounted(() => {
   store.commit("registration/resetRegistration");
@@ -44,6 +44,7 @@ onUnmounted(() => {
     <v-row align="center" justify="center">
       <v-col cols="12" md="5" sm="6">
         <logo
+          v-if="club.logo"
           :img-src-api="{ name: club.logo, type: 'club-logo' }"
           :max-height="100"
           :max-width="300"
