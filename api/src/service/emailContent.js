@@ -33,7 +33,6 @@ exports.generateTicketContent = async (registration, event) => {
     }
   );
 
-  console.log(33, registration);
   // QR Code
   const qrCode = await generateQrCode({
     id: registration.id,

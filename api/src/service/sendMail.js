@@ -42,19 +42,15 @@ const sendMailWAttachment = (to, subject, text, pdf) => {
       },
       (error, info) => {
         if (error) {
-          console.error("Error sending email: %s", error.message);
           return reject(new Error(error.message));
         }
 
         if (info.rejected.length > 0) {
           const rejectedEmails = info.rejected.join(", ");
           const errorMessage = `Error sending email for: ${rejectedEmails}`;
-          console.error(errorMessage);
           return reject(new Error(errorMessage));
         }
 
-        console.log("Email sent: %s", info.messageId);
-        console.log("info", info);
         return resolve(info);
       }
     );
