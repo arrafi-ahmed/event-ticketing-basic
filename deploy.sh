@@ -13,7 +13,7 @@ HTML_DIR="$PROJECT_ROOT/html"
 # Exit immediately if a command exits with a non-zero status
 set -e
 
-# Function to remove existing files and directories in /usr/local/lsws/wayzaway/html
+# Function to remove existing files and directories in HTML DIR
 remove_existing_files() {
   local files=(
     assets
