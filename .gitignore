@@ -2,9 +2,19 @@
 node_modules
 /dist
 
-# local env files
-.env.local
-.env.*.local
+api/public/blog/*
+api/public/event/*
+api/public/user/*
+
+# allow all the folders themselves to be tracked
+!api/public/blog/.gitkeep
+!api/public/event/.gitkeep
+!api/public/user/.gitkeep
+
+# env files
+.env
+.env.development
+.env.production
 
 # skip ignoring production env as its used in build on prod server
 !client/.env.production
