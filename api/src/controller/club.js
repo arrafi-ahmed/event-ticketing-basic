@@ -24,10 +24,9 @@ router.get("/getAllClubs", auth, (req, res, next) => {
     .catch((err) => next(err));
 });
 
-router.get("/getClub", auth, (req, res, next) => {
-  const isRoleSudo = ifSudo(req.currentUser.role);
+router.get("/getClub", (req, res, next) => {
   clubService
-    .getClub({ clubId: isRoleSudo ? req.query.clubId : req.currentUser.clubId })
+    .getClub({ clubId: req.query.clubId })
     .then((results) => res.status(200).json(new ApiResponse(null, results[0])))
     .catch((err) => next(err));
 });
