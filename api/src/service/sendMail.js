@@ -28,7 +28,7 @@ const sendMailWAttachment = (to, subject, text, pdf) => {
   return new Promise((resolve, reject) => {
     transporter.sendMail(
       {
-        from: "Click Event <noreply@clickevent.it>",
+        from: `Click Event <${SMTP_USER}>`,
         to,
         // bcc: '',
         subject,
