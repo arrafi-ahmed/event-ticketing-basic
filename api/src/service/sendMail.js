@@ -14,7 +14,7 @@ const transporter = nodeMailer.createTransport({
 
 const sendMail = async (to, subject, html) => {
   return transporter.sendMail({
-    from: "Click Event <noreply@clickevent.it>",
+    from: `Click Event <${SMTP_USER}>`,
     to,
     // bcc: '',
     subject,
