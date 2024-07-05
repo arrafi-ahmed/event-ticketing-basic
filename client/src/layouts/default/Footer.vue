@@ -1,5 +1,5 @@
 <script setup>
-import { appName, getToLink } from "@/others/util";
+import { appInfo, getToLink } from "@/others/util";
 import { computed } from "vue";
 import { useStore } from "vuex";
 
@@ -27,7 +27,7 @@ const items = [{ title: "Home", to: calcHome }];
       <v-col class="text-center mt-md-1" cols="12">
         <small>
           &copy; {{ new Date().getFullYear() }} —
-          <strong>{{ appName }}</strong> v1.0
+          <strong>{{ appInfo.name }}</strong> v{{ appInfo.version }}
         </small>
       </v-col>
     </v-row>

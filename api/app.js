@@ -8,6 +8,7 @@ const {
   globalErrHandler,
   uncaughtErrHandler,
 } = require("./src/middleware/errHandler");
+const { appInfo } = require("./src/others/util");
 const port = process.env.PORT || 3000;
 
 //middlewares
@@ -24,7 +25,7 @@ app.use("/api/club", require("./src/controller/club"));
 app.use("/api/appUser", require("./src/controller/appUser"));
 
 app.get("/api/version", (req, res) => {
-  res.status(200).json({ version: 1.0 });
+  res.status(200).json(appInfo);
 });
 
 app.listen(port, (err) => {

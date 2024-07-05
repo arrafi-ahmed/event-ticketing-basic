@@ -19,12 +19,18 @@ exports.save = async ({ payload }) => {
     payload.password = exports.generatePassword();
   }
 
-  const [upsertedUser] = await sql`
-        insert into app_user ${sql(payload)}
-        on conflict (id)
-        do update set ${sql(payload)}
-        returning *`;
-
+  let upsertedUser = null;
+  try {
+    [upsertedUser] = await sql`
+            insert into app_user ${sql(payload)}
+            on conflict (id)
+            do update set ${sql(payload)}
+            returning *`;
+  } catch (err) {
+    if (err.code === "23505")
+      throw new CustomError("Username already taken!", 409);
+    else throw err;
+  }
   return upsertedUser;
 };
 

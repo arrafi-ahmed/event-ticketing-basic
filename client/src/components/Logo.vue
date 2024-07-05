@@ -1,7 +1,7 @@
 <script setup>
 import { useDisplay } from "vuetify";
 import {
-  appName,
+  appInfo,
   getApiPublicImgUrl,
   getClientPublicImgUrl,
 } from "@/others/util";
@@ -51,7 +51,7 @@ const imgSrc = computed(() =>
 
     <div v-if="title" :class="{ 'pl-2': imgSrc }">
       <component :is="mobile ? 'h2' : 'h1'">
-        <span class="text-primary">{{ title || appName }}</span>
+        <span class="text-primary">{{ title || appInfo.name }}</span>
       </component>
     </div>
   </div>

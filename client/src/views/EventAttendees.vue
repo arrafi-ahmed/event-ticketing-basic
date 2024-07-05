@@ -194,9 +194,9 @@ onMounted(() => {
                 </template>
                 <v-list density="comfortable">
                   <v-list-item
-                    @click="sendTicket(item.rId)"
                     density="compact"
                     title="Send Ticket"
+                    @click="sendTicket(item.rId)"
                   ></v-list-item>
                 </v-list>
               </v-menu>

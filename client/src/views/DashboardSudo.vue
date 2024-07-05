@@ -133,7 +133,7 @@ onMounted(() => {
 
                           <v-list-item
                             density="compact"
-                            title="Generate Credentials"
+                            title="Credentials"
                             @click="handleClickCredential(item)"
                           ></v-list-item>
 

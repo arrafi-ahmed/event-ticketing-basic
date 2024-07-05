@@ -100,11 +100,14 @@ const generateQrCode = async ({ id, qrUuid }) => {
   return qrCode.split(",")[1]; // Extract base64 data
 };
 
+const appInfo = { name: "Starter", version: 1.0 };
+
 module.exports = {
   API_BASE_URL,
   VUE_BASE_URL,
   ANDROID_BASE_URL,
   dirMap,
+  appInfo,
   generateQrCode,
   getCurrencySymbol,
   generatePassResetContent,

@@ -1,7 +1,7 @@
 import { toast } from "vue-sonner";
 import { countries } from "@/others/country-list";
 
-export const appName = "Click Event";
+export const appInfo = { name: "Click Event", version: 1.0 };
 export const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 export const clientBaseUrl = import.meta.env.VITE_BASE_URL;
 export const isProd = import.meta.env.PROD;
