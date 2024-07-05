@@ -161,12 +161,14 @@ exports.downloadAttendees = async ({ eventId }) => {
 
   attendees.forEach((item) => {
     worksheet.addRow({
-      id: item.id,
+      id: item.rId,
       name: item.registrationData?.name,
       email: item.registrationData?.email,
       phone: item.registrationData?.phone,
-      registration_time: formatTime(item.registrationTime),
-      checkin_time: formatTime(item.checkinTime),
+      registration_time: item.registrationTime
+        ? formatTime(item.registrationTime)
+        : "",
+      checkin_time: item.checkinTime ? formatTime(item.checkinTime) : "",
       checkin_status: item.checkinStatus ? "Checked-in" : "Pending",
     });
   });
