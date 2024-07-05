@@ -47,7 +47,7 @@ CREATE TABLE registration
     registration_time TIMESTAMP,
     qr_uuid           VARCHAR(255) UNIQUE NOT NULL,
     event_id          INT                 NOT NULL REFERENCES event (id) ON DELETE CASCADE,
-    club_id           INT                 NOT NULL REFERENCES club (id)
+    club_id           INT                 NOT NULL REFERENCES club (id) ON DELETE CASCADE
 );
 
 CREATE TABLE checkin
@@ -56,7 +56,7 @@ CREATE TABLE checkin
     checkin_status  BOOLEAN,
     checkin_time    TIMESTAMP,
     registration_id INT NOT NULL REFERENCES registration (id) ON DELETE CASCADE,
-    checkedin_by    INT NOT NULL REFERENCES app_user (id)
+    checkedin_by    INT NOT NULL REFERENCES app_user (id) ON DELETE CASCADE
 );
 
 INSERT INTO role (name)
