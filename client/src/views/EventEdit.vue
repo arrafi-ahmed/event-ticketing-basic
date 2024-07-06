@@ -138,7 +138,7 @@ onMounted(async () => {
             :rules="[
               (v) => !!v || 'End Date is required!',
               (v) =>
-                newEvent.startDate < newEvent.endDate ||
+                newEvent.startDate <= newEvent.endDate ||
                 'Start Date must be less than End Date',
             ]"
             color="primary"
