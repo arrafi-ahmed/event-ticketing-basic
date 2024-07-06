@@ -65,7 +65,7 @@ exports.getAllActiveEvents = async ({ clubId, currentDate }) => {
         SELECT *
         FROM event
         WHERE club_id = ${clubId}
-          AND ${currentDate}::date BETWEEN start_date AND end_date
+          AND ${currentDate}::date < end_date
           AND registration_count < max_attendees
         ORDER BY id DESC;
     `;

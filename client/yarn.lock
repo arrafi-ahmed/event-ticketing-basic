@@ -180,9 +180,9 @@
     upath "^2.0.1"
 
 acorn@^8.11.3:
-  version "8.12.0"
-  resolved "https://registry.npmjs.org/acorn/-/acorn-8.12.0.tgz"
-  integrity sha512-RTvkC4w+KNXrM39/lWCUaG0IbRkWdCv7W/IOW9oU6SawyxulvkQy5HQPVTKxEjczcUvapcrw3cFx/60VN/NRNw==
+  version "8.12.1"
+  resolved "https://registry.npmjs.org/acorn/-/acorn-8.12.1.tgz"
+  integrity sha512-tcpGyI9zbizT9JbV6oYE477V6mTlXvvi0T0G3SNIYE2apm/G5huBa1+K89VGeovbg+jycCrfhl3ADxErOuO6Jg==
 
 anymatch@~3.1.2:
   version "3.1.3"
@@ -494,7 +494,7 @@ picomatch@^2.0.4, picomatch@^2.2.1, picomatch@^2.3.1:
   resolved "https://registry.npmjs.org/picomatch/-/picomatch-2.3.1.tgz"
   integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
 
-postcss@^8.4.38:
+postcss@^8.4.38, postcss@^8.4.39:
   version "8.4.39"
   resolved "https://registry.npmjs.org/postcss/-/postcss-8.4.39.tgz"
   integrity sha512-0vzE+lAiG7hZl1/9I8yzKLx3aR9Xbof3fBHKunvMfOCYAtMhrsnccJY2iTURb9EZd5+pLuiNV9/c/GZJOHsgIw==
@@ -667,13 +667,13 @@ vite-plugin-vuetify@^2.0.3, vite-plugin-vuetify@>=1.0.0:
     debug "^4.3.3"
     upath "^2.0.1"
 
-"vite@^2.0.0 || ^3.0.0 || ^4.0.0 || ^5.0.0", vite@^5.0.0, vite@^5.3.2, vite@>=5:
-  version "5.3.2"
-  resolved "https://registry.npmjs.org/vite/-/vite-5.3.2.tgz"
-  integrity sha512-6lA7OBHBlXUxiJxbO5aAY2fsHHzDr1q7DvXYnyZycRs2Dz+dXBWuhpWHvmljTRTpQC2uvGmUFFkSHF2vGo90MA==
+"vite@^2.0.0 || ^3.0.0 || ^4.0.0 || ^5.0.0", vite@^5.0.0, vite@^5.3.3, vite@>=5:
+  version "5.3.3"
+  resolved "https://registry.npmjs.org/vite/-/vite-5.3.3.tgz"
+  integrity sha512-NPQdeCU0Dv2z5fu+ULotpuq5yfCS1BzKUIPhNbP3YBfAMGJXbt2nS+sbTFu+qchaqWTD+H3JK++nRwr6XIcp6A==
   dependencies:
     esbuild "^0.21.3"
-    postcss "^8.4.38"
+    postcss "^8.4.39"
     rollup "^4.13.0"
   optionalDependencies:
     fsevents "~2.3.3"
@@ -709,10 +709,10 @@ vue@^3.0.0, vue@^3.2.0, vue@^3.2.25, vue@^3.3.0, vue@^3.4.27, "vue@2 || 3", vue@
     "@vue/server-renderer" "3.4.31"
     "@vue/shared" "3.4.31"
 
-vuetify@^3.0.0, vuetify@^3.6.10:
-  version "3.6.10"
-  resolved "https://registry.npmjs.org/vuetify/-/vuetify-3.6.10.tgz"
-  integrity sha512-Myd9+EFq4Gmu61yKPNVS0QdGQkcZ9cHom27wuvRw7jgDxM+X4MT9BwQRk/Dt1q3G3JlK8oh+ZYyq5Ps/Z73cMg==
+vuetify@^3.0.0, vuetify@^3.6.11:
+  version "3.6.11"
+  resolved "https://registry.npmjs.org/vuetify/-/vuetify-3.6.11.tgz"
+  integrity sha512-DMreVZ6+WCVnvRoFVPGtC+Kc4afx+etcTLgX2AqUj6lQ4RrEx0TlQoNAW1oKPH4eViv2wfdvQ3xb/Yw1c86cTw==
 
 vuex@^4.1.0:
   version "4.1.0"
