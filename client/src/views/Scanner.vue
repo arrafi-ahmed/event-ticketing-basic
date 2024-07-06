@@ -9,7 +9,7 @@ import { formatDateTime } from "@/others/util";
 const store = useStore();
 const route = useRoute();
 
-const qrScannerDialog = ref(false);
+// const qrScannerDialog = ref(false);
 const isPaused = ref(false);
 
 const event = computed(() =>
@@ -47,19 +47,40 @@ const onError = (err) => {
           justify="space-between"
           title="Scanner"
         >
-          <v-btn
-            color="primary"
-            prepend-icon="mdi-qrcode"
-            @click="qrScannerDialog = !qrScannerDialog"
-          >
-            Scan
-          </v-btn>
+          <!--          <v-btn-->
+          <!--            color="primary"-->
+          <!--            prepend-icon="mdi-qrcode"-->
+          <!--            @click="qrScannerDialog = !qrScannerDialog"-->
+          <!--          >-->
+          <!--            Scan-->
+          <!--          </v-btn>-->
           <v-btn
             icon="mdi-arrow-left"
             variant="text"
             @click="$router.back()"
           ></v-btn>
         </page-title>
+      </v-col>
+    </v-row>
+
+    <v-row align="center" class="fill-height" justify="center" no-gutters>
+      <v-col cols="auto">
+        <v-card class="bg-tertiary" :max-width="500">
+          <v-card-title>Scan QR Code</v-card-title>
+          <v-card-text>
+            <qrcode-stream
+              :paused="isPaused"
+              @detect="handleScan"
+              @error="onError"
+            ></qrcode-stream>
+          </v-card-text>
+          <!--          <v-card-actions>-->
+          <!--            <v-spacer></v-spacer>-->
+          <!--            <v-btn color="error" @click="qrScannerDialog = !qrScannerDialog"-->
+          <!--              >Close-->
+          <!--            </v-btn>-->
+          <!--          </v-card-actions>-->
+        </v-card>
       </v-col>
     </v-row>
 
@@ -116,23 +137,4 @@ const onError = (err) => {
       </v-col>
     </v-row>
   </v-container>
-
-  <v-dialog v-model="qrScannerDialog" :max-width="500" persistent>
-    <v-card class="bg-tertiary">
-      <v-card-title>Scan QR Code</v-card-title>
-      <v-card-text>
-        <qrcode-stream
-          :paused="isPaused"
-          @detect="handleScan"
-          @error="onError"
-        ></qrcode-stream>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="error" @click="qrScannerDialog = !qrScannerDialog"
-          >Close
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
 </template>

@@ -125,27 +125,6 @@ onMounted(async () => {
           fast-fail
           @submit.prevent="handleSubmitEditEvent"
         >
-          <date-picker
-            v-model="newEvent.startDate"
-            :rules="[(v) => !!v || 'Start Date is required!']"
-            color="primary"
-            custom-class="mt-2 mt-md-4"
-            label="Start Date"
-          ></date-picker>
-
-          <date-picker
-            v-model="newEvent.endDate"
-            :rules="[
-              (v) => !!v || 'End Date is required!',
-              (v) =>
-                newEvent.startDate <= newEvent.endDate ||
-                'Start Date must be less than End Date',
-            ]"
-            color="primary"
-            custom-class="mt-2 mt-md-4"
-            label="End Date"
-          ></date-picker>
-
           <v-text-field
             v-model="newEvent.name"
             :rules="[(v) => !!v || 'Name is required!']"
@@ -194,6 +173,27 @@ onMounted(async () => {
             required
             type="number"
           ></v-text-field>
+
+          <date-picker
+            v-model="newEvent.startDate"
+            :rules="[(v) => !!v || 'Start Date is required!']"
+            color="primary"
+            custom-class="mt-2 mt-md-4"
+            label="Start Date"
+          ></date-picker>
+
+          <date-picker
+            v-model="newEvent.endDate"
+            :rules="[
+              (v) => !!v || 'End Date is required!',
+              (v) =>
+                newEvent.startDate <= newEvent.endDate ||
+                'Start Date must be less than End Date',
+            ]"
+            color="primary"
+            custom-class="mt-2 mt-md-4"
+            label="End Date"
+          ></date-picker>
 
           <v-row align="center" justify="start" no-gutters>
             <v-col class="mt-5" cols="12" sm="3">
