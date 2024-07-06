@@ -141,7 +141,12 @@ const handleAddEvent = async () => {
 
           <date-picker
             v-model="newEvent.endDate"
-            :rules="[(v) => !!v || 'End Date is required!']"
+            :rules="[
+              (v) => !!v || 'End Date is required!',
+              (v) =>
+                newEvent.startDate < newEvent.endDate ||
+                'Start Date must be less than End Date',
+            ]"
             color="primary"
             custom-class="mt-2 mt-md-4"
             label="End Date"
