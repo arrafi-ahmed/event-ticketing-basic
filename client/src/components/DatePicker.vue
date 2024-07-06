@@ -1,5 +1,5 @@
 <script setup>
-import { computed, defineEmits, defineProps, onMounted, ref, watch } from "vue";
+import { defineEmits, defineProps, ref, watch } from "vue";
 import { useDisplay } from "vuetify";
 import { formatDate } from "@/others/util";
 
