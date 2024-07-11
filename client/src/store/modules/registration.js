@@ -6,6 +6,7 @@ export const namespaced = true;
 export const state = {
   registration: {},
   attendees: [],
+  formQuestions: [],
 };
 
 export const mutations = {
@@ -17,6 +18,9 @@ export const mutations = {
   },
   setAttendees(state, payload) {
     state.attendees = payload;
+  },
+  setFormQuestions(state, payload) {
+    state.formQuestions = payload;
   },
   updateAttendee(state, payload) {
     const foundIndex = state.attendees.findIndex(
@@ -142,6 +146,35 @@ export const actions = {
         })
         .then((response) => {
           resolve(response.data?.payload);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
+  setFormQuestions({ commit }, request) {
+    return new Promise((resolve, reject) => {
+      $axios
+        .get("/api/registration/getFormQuestions", {
+          params: {
+            eventId: request.eventId,
+          },
+        })
+        .then((response) => {
+          commit("setFormQuestions", response.data?.payload);
+          resolve(response.data?.payload);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
+  saveForm({ commit }, request) {
+    return new Promise((resolve, reject) => {
+      $axios
+        .post("/api/registration/saveForm", { payload: request })
+        .then((response) => {
+          resolve(response);
         })
         .catch((err) => {
           reject(err);

@@ -40,9 +40,9 @@ exports.generateTicketContent = async (registration, event) => {
   });
   doc.addImage(qrCode, "JPEG", 15, 65, 90, 90);
 
-  const emailBody = `Thanks for registration, please check the attached ticket!
+  const emailBody = `Grazie per la registrazione, controlla il biglietto allegato!
 
-Regards,
+Saluti,
 Click Event`;
   return { attachment: doc, emailBody };
 };

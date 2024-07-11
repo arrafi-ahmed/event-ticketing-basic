@@ -43,11 +43,22 @@ CREATE TABLE event
 CREATE TABLE registration
 (
     id                SERIAL PRIMARY KEY,
-    registration_data jsonb,
+    registration_data jsonb, --name, email, phone, others:{...rest}
     registration_time TIMESTAMP,
     qr_uuid           VARCHAR(255) UNIQUE NOT NULL,
     event_id          INT                 NOT NULL REFERENCES event (id) ON DELETE CASCADE,
     club_id           INT                 NOT NULL REFERENCES club (id) ON DELETE CASCADE
+);
+
+--added
+CREATE TABLE form_question
+(
+    id                   SERIAL PRIMARY KEY,
+    type_id              SMALLINT NOT NULL,
+    text                 TEXT     NOT NULL,
+    required             BOOLEAN  NOT NULL,
+    options              jsonb,
+    event_id INTEGER REFERENCES event ON DELETE CASCADE
 );
 
 CREATE TABLE checkin

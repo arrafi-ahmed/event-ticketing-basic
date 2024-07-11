@@ -63,4 +63,9 @@ body,
 .z-index-max {
   z-index: 999999 !important;
 }
+
+.input-color-primary .v-field {
+  background: rgb(var(--v-theme-primary));
+  color: rgb(var(--v-theme-tertiary));
+}
 </style>

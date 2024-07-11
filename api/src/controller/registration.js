@@ -6,9 +6,11 @@ const { auth } = require("../middleware/auth");
 router.post("/save", (req, res, next) => {
   registrationService
     .save({ body: req.body })
-    .then((results) =>
-      res.status(200).json(new ApiResponse("Registration successful!", results))
-    )
+    .then((results) => {
+      res
+        .status(200)
+        .json(new ApiResponse("Registration successful!", results));
+    })
     .catch((err) => next(err));
 });
 
@@ -80,6 +82,27 @@ router.get("/sendTicket", auth, (req, res, next) => {
     .then((results) =>
       res.status(200).json(new ApiResponse("Ticket sent to email!", results))
     )
+    .catch((err) => next(err));
+});
+
+router.get("/getFormQuestions", (req, res, next) => {
+  registrationService
+    .getFormQuestions(req.query.eventId)
+    .then((results) => {
+      console.log(76, req.query.eventId);
+      res.status(200).json(new ApiResponse(null, results));
+    })
+    .catch((err) => next(err));
+});
+
+router.post("/saveForm", auth, (req, res, next) => {
+  registrationService
+    .saveForm(req.body)
+    .then((results) => {
+      if (results) {
+        res.status(200).json(new ApiResponse("Form saved!", results));
+      }
+    })
     .catch((err) => next(err));
 });
 

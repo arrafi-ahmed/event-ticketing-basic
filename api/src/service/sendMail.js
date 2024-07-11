@@ -26,34 +26,19 @@ const sendMailWAttachment = (to, subject, text, pdf) => {
   const pdfBuffer = Buffer.from(pdf.output(), "binary");
 
   return new Promise((resolve, reject) => {
-    transporter.sendMail(
-      {
-        from: `Click Event <${SMTP_USER}>`,
-        to,
-        // bcc: '',
-        subject,
-        text,
-        attachments: [
-          {
-            filename: "attachment.pdf",
-            content: pdfBuffer,
-          },
-        ],
-      },
-      (error, info) => {
-        if (error) {
-          return reject(new Error(error.message));
-        }
-
-        if (info.rejected.length > 0) {
-          const rejectedEmails = info.rejected.join(", ");
-          const errorMessage = `Error sending email for: ${rejectedEmails}`;
-          return reject(new Error(errorMessage));
-        }
-
-        return resolve(info);
-      }
-    );
+    transporter.sendMail({
+      from: `Click Event <${SMTP_USER}>`,
+      to,
+      // bcc: '',
+      subject,
+      text,
+      attachments: [
+        {
+          filename: "attachment.pdf",
+          content: pdfBuffer,
+        },
+      ],
+    });
   });
 };
 

@@ -5,6 +5,7 @@ import { getCountryList, isValidEmail } from "@/others/util";
 import { useStore } from "vuex";
 import Logo from "@/components/Logo.vue";
 import Phone from "@/components/Phone.vue";
+import FormItems from "@/components/FormItems.vue";
 
 const store = useStore();
 const route = useRoute();
@@ -15,7 +16,12 @@ const event = computed(() =>
   store.getters["event/getEventById"](route.params.eventId)
 );
 const registrationInit = {
-  registrationData: { name: null, email: null, phone: null, age: null },
+  registrationData: {
+    name: null,
+    email: null,
+    phone: null,
+    others: [],
+  },
   eventId: null,
   clubId: null,
 };
@@ -31,6 +37,14 @@ const registerUser = async () => {
   registration.eventId = route.params.eventId;
   registration.clubId = route.params.clubId;
 
+  registration.registrationData.others = additionalAnswers.value.map(
+    (item, index) => ({
+      question: formQuestions.value?.[index]?.text,
+      answer: item,
+    })
+  );
+  console.log(34, registration);
+
   await store.dispatch("registration/addRegistration", { registration });
   router.push({
     name: "event-register-success",
@@ -41,6 +55,12 @@ const handleUpdatePhone = ({ formattedPhone }) => {
   registration.registrationData.phone = formattedPhone;
 };
 
+const formQuestions = computed(() => store.state.registration.formQuestions);
+const additionalAnswers = ref([]);
+const handleUpdateAdditionalAnswers = ({ newVal }) => {
+  additionalAnswers.value = newVal;
+};
+
 onMounted(async () => {
   if (!event.value?.id) {
     await store.dispatch(
@@ -48,6 +68,9 @@ onMounted(async () => {
       route.params.eventId
     );
   }
+  await store.dispatch("registration/setFormQuestions", {
+    eventId: route.params.eventId,
+  });
   if (!club.value?.id) {
     await store.dispatch("club/setClub", route.params.clubId);
   }
@@ -84,7 +107,7 @@ onMounted(async () => {
               {{ event.name }}
             </v-card-title>
             <v-card-subtitle class="text-center mt-4 mb-8"
-              >Register to send your request
+              >Registrati per inviare la tua richiesta
             </v-card-subtitle>
             <v-form
               ref="form"
@@ -100,12 +123,12 @@ onMounted(async () => {
                   (v) =>
                     (v && v.length <= 50) || 'Must not exceed 50 characters',
                 ]"
+                label="Full Name"
                 class="mt-2 mt-md-4 input-color-primary"
                 clearable
                 color="tertiary"
                 density="default"
                 hide-details="auto"
-                label="Full Name"
                 rounded="lg"
                 variant="solo-filled"
               ></v-text-field>
@@ -139,28 +162,36 @@ onMounted(async () => {
                 @update-phone="handleUpdatePhone"
               ></phone>
 
-              <v-text-field
-                v-model="registration.registrationData.age"
-                :rules="[(v) => !!v || 'Age is required!']"
-                class="mt-2 mt-md-4 input-color-primary"
-                clearable
-                color="tertiary"
-                density="default"
-                hide-details="auto"
-                label="Age"
-                rounded="lg"
-                type="number"
-                variant="solo-filled"
-              ></v-text-field>
+              <!--              add form questions-->
+              <div
+                v-if="
+                  formQuestions && formQuestions.length > 0 && formQuestions[0]
+                "
+              >
+                <!--                <v-divider :thickness="2" class="my-5 my-md-10"></v-divider>-->
+                <form-items
+                  :items="formQuestions"
+                  type="question"
+                  @update="handleUpdateAdditionalAnswers"
+                />
+              </div>
+
+              <!--              <v-text-field-->
+              <!--                v-model="registration.registrationData.age"-->
+              <!--                :rules="[(v) => !!v || 'Age is required!']"-->
+              <!--                class="mt-2 mt-md-4 input-color-primary"-->
+              <!--                clearable-->
+              <!--                color="tertiary"-->
+              <!--                density="default"-->
+              <!--                hide-details="auto"-->
+              <!--                label="Age"-->
+              <!--                rounded="lg"-->
+              <!--                type="number"-->
+              <!--                variant="solo-filled"-->
+              <!--              ></v-text-field>-->
 
               <div class="pb-3 pl-1 mt-7 my-1">
-                *By signing up, you agree to the
-                <!--                <span-->
-                <!--                  class="clickable mt-5 text-center"-->
-                <!--                  @click="router.push({ name: 'terms' })"-->
-                <!--                >-->
-                Terms of Service
-                <!--                </span>-->
+                *Iscrivendoti accetti i Termini di servizio
               </div>
 
               <!-- Register Button -->
@@ -193,9 +224,4 @@ onMounted(async () => {
   </v-container>
 </template>
 
-<style>
-.input-color-primary .v-field {
-  background: rgb(var(--v-theme-primary));
-  color: rgb(var(--v-theme-tertiary));
-}
-</style>
+<style></style>

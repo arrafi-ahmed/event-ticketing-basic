@@ -54,10 +54,10 @@ onMounted(async () => {
               "
             ></logo>
             <v-card-title class="text-center text-wrap mt-5">
-              Upcoming events
+              Prossimi eventi
             </v-card-title>
             <v-card-subtitle class="text-center mb-8"
-              >Select and book your entry
+              >Seleziona e prenota il tuo ingresso
             </v-card-subtitle>
 
             <v-carousel

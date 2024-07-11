@@ -140,6 +140,10 @@ export const input_fields = [
   { id: 4, title: "Dropdown" },
 ];
 
+export const getInputType = (typeId) => {
+  return input_fields.find((item) => item.id == typeId);
+};
+
 export const getCountryList = (filterName) => {
   if (filterName === "all") return countries;
   return countries.map((item) => item[filterName]);

@@ -68,7 +68,7 @@ onUnmounted(() => {
         >
           <v-card-text>
             <v-card-title class="text-center text-wrap mt-5 mb-2">
-              Registration Successful
+              Iscrizione completata correttamente
             </v-card-title>
 
             <div class="d-flex justify-center">
@@ -95,7 +95,7 @@ onUnmounted(() => {
             </div>
           </v-card-text>
         </v-card>
-        <div v-else class="text-center pa-10">Page expired!</div>
+        <div v-else class="text-center pa-10">Pagina scaduta!</div>
         <div class="d-flex justify-center">
           <v-btn
             :to="{

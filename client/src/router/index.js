@@ -1,5 +1,6 @@
 // Composables
 import { createRouter, createWebHistory } from "vue-router";
+import store from "@/store";
 
 const routes = [
   {
@@ -34,12 +35,36 @@ const routes = [
         },
       },
       {
-        path: "dashboard-sudo",
+        path: "dashboard/sudo",
         name: "dashboard-sudo",
         component: () => import("@/views/DashboardSudo.vue"),
         meta: {
           requiresSudo: true,
           title: "Dashboard Sudo",
+        },
+      },
+      {
+        path: "dashboard/admin",
+        name: "dashboard-admin",
+        component: () => import("@/views/DashboardAdmin.vue"),
+        meta: {
+          requiresAdmin: true,
+          title: "Dashboard Admin",
+        },
+      },
+      {
+        path: "dashboard",
+        name: "dashboard",
+        redirect: () => {
+          const role = store.getters["user/getCurrentUser"]?.role;
+          return role === "sudo"
+            ? { name: "dashboard-sudo" }
+            : role === "admin"
+            ? { name: "dashboard-admin" }
+            : { name: "not-found" };
+        },
+        meta: {
+          requiresAuth: true,
         },
       },
       {
@@ -70,21 +95,21 @@ const routes = [
         },
       },
       {
-        path: "dashboard-admin",
-        name: "dashboard-admin",
-        component: () => import("@/views/DashboardAdmin.vue"),
-        meta: {
-          requiresAdmin: true,
-          title: "Dashboard Admin",
-        },
-      },
-      {
         path: "event/add",
         name: "event-add",
         component: () => import("@/views/EventAdd.vue"),
         meta: {
           requiresAdmin: true,
           title: "Add Event",
+        },
+      },
+      {
+        path: "event/:eventId/form",
+        name: "form-builder",
+        component: () => import("@/views/FormBuilder.vue"),
+        meta: {
+          requiresAdmin: true,
+          title: "Form Builder",
         },
       },
       {

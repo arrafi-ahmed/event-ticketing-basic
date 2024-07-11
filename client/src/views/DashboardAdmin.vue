@@ -106,6 +106,17 @@ onMounted(() => {
                   </template>
                   <v-list density="comfortable">
                     <v-list-item
+                      title="Form"
+                      @click="
+                        router.push({
+                          name: 'form-builder',
+                          params: {
+                            eventId: item.id,
+                          },
+                        })
+                      "
+                    ></v-list-item>
+                    <v-list-item
                       title="Attendees"
                       @click="
                         router.push({
