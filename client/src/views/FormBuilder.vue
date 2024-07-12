@@ -128,7 +128,7 @@ const event = computed(() =>
         >
           <v-menu>
             <template v-slot:activator="{ props }">
-              <v-btn prepend-icon="mdi-plus" v-bind="props"
+              <v-btn prepend-icon="mdi-plus" v-bind="props" variant="tonal"
                 >Add Question
               </v-btn>
             </template>
@@ -174,7 +174,7 @@ const event = computed(() =>
               @update="handleUpdateAdditionalAnswers"
             />
           </div>
-          <div v-if="newFormQuestions?.length > 0">
+          <div>
             <v-row class="mt-2 mt-md-4" justify="end">
               <v-col cols="auto">
                 <v-btn

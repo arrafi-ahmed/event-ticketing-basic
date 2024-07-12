@@ -39,11 +39,11 @@ const registerUser = async () => {
 
   registration.registrationData.others = additionalAnswers.value.map(
     (item, index) => ({
+      qId: formQuestions.value?.[index]?.id,
       question: formQuestions.value?.[index]?.text,
       answer: item,
     })
   );
-  console.log(34, registration);
 
   await store.dispatch("registration/addRegistration", { registration });
   router.push({
@@ -119,7 +119,7 @@ onMounted(async () => {
               <v-text-field
                 v-model="registration.registrationData.name"
                 :rules="[
-                  (v) => !!v || 'Full Name is required!',
+                  (v) => !!v || 'required!',
                   (v) =>
                     (v && v.length <= 50) || 'Must not exceed 50 characters',
                 ]"
@@ -131,12 +131,19 @@ onMounted(async () => {
                 hide-details="auto"
                 rounded="lg"
                 variant="solo-filled"
-              ></v-text-field>
+              >
+                <template v-slot:label>
+                  <div>
+                    <span>Full Name</span>
+                    <span class="text-error"> *</span>
+                  </div>
+                </template>
+              </v-text-field>
 
               <v-text-field
                 v-model="registration.registrationData.email"
                 :rules="[
-                  (v) => !!v || 'Email is required!',
+                  (v) => !!v || 'required!',
                   (v) => isValidEmail(v) || 'Invalid Email',
                 ]"
                 class="mt-2 mt-md-4 input-color-primary"
@@ -144,10 +151,16 @@ onMounted(async () => {
                 color="tertiary"
                 density="default"
                 hide-details="auto"
-                label="Email Address"
                 rounded="lg"
                 variant="solo-filled"
-              ></v-text-field>
+              >
+                <template v-slot:label>
+                  <div>
+                    <span>Email Address</span>
+                    <span class="text-error"> *</span>
+                  </div>
+                </template>
+              </v-text-field>
 
               <phone
                 :input-item="{

@@ -50,7 +50,6 @@ watch(inputResponses.value, (newVal) => {
                 ? isValidEmail(v) || 'Invalid email'
                 : true,
           ]"
-          :label="item.text"
           class="mt-2 mt-md-4 input-color-primary"
           clearable
           color="tertiary"
@@ -59,27 +58,17 @@ watch(inputResponses.value, (newVal) => {
           rounded="lg"
           variant="solo-filled"
         >
+          <template v-slot:label>
+            <div>
+              <span>{{ item.text }}</span>
+              <span v-if="item.required" class="text-error"> *</span>
+            </div>
+          </template>
         </v-text-field>
       </div>
 
       <div v-else-if="item.typeId == 1">
         <v-textarea
-          v-model="inputResponses[index]"
-          :rules="[(v) => !!v || !item.required || 'required']"
-          :label="item.text"
-          class="mt-2 mt-md-4 input-color-primary"
-          clearable
-          color="tertiary"
-          density="default"
-          hide-details="auto"
-          rounded="lg"
-          variant="solo-filled"
-        >
-        </v-textarea>
-      </div>
-
-      <div v-else-if="item.typeId == 2">
-        <v-radio-group
           v-model="inputResponses[index]"
           :rules="[(v) => !!v || !item.required || 'required']"
           class="mt-2 mt-md-4 input-color-primary"
@@ -91,28 +80,53 @@ watch(inputResponses.value, (newVal) => {
           variant="solo-filled"
         >
           <template v-slot:label>
+            <div>
+              <span>{{ item.text }}</span>
+              <span v-if="item.required" class="text-error"> *</span>
+            </div>
+          </template>
+        </v-textarea>
+      </div>
+
+      <div
+        v-else-if="item.typeId == 2"
+        class="mt-2 mt-md-4 v-label d-block pl-4 border rounded-lg pa-2"
+      >
+        <v-radio-group
+          v-model="inputResponses[index]"
+          :rules="[(v) => !!v || !item.required || 'required']"
+          class="input-color-primary"
+          clearable
+          color="primary"
+          density="default"
+          hide-details="auto"
+          rounded="lg"
+          variant="solo-filled"
+        >
+          <template v-slot:label>
             <div class="text-wrap">
               <span>{{ item.text }}</span>
-              <span v-if="item.required" style="color: red">*</span>
+              <span v-if="item.required" class="text-error"> *</span>
             </div>
           </template>
           <template v-if="item.options?.length > 0">
             <v-radio
-              v-for="(childItem, index) in item.options"
+              v-for="(childItem, childIndex) in item.options"
               :key="index"
               :label="childItem"
               :value="childItem"
+              :class="{ 'mt-n2': childIndex > 0 }"
             ></v-radio>
           </template>
         </v-radio-group>
       </div>
       <div
         v-else-if="item.typeId == 3 && item.options?.length > 0"
-        class="mt-2 mt-md-4 v-label d-block pl-4 border rounded-lg pa-2"
+        class="mt-2 mt-md-4 v-label d-block px-8 border rounded-lg pa-2"
       >
         <div class="text-wrap">
           <span>{{ item.text }}</span>
-          <span v-if="item.required" style="color: red">*</span>
+          <span v-if="item.required" class="text-error"> *</span>
         </div>
 
         <v-checkbox
@@ -125,6 +139,7 @@ watch(inputResponses.value, (newVal) => {
           density="compact"
           hide-details="auto"
           color="primary"
+          :single-line="false"
         ></v-checkbox>
       </div>
       <div v-else-if="item.typeId == 4 && item.options?.length > 0">
@@ -132,7 +147,6 @@ watch(inputResponses.value, (newVal) => {
           v-model="inputResponses[index]"
           :items="item.options"
           :rules="[(v) => !!v || !item.required || 'required']"
-          :label="item.text"
           class="mt-2 mt-md-4 input-color-primary"
           clearable
           color="tertiary"
@@ -141,6 +155,12 @@ watch(inputResponses.value, (newVal) => {
           rounded="lg"
           variant="solo-filled"
         >
+          <template v-slot:label>
+            <div>
+              <span>{{ item.text }}</span>
+              <span v-if="item.required" class="text-error"> *</span>
+            </div>
+          </template>
         </v-select>
       </div>
 

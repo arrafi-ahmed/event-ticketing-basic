@@ -269,6 +269,14 @@ onMounted(() => {
                 ></v-select>
               </td>
             </tr>
+            <template v-for="item in editingAttendee.registrationData?.others">
+              <tr>
+                <td class="rowTitle">{{ item.question }}</td>
+                <td>
+                  {{ item.answer }}
+                </td>
+              </tr>
+            </template>
           </tbody>
         </v-table>
       </v-card-text>

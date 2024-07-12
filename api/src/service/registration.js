@@ -142,6 +142,7 @@ exports.scanByRegistrationId = async ({ qrCodeData, eventId, userId }) => {
 
 exports.downloadAttendees = async ({ eventId }) => {
   const attendees = await exports.getAttendeesWcheckin({ eventId });
+  const formQuestions = await exports.getFormQuestions(eventId);
 
   if (attendees.length === 0)
     throw new CustomError("No data available for report!", 404);
@@ -149,7 +150,7 @@ exports.downloadAttendees = async ({ eventId }) => {
   const workbook = new exceljs.Workbook();
   const worksheet = workbook.addWorksheet("Attendee Report");
 
-  worksheet.columns = [
+  sheet_columns = [
     { header: "Id", key: "id", width: 10 },
     { header: "Name", key: "name", width: 30 },
     { header: "Email", key: "email", width: 30 },
@@ -159,8 +160,22 @@ exports.downloadAttendees = async ({ eventId }) => {
     { header: "Checkin Status", key: "checkin_status", width: 30 },
   ];
 
+  if (formQuestions.length > 0) {
+    // Add excel headers for others data while iterating the first user
+    formQuestions?.forEach((item, index) => {
+      sheet_columns.push({
+        header: item.text,
+        key: `qId_${item.id}`,
+        width: 30,
+      });
+    });
+  }
+
+  worksheet.columns = sheet_columns;
+
   attendees.forEach((item) => {
-    worksheet.addRow({
+    // Create a row data object with common fields
+    let rowData = {
       id: item.rId,
       name: item.registrationData?.name,
       email: item.registrationData?.email,
@@ -170,7 +185,17 @@ exports.downloadAttendees = async ({ eventId }) => {
         : "",
       checkin_time: item.checkinTime ? formatTime(item.checkinTime) : "",
       checkin_status: item.checkinStatus ? "Checked-in" : "Pending",
+    };
+
+    // Add other_x fields to the row data
+    item.registrationData?.others?.forEach((childItem) => {
+      if (childItem.qId) {
+        rowData[`qId_${childItem.qId}`] = childItem.answer?.toString() || "";
+      }
     });
+
+    // Add the row to the worksheet
+    worksheet.addRow(rowData);
   });
 
   return workbook;
@@ -184,7 +209,6 @@ exports.getFormQuestions = async (eventId) => {
 };
 
 exports.saveForm = async ({ payload: { formQuestions, rmQIds, eventId } }) => {
-  console.log(44, formQuestions, rmQIds);
   // Delete old questions
   if (rmQIds?.length > 0)
     await sql`

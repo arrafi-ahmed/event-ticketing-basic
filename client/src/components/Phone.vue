@@ -75,10 +75,14 @@ onMounted(() => {
         @update:modelValue="formatSelectedDialCode"
       >
         <template v-slot:selection="{}">
-          <div class="d-flex justify-space-between" style="width: 70px">
-            <span>{{ selectedCountry.flag }}</span>
-            <span>{{ selectedCountry.dialCode }}</span>
-          </div>
+          <v-row no-gutters>
+            <v-col cols="auto"
+              ><span>{{ selectedCountry.flag }}</span></v-col
+            >
+            <v-col cols="auto" class="flex-grow-1 ml-2">
+              <span>{{ selectedCountry.dialCode }}</span></v-col
+            >
+          </v-row>
         </template>
       </v-select>
     </v-col>
@@ -89,7 +93,7 @@ onMounted(() => {
         :density="density"
         :label="inputItem.text"
         :rounded="`s-0 e-${rounded}`"
-        :rules="[(v) => !!v || !inputItem.required || 'Phone is required!']"
+        :rules="[(v) => !!v || !inputItem.required || 'required!']"
         :variant="variant"
         clearable
         hide-details="auto"
@@ -97,7 +101,7 @@ onMounted(() => {
       >
         <template v-slot:label>
           <span>{{ inputItem.text }}</span>
-          <!--          <span v-if="inputItem.required" style="color: red">*</span>-->
+          <span v-if="inputItem.required" class="text-error"> *</span>
         </template>
       </v-text-field>
     </v-col>
@@ -111,5 +115,9 @@ onMounted(() => {
 
 .phone .dialCode .v-field--appended {
   padding-inline-end: 2px;
+}
+
+.max-w-40 {
+  max-width: 40px;
 }
 </style>
