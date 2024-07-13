@@ -26,6 +26,12 @@ export const mutations = {
       state.attendees[foundIndex] = payload;
     }
   },
+  removeRegistration(state, payload) {
+    const foundIndex = state.attendees.findIndex((item) => item.rId == payload);
+    if (foundIndex !== -1) {
+      state.attendees.splice(foundIndex, 1);
+    }
+  },
 };
 
 export const actions = {
@@ -109,6 +115,24 @@ export const actions = {
         })
         .then((response) => {
           resolve(response.data?.payload);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
+  removeRegistration({ commit }, request) {
+    return new Promise((resolve, reject) => {
+      $axios
+        .get("/api/registration/removeRegistration", {
+          params: {
+            registrationId: request.registrationId,
+            eventId: request.eventId,
+          },
+        })
+        .then((response) => {
+          commit("removeRegistration", request.registrationId);
+          resolve(response);
         })
         .catch((err) => {
           reject(err);

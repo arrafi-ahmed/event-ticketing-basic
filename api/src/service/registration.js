@@ -94,6 +94,17 @@ exports.getAttendeesWcheckin = async ({ eventId }) => {
   return attendees;
 };
 
+exports.removeRegistration = async ({ eventId, registrationId }) => {
+  const [deletedEvent] = await sql`
+        delete
+        from registration
+        where id = ${registrationId}
+          and event_id = ${eventId}
+        returning *;`;
+
+  return deletedEvent;
+};
+
 exports.downloadAttendees = async ({ eventId }) => {
   const attendees = await exports.getAttendeesWcheckin({ eventId });
   const formQuestions = await formService.getFormQuestions(eventId);

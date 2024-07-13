@@ -5,6 +5,7 @@ import { useRoute, useRouter } from "vue-router";
 import PageTitle from "@/components/PageTitle.vue";
 import { formatDateTime, padStr } from "@/others/util";
 import { useDisplay } from "vuetify";
+import RemoveEntity from "@/components/RemoveEntity.vue";
 
 const store = useStore();
 const route = useRoute();
@@ -71,6 +72,13 @@ const handleDownloadAttendees = () => {
 
 const sendTicket = (registrationId) => {
   store.dispatch("registration/sendTicket", {
+    registrationId,
+    eventId: route.params.eventId,
+  });
+};
+
+const removeRegistration = (registrationId) => {
+  store.dispatch("registration/removeRegistration", {
     registrationId,
     eventId: route.params.eventId,
   });
@@ -218,6 +226,14 @@ onMounted(() => {
                     title="View QR Code"
                     @click="viewQr(item)"
                   ></v-list-item>
+                  <v-divider></v-divider>
+                  <remove-entity
+                    custom-class="text-error"
+                    label="Delete"
+                    prepend-icon="mdi-delete"
+                    variant="list"
+                    @remove-entity="removeRegistration(item.rId)"
+                  ></remove-entity>
                 </v-list>
               </v-menu>
             </tr>

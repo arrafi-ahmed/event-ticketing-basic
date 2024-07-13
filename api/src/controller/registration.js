@@ -26,6 +26,23 @@ router.get(
   }
 );
 
+router.get(
+  "/removeRegistration",
+  auth,
+  isAdminEventAuthor,
+  (req, res, next) => {
+    registrationService
+      .removeRegistration({
+        registrationId: req.query.registrationId,
+        eventId: req.query.eventId,
+      })
+      .then((results) =>
+        res.status(200).json(new ApiResponse("Registration deleted!", results))
+      )
+      .catch((err) => next(err));
+  }
+);
+
 router.get("/downloadAttendees", auth, isAdminEventAuthor, (req, res, next) => {
   registrationService
     .downloadAttendees({ eventId: req.query.eventId })
