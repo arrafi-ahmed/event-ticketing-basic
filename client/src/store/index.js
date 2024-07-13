@@ -1,17 +1,21 @@
 import { createStore } from "vuex";
+import * as appUser from "./modules/appUser";
 import * as user from "./modules/user";
 import * as club from "./modules/club";
 import * as event from "./modules/event";
 import * as registration from "./modules/registration";
-import * as appUser from "./modules/appUser";
+import * as checkin from "./modules/checkin";
+import * as form from "./modules/form";
 
 const store = createStore({
   modules: {
+    appUser,
     user,
     club,
-    registration,
     event,
-    appUser,
+    registration,
+    checkin,
+    form,
   },
   state: () => ({
     progress: null,

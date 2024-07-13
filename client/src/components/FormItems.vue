@@ -113,9 +113,9 @@ watch(inputResponses.value, (newVal) => {
             <v-radio
               v-for="(childItem, childIndex) in item.options"
               :key="index"
+              :class="{ 'mt-n2': childIndex > 0 }"
               :label="childItem"
               :value="childItem"
-              :class="{ 'mt-n2': childIndex > 0 }"
             ></v-radio>
           </template>
         </v-radio-group>
@@ -133,13 +133,13 @@ watch(inputResponses.value, (newVal) => {
           v-for="(childItem, childIndex) in item.options"
           :key="childIndex"
           v-model="inputResponses[index]"
-          :label="childItem"
-          :value="childItem"
           :class="{ 'mt-n2': childIndex > 0 }"
+          :label="childItem"
+          :single-line="false"
+          :value="childItem"
+          color="primary"
           density="compact"
           hide-details="auto"
-          color="primary"
-          :single-line="false"
         ></v-checkbox>
       </div>
       <div v-else-if="item.typeId == 4 && item.options?.length > 0">

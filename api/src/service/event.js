@@ -2,25 +2,32 @@ const CustomError = require("../model/CustomError");
 const { sql } = require("../db");
 const { removeImages } = require("../others/util");
 
-exports.save = async ({ body, files, currentUser }) => {
+exports.save = async ({ payload, files, currentUser }) => {
   const newEvent = {
-    ...body,
+    ...payload,
     clubId: currentUser.clubId,
     createdBy: currentUser.id,
   };
+  if (!newEvent.id) {
+    newEvent.registrationCount = 0;
+  } else if (currentUser.role != "sudo") {
+    //if updating event make sure user is authorized
+    const [event] = await exports.getEventByEventIdnClubId({
+      eventId: newEvent.id,
+      clubId: currentUser.clubId,
+    });
+    if (!event || !event.id) throw new CustomError("Access denied", 401);
+  }
   //add banner
   if (files && files.length > 0) {
     newEvent.banner = files[0].filename;
   }
   //remove banner
-  if (body.rmImage) {
-    await removeImages([body.rmImage]);
+  if (payload.rmImage) {
+    await removeImages([payload.rmImage]);
     delete newEvent.rmImage;
 
     if (!newEvent.banner) newEvent.banner = null;
-  }
-  if (!newEvent.id) {
-    newEvent.registrationCount = 0;
   }
   const [insertedEvent] = await sql`
         insert into event ${sql(newEvent)}
@@ -29,6 +36,7 @@ exports.save = async ({ body, files, currentUser }) => {
 
   return insertedEvent;
 };
+
 exports.removeEvent = async ({ eventId, clubId }) => {
   const [deletedEvent] = await sql`
         delete

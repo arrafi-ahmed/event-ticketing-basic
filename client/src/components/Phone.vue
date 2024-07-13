@@ -79,7 +79,7 @@ onMounted(() => {
             <v-col cols="auto"
               ><span>{{ selectedCountry.flag }}</span></v-col
             >
-            <v-col cols="auto" class="flex-grow-1 ml-2">
+            <v-col class="flex-grow-1 ml-2" cols="auto">
               <span>{{ selectedCountry.dialCode }}</span></v-col
             >
           </v-row>

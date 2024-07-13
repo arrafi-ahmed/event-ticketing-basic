@@ -132,11 +132,20 @@ const routes = [
       },
       {
         path: "event/:eventId/scanner",
-        name: "event-scanner",
+        name: "scanner",
         component: () => import("@/views/Scanner.vue"),
         meta: {
           requiresAdmin: true,
           title: "Scanner",
+        },
+      },
+      {
+        path: "event/:eventId/statistics",
+        name: "statistics",
+        component: () => import("@/views/Statistics.vue"),
+        meta: {
+          requiresAuth: true,
+          title: "Statistics",
         },
       },
       {

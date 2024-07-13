@@ -78,7 +78,13 @@ const getGreetings = computed(() => {
     </v-list>
     <template v-slot:append>
       <div class="ma-5">
-        <v-btn :to="{ name: 'signout' }" block color="primary">Signout</v-btn>
+        <v-btn
+          :to="{ name: 'signout' }"
+          block
+          color="primary"
+          prepend-icon="mdi-exit-to-app"
+          >Signout
+        </v-btn>
       </div>
     </template>
   </v-navigation-drawer>

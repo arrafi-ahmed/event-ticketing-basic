@@ -71,7 +71,7 @@ const handleSubmitEditEvent = async () => {
   if (newEvent.banner) formData.append("files", newEvent.banner);
   if (newEvent.rmImage) formData.append("rmImage", newEvent.rmImage);
 
-  store.dispatch("event/saveEvent", formData).then((result) => {
+  store.dispatch("event/save", formData).then((result) => {
     // newEvent = {...newEvent, ...newEventInit}
     Object.assign(newEvent, {
       ...newEventInit,

@@ -44,6 +44,7 @@ onMounted(() => {
               <v-list-item
                 :to="{ name: 'event-add' }"
                 density="compact"
+                prepend-icon="mdi-plus"
                 title="Add Event"
               ></v-list-item>
               <v-list-item
@@ -51,6 +52,7 @@ onMounted(() => {
                   name: 'club-edit',
                 }"
                 density="compact"
+                prepend-icon="mdi-pencil"
                 title="Edit Club"
               ></v-list-item>
               <v-list-item
@@ -61,6 +63,7 @@ onMounted(() => {
                   },
                 }"
                 density="compact"
+                prepend-icon="mdi-eye"
                 title="View Club"
               ></v-list-item>
             </v-list>
@@ -106,6 +109,7 @@ onMounted(() => {
                   </template>
                   <v-list density="comfortable">
                     <v-list-item
+                      prepend-icon="mdi-form-select"
                       title="Form"
                       @click="
                         router.push({
@@ -117,6 +121,7 @@ onMounted(() => {
                       "
                     ></v-list-item>
                     <v-list-item
+                      prepend-icon="mdi-account-multiple-outline"
                       title="Attendees"
                       @click="
                         router.push({
@@ -128,10 +133,11 @@ onMounted(() => {
                       "
                     ></v-list-item>
                     <v-list-item
+                      prepend-icon="mdi-qrcode"
                       title="Scanner"
                       @click="
                         router.push({
-                          name: 'event-scanner',
+                          name: 'scanner',
                           params: {
                             eventId: item.id,
                           },
@@ -139,6 +145,19 @@ onMounted(() => {
                       "
                     ></v-list-item>
                     <v-list-item
+                      prepend-icon="mdi-counter"
+                      title="Statistics"
+                      @click="
+                        router.push({
+                          name: 'statistics',
+                          params: {
+                            eventId: item.id,
+                          },
+                        })
+                      "
+                    ></v-list-item>
+                    <v-list-item
+                      prepend-icon="mdi-pencil"
                       title="Edit"
                       @click="
                         router.push({
@@ -155,6 +174,7 @@ onMounted(() => {
                     <remove-entity
                       custom-class="text-error"
                       label="Delete"
+                      prepend-icon="mdi-delete"
                       variant="list"
                       @remove-entity="deleteEvent(item.id)"
                     ></remove-entity>

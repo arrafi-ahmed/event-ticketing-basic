@@ -65,6 +65,7 @@ onMounted(() => {
                     name: 'club-add',
                   }"
                   density="compact"
+                  prepend-icon="mdi-plus"
                   title="Add Club"
                 ></v-list-item>
               </v-list>
@@ -120,6 +121,7 @@ onMounted(() => {
                         <v-list density="compact">
                           <v-list-item
                             density="compact"
+                            prepend-icon="mdi-eye"
                             title="View Club"
                             @click="
                               router.push({
@@ -133,11 +135,13 @@ onMounted(() => {
 
                           <v-list-item
                             density="compact"
+                            prepend-icon="mdi-lock"
                             title="Credentials"
                             @click="handleClickCredential(item)"
                           ></v-list-item>
 
                           <v-list-item
+                            prepend-icon="mdi-pencil"
                             title="Edit"
                             @click="
                               router.push({
@@ -152,6 +156,7 @@ onMounted(() => {
                           <remove-entity
                             custom-class="text-error"
                             label="Delete"
+                            prepend-icon="mdi-delete"
                             variant="list"
                             @remove-entity="deleteClub(item.id)"
                           ></remove-entity>

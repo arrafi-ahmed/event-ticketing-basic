@@ -48,7 +48,7 @@ const handleAddEvent = async () => {
 
   if (newEvent.banner) formData.append("files", newEvent.banner);
 
-  store.dispatch("event/saveEvent", formData).then((result) => {
+  store.dispatch("event/save", formData).then((result) => {
     // newEvent = {...newEvent, ...newEventInit}
     Object.assign(newEvent, {
       ...newEventInit,

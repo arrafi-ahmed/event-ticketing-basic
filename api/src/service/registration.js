@@ -5,6 +5,7 @@ const exceljs = require("exceljs");
 const { formatTime } = require("../others/util");
 const emailContentService = require("../service/emailContent");
 const sendMailService = require("../service/sendMail");
+const formService = require("../service/form");
 
 exports.save = async ({ body: { registration } }) => {
   registration.registrationTime = new Date();
@@ -37,7 +38,6 @@ exports.save = async ({ body: { registration } }) => {
       attachment
     );
   }
-  console.log(22, insertedRegistration);
   return insertedRegistration;
 };
 
@@ -61,23 +61,12 @@ exports.sendTicket = async ({ registrationId }) => {
   const { attachment, emailBody } =
     await emailContentService.generateTicketContent(registration, event);
 
-  await sendMailService.sendMailWAttachment(
+  sendMailService.sendMailWAttachment(
     result.registrationData.email,
     `Ticket for ${event.name}`,
     emailBody,
     attachment
   );
-};
-
-exports.getAttendeesWcheckin = async ({ eventId }) => {
-  const attendees = await sql`
-        select *, r.id as r_id, c.id as c_id
-        from registration r
-                 left join checkin c
-                           on r.id = c.registration_id
-        where event_id = ${eventId}`;
-
-  return attendees;
 };
 
 exports.searchAttendees = async ({ searchKeyword, eventId }) => {
@@ -94,55 +83,20 @@ exports.searchAttendees = async ({ searchKeyword, eventId }) => {
   return attendees;
 };
 
-exports.saveCheckin = async ({ newCheckin }) => {
-  newCheckin = {
-    ...newCheckin,
-    checkinTime: new Date(),
-  };
-  if (!newCheckin.id) {
-    delete newCheckin.id;
-  }
-  const [savedCheckin] = await sql`
-        insert into checkin ${sql(newCheckin)}
-        on conflict (id)
-        do update set ${sql(newCheckin)}
-        returning *;`;
-
-  return savedCheckin;
-};
-
-exports.validateQrCode = async ({ id, qrUuid, eventId }) => {
-  const [registration] = await sql`
+exports.getAttendeesWcheckin = async ({ eventId }) => {
+  const attendees = await sql`
         select *, r.id as r_id, c.id as c_id
         from registration r
-                 left join checkin c on r.id = c.registration_id
-        where r.id = ${id}
-          and r.event_id = ${eventId}`;
+                 left join checkin c
+                           on r.id = c.registration_id
+        where event_id = ${eventId}`;
 
-  if (!registration || registration.qrUuid != qrUuid) {
-    throw new CustomError("Invalid QR Code", 401, registration);
-  } else if (registration.cId !== null) {
-    throw new CustomError("Already checked-in", 401, registration);
-  }
-  return registration;
-};
-
-exports.scanByRegistrationId = async ({ qrCodeData, eventId, userId }) => {
-  const { id, qrUuid } = JSON.parse(qrCodeData);
-  const registration = await exports.validateQrCode({ id, qrUuid, eventId });
-
-  const newCheckin = {
-    checkinStatus: true,
-    registrationId: id,
-    checkedinBy: userId,
-  };
-  const updatedCheckin = await exports.saveCheckin({ newCheckin });
-  return registration;
+  return attendees;
 };
 
 exports.downloadAttendees = async ({ eventId }) => {
   const attendees = await exports.getAttendeesWcheckin({ eventId });
-  const formQuestions = await exports.getFormQuestions(eventId);
+  const formQuestions = await formService.getFormQuestions(eventId);
 
   if (attendees.length === 0)
     throw new CustomError("No data available for report!", 404);
@@ -199,39 +153,4 @@ exports.downloadAttendees = async ({ eventId }) => {
   });
 
   return workbook;
-};
-
-exports.getFormQuestions = async (eventId) => {
-  return await sql`
-        select *
-        from form_question
-        where event_id = ${eventId}`;
-};
-
-exports.saveForm = async ({ payload: { formQuestions, rmQIds, eventId } }) => {
-  // Delete old questions
-  if (rmQIds?.length > 0)
-    await sql`
-            delete
-            from form_question
-            where id in ${sql(rmQIds)}`;
-
-  let insertedQuestions = [];
-  if (formQuestions.length > 0) {
-    const formattedQuestions = formQuestions.map((item) => {
-      if (!item.options) delete item.options;
-      if (!item.id) delete item.id;
-      item.eventId = eventId;
-      return item;
-    });
-
-    for (const item of formattedQuestions) {
-      insertedQuestions = await sql`
-                insert into form_question ${sql(item)}
-                on conflict (id)
-                do update set ${sql(item)}
-                returning *`;
-    }
-  }
-  return insertedQuestions;
 };

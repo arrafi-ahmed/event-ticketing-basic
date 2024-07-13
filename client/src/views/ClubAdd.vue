@@ -34,7 +34,7 @@ const handleAddClub = async () => {
 
   if (newClub.logo) formData.append("files", newClub.logo);
 
-  await store.dispatch("club/saveClub", formData).then((result) => {
+  await store.dispatch("club/save", formData).then((result) => {
     // newClub = {...newClub, ...newClubInit}
     Object.assign(newClub, {
       ...newClubInit,

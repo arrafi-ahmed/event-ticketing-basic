@@ -1,7 +1,7 @@
 <script setup>
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
-import { computed, onMounted, reactive, ref, toRaw, watch } from "vue";
+import { computed, onMounted, reactive, ref, toRaw } from "vue";
 import PageTitle from "@/components/PageTitle.vue";
 import { useDisplay } from "vuetify";
 import { input_fields } from "@/others/util";
@@ -70,7 +70,7 @@ const handleSubmitPublishForm = async () => {
 
   submitForm.value = true;
   store
-    .dispatch("registration/saveForm", {
+    .dispatch("form/save", {
       formQuestions: toRaw(newFormQuestions.value),
       rmQIds,
       eventId: route.params.eventId,
@@ -103,7 +103,7 @@ const handleRemoveQuestion = (qId, index) => {
 
 onMounted(() => {
   store
-    .dispatch("registration/setFormQuestions", {
+    .dispatch("form/setFormQuestions", {
       eventId: route.params.eventId,
     })
     .then((result) => {

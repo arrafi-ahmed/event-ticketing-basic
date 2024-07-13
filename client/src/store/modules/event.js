@@ -79,7 +79,7 @@ export const actions = {
         });
     });
   },
-  saveEvent({ commit }, request) {
+  save({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .post("/api/event/save", request)

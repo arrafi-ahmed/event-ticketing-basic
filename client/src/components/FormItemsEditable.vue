@@ -56,9 +56,9 @@ const removeQuestion = (qId, index) => {
           </v-col>
           <v-col cols="auto">
             <v-btn
-              size="small"
               color="error"
               icon="mdi-close"
+              size="small"
               variant="text"
               @click="removeQuestion(item.id, index)"
             ></v-btn>
@@ -79,10 +79,10 @@ const removeQuestion = (qId, index) => {
           <div class="d-flex justify-space-between">
             <h4>Options:</h4>
             <v-btn
-              size="small"
               class="ms-1"
               color="success"
               icon="mdi-plus"
+              size="small"
               variant="text"
               @click="inputResponses[index].options.push(null)"
             >
@@ -103,10 +103,10 @@ const removeQuestion = (qId, index) => {
               >
               </v-text-field>
               <v-btn
-                size="small"
                 class="mt-3"
                 color="error"
                 icon="mdi-close"
+                size="small"
                 variant="text"
                 @click="inputResponses[index].options.splice(childIndex, 1)"
               ></v-btn>
@@ -137,9 +137,9 @@ const removeQuestion = (qId, index) => {
           </v-col>
           <v-col cols="auto">
             <v-btn
-              size="small"
               color="error"
               icon="mdi-close"
+              size="small"
               variant="text"
               @click="removeQuestion(item.id, index)"
             >

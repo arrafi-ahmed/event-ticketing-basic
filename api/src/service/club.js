@@ -3,19 +3,25 @@ const { sql } = require("../db");
 const { v4: uuidv4 } = require("uuid");
 const { removeImages } = require("../others/util");
 
-exports.save = async ({ body, files, userId }) => {
+exports.save = async ({ payload, files, currentUser }) => {
   const newClub = {
-    ...body,
-    name: body.name,
-    description: body.description,
-    createdBy: userId,
+    ...payload,
+    name: payload.name,
+    description: payload.description,
+    createdBy: currentUser.id,
   };
+  //if updating club make sure user is authorized
+  if (newClub.id && currentUser.role != "sudo") {
+    if (currentUser.clubId != newClub.id)
+      throw new CustomError("Access denied", 401);
+  }
+
   if (files && files.length > 0) {
     newClub.logo = files[0].filename;
   }
   //remove logo
-  if (body.rmImage) {
-    await removeImages([body.rmImage]);
+  if (payload.rmImage) {
+    await removeImages([payload.rmImage]);
     delete newClub.rmImage;
 
     if (!newClub.logo) newClub.logo = null;

@@ -20,7 +20,7 @@ const handleScan = async ([decodedString]) => {
   isPaused.value = true; // pause the camera stream
 
   await store
-    .dispatch("registration/scanByRegistrationId", {
+    .dispatch("checkin/scanByRegistrationId", {
       qrCodeData: decodedString.rawValue,
       eventId: route.params.eventId,
     })
@@ -47,13 +47,6 @@ const onError = (err) => {
           justify="space-between"
           title="Scanner"
         >
-          <!--          <v-btn-->
-          <!--            color="primary"-->
-          <!--            prepend-icon="mdi-qrcode"-->
-          <!--            @click="qrScannerDialog = !qrScannerDialog"-->
-          <!--          >-->
-          <!--            Scan-->
-          <!--          </v-btn>-->
           <v-btn
             icon="mdi-arrow-left"
             variant="text"
@@ -65,7 +58,7 @@ const onError = (err) => {
 
     <v-row align="center" class="fill-height" justify="center" no-gutters>
       <v-col cols="auto">
-        <v-card class="bg-tertiary" :max-width="500">
+        <v-card :max-width="500" class="bg-tertiary">
           <v-card-title>Scan QR Code</v-card-title>
           <v-card-text>
             <qrcode-stream
@@ -74,12 +67,6 @@ const onError = (err) => {
               @error="onError"
             ></qrcode-stream>
           </v-card-text>
-          <!--          <v-card-actions>-->
-          <!--            <v-spacer></v-spacer>-->
-          <!--            <v-btn color="error" @click="qrScannerDialog = !qrScannerDialog"-->
-          <!--              >Close-->
-          <!--            </v-btn>-->
-          <!--          </v-card-actions>-->
         </v-card>
       </v-col>
     </v-row>

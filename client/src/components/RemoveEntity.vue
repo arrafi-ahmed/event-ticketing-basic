@@ -4,17 +4,27 @@ import { ref } from "vue";
 
 const { xs } = useDisplay();
 const dialog = ref(false);
-const { id, message, label, variant, btnVariant, customClass, size, color } =
-  defineProps({
-    id: {},
-    message: { default: "Are you sure?" },
-    label: {},
-    btnVariant: { default: "flat" },
-    customClass: {},
-    size: {},
-    color: { default: "error" },
-    variant: { default: "btn" },
-  });
+const {
+  id,
+  message,
+  label,
+  variant,
+  btnVariant,
+  customClass,
+  size,
+  color,
+  prependIcon,
+} = defineProps({
+  id: {},
+  message: { default: "Are you sure?" },
+  label: {},
+  btnVariant: { default: "flat" },
+  customClass: {},
+  size: {},
+  prependIcon: { default: undefined },
+  color: { default: "error" },
+  variant: { default: "btn" },
+});
 const emit = defineEmits(["removeEntity"]);
 
 const remove = (id) => {
@@ -66,6 +76,7 @@ const remove = (id) => {
       :class="customClass"
       :color="color"
       :density="xs ? 'compact' : 'comfortable'"
+      :prepend-icon="prependIcon"
       :size="size || 'small'"
       @click.stop="dialog = !dialog"
     >

@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const registrationService = require("../service/registration");
 const ApiResponse = require("../model/ApiResponse");
-const { auth } = require("../middleware/auth");
+const { auth, isAdminEventAuthor } = require("../middleware/auth");
 
 router.post("/save", (req, res, next) => {
   registrationService
@@ -14,14 +14,19 @@ router.post("/save", (req, res, next) => {
     .catch((err) => next(err));
 });
 
-router.get("/getAttendeesWcheckin", auth, (req, res, next) => {
-  registrationService
-    .getAttendeesWcheckin({ eventId: req.query.eventId })
-    .then((results) => res.status(200).json(new ApiResponse(null, results)))
-    .catch((err) => next(err));
-});
+router.get(
+  "/getAttendeesWcheckin",
+  auth,
+  isAdminEventAuthor,
+  (req, res, next) => {
+    registrationService
+      .getAttendeesWcheckin({ eventId: req.query.eventId })
+      .then((results) => res.status(200).json(new ApiResponse(null, results)))
+      .catch((err) => next(err));
+  }
+);
 
-router.get("/downloadAttendees", auth, (req, res, next) => {
+router.get("/downloadAttendees", auth, isAdminEventAuthor, (req, res, next) => {
   registrationService
     .downloadAttendees({ eventId: req.query.eventId })
     .then(async (workbook) => {
@@ -39,7 +44,7 @@ router.get("/downloadAttendees", auth, (req, res, next) => {
     .catch((err) => next(err));
 });
 
-router.get("/searchAttendees", auth, (req, res, next) => {
+router.get("/searchAttendees", auth, isAdminEventAuthor, (req, res, next) => {
   registrationService
     .searchAttendees({
       searchKeyword: req.query.searchKeyword,
@@ -49,32 +54,7 @@ router.get("/searchAttendees", auth, (req, res, next) => {
     .catch((err) => next(err));
 });
 
-router.post("/saveCheckin", auth, (req, res, next) => {
-  registrationService
-    .saveCheckin({
-      newCheckin: { ...req.body, checkedinBy: req.currentUser.id },
-    })
-    .then((results) =>
-      res
-        .status(200)
-        .json(new ApiResponse("Checkin saved successfully!", results))
-    )
-    .catch((err) => next(err));
-});
-
-router.post("/scanByRegistrationId", auth, (req, res, next) => {
-  registrationService
-    .scanByRegistrationId({
-      ...req.body,
-      userId: req.currentUser.id,
-    })
-    .then((results) =>
-      res.status(200).json(new ApiResponse("Check-in successful!", results))
-    )
-    .catch((err) => next(err));
-});
-
-router.get("/sendTicket", auth, (req, res, next) => {
+router.get("/sendTicket", auth, isAdminEventAuthor, (req, res, next) => {
   registrationService
     .sendTicket({
       registrationId: req.query.registrationId,
@@ -82,27 +62,6 @@ router.get("/sendTicket", auth, (req, res, next) => {
     .then((results) =>
       res.status(200).json(new ApiResponse("Ticket sent to email!", results))
     )
-    .catch((err) => next(err));
-});
-
-router.get("/getFormQuestions", (req, res, next) => {
-  registrationService
-    .getFormQuestions(req.query.eventId)
-    .then((results) => {
-      console.log(76, req.query.eventId);
-      res.status(200).json(new ApiResponse(null, results));
-    })
-    .catch((err) => next(err));
-});
-
-router.post("/saveForm", auth, (req, res, next) => {
-  registrationService
-    .saveForm(req.body)
-    .then((results) => {
-      if (results) {
-        res.status(200).json(new ApiResponse("Form saved!", results));
-      }
-    })
     .catch((err) => next(err));
 });
 

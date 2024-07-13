@@ -134,12 +134,14 @@ onMounted(() => {
                         <v-list-item
                           density="compact"
                           link
+                          prepend-icon="mdi-content-copy"
                           title="Copy"
                           @click="copyToClipboard(item)"
                         ></v-list-item>
                         <v-list-item
                           density="compact"
                           link
+                          prepend-icon="mdi-pencil"
                           title="Edit"
                           @click="openEditDialog(item, 'admin')"
                         ></v-list-item>

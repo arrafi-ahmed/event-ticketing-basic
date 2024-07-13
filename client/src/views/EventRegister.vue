@@ -68,7 +68,7 @@ onMounted(async () => {
       route.params.eventId
     );
   }
-  await store.dispatch("registration/setFormQuestions", {
+  await store.dispatch("form/setFormQuestions", {
     eventId: route.params.eventId,
   });
   if (!club.value?.id) {
@@ -123,18 +123,18 @@ onMounted(async () => {
                   (v) =>
                     (v && v.length <= 50) || 'Must not exceed 50 characters',
                 ]"
-                label="Full Name"
                 class="mt-2 mt-md-4 input-color-primary"
                 clearable
                 color="tertiary"
                 density="default"
                 hide-details="auto"
+                label="Full Name"
                 rounded="lg"
                 variant="solo-filled"
               >
                 <template v-slot:label>
                   <div>
-                    <span>Full Name</span>
+                    <span>Nome e cognome</span>
                     <span class="text-error"> *</span>
                   </div>
                 </template>
@@ -156,7 +156,7 @@ onMounted(async () => {
               >
                 <template v-slot:label>
                   <div>
-                    <span>Email Address</span>
+                    <span>Indirizzo e-mail</span>
                     <span class="text-error"> *</span>
                   </div>
                 </template>
@@ -164,7 +164,7 @@ onMounted(async () => {
 
               <phone
                 :input-item="{
-                  text: 'Phone',
+                  text: 'Telefono',
                   required: true,
                   options: getCountryList('all'),
                 }"
@@ -181,27 +181,12 @@ onMounted(async () => {
                   formQuestions && formQuestions.length > 0 && formQuestions[0]
                 "
               >
-                <!--                <v-divider :thickness="2" class="my-5 my-md-10"></v-divider>-->
                 <form-items
                   :items="formQuestions"
                   type="question"
                   @update="handleUpdateAdditionalAnswers"
                 />
               </div>
-
-              <!--              <v-text-field-->
-              <!--                v-model="registration.registrationData.age"-->
-              <!--                :rules="[(v) => !!v || 'Age is required!']"-->
-              <!--                class="mt-2 mt-md-4 input-color-primary"-->
-              <!--                clearable-->
-              <!--                color="tertiary"-->
-              <!--                density="default"-->
-              <!--                hide-details="auto"-->
-              <!--                label="Age"-->
-              <!--                rounded="lg"-->
-              <!--                type="number"-->
-              <!--                variant="solo-filled"-->
-              <!--              ></v-text-field>-->
 
               <div class="pb-3 pl-1 mt-7 my-1">
                 *Iscrivendoti accetti i Termini di servizio
@@ -215,7 +200,7 @@ onMounted(async () => {
                 rounded="lg"
                 size="x-large"
                 @click="registerUser"
-                >Register
+                >Registrati
               </v-btn>
               <div class="d-flex justify-center">
                 <v-btn

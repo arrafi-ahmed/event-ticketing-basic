@@ -4,8 +4,8 @@ import { useDisplay } from "vuetify";
 import { formatDate } from "@/others/util";
 
 const model = defineModel();
-const { width, height, mobile } = useDisplay();
-const emit = defineEmits(["update:modelValue"]);
+const { width, height, xs } = useDisplay();
+const emit = defineEmits(["update:modelValue", "updateDate"]);
 
 const { label, color, customClass, rules, variant } = defineProps({
   label: { type: String },
@@ -19,6 +19,7 @@ const menu = ref(false);
 
 const handleDateChange = (newDate) => {
   emit("update:modelValue", new Date(newDate));
+  emit("updateDate", new Date(newDate));
 };
 watch(
   () => model.value,
@@ -55,8 +56,8 @@ watch(
     <v-date-picker
       v-model="model"
       :color="color"
-      :height="mobile ? height : 'auto'"
-      :width="mobile ? width : 'auto'"
+      :height="xs ? height : 'auto'"
+      :width="xs ? width : 'auto'"
       show-adjacent-months
       title=""
       @update:modelValue="handleDateChange"

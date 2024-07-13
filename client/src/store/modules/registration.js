@@ -6,7 +6,6 @@ export const namespaced = true;
 export const state = {
   registration: {},
   attendees: [],
-  formQuestions: [],
 };
 
 export const mutations = {
@@ -18,9 +17,6 @@ export const mutations = {
   },
   setAttendees(state, payload) {
     state.attendees = payload;
-  },
-  setFormQuestions(state, payload) {
-    state.formQuestions = payload;
   },
   updateAttendee(state, payload) {
     const foundIndex = state.attendees.findIndex(
@@ -46,32 +42,11 @@ export const actions = {
         });
     });
   },
-  updateCheckinStatus({ commit }, request) {
-    return new Promise((resolve, reject) => {
-      $axios
-        .post("/api/registration/saveCheckin", {
-          id: request.editingAttendee.cId,
-          checkinStatus: request.editingAttendee.checkinStatus,
-          registrationId: request.editingAttendee.rId,
-        })
-        .then((response) => {
-          commit("updateAttendee", {
-            ...request.editingAttendee,
-            ...response.data?.payload,
-            cId: response.data?.payload.id,
-          });
-          resolve(response.data?.payload);
-        })
-        .catch((err) => {
-          reject(err);
-        });
-    });
-  },
   setAttendees({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .get("/api/registration/getAttendeesWcheckin", {
-          params: { eventId: request },
+          params: { eventId: request.eventId },
         })
         .then((response) => {
           commit("setAttendees", response.data?.payload);
@@ -123,58 +98,17 @@ export const actions = {
         });
     });
   },
-  scanByRegistrationId({ commit }, request) {
-    return new Promise((resolve, reject) => {
-      $axios
-        .post("/api/registration/scanByRegistrationId", request)
-        .then((response) => {
-          // commit("setRegistration", response.data?.payload);
-          resolve(response.data?.payload);
-        })
-        .catch((err) => {
-          reject(err);
-        });
-    });
-  },
   sendTicket({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .get("/api/registration/sendTicket", {
           params: {
             registrationId: request.registrationId,
-          },
-        })
-        .then((response) => {
-          resolve(response.data?.payload);
-        })
-        .catch((err) => {
-          reject(err);
-        });
-    });
-  },
-  setFormQuestions({ commit }, request) {
-    return new Promise((resolve, reject) => {
-      $axios
-        .get("/api/registration/getFormQuestions", {
-          params: {
             eventId: request.eventId,
           },
         })
         .then((response) => {
-          commit("setFormQuestions", response.data?.payload);
           resolve(response.data?.payload);
-        })
-        .catch((err) => {
-          reject(err);
-        });
-    });
-  },
-  saveForm({ commit }, request) {
-    return new Promise((resolve, reject) => {
-      $axios
-        .post("/api/registration/saveForm", { payload: request })
-        .then((response) => {
-          resolve(response);
         })
         .catch((err) => {
           reject(err);

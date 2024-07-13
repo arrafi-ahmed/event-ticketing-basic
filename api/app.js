@@ -19,9 +19,11 @@ app.use(express.json());
 
 //routes
 app.use("/api/user", require("./src/controller/user"));
+app.use("/api/club", require("./src/controller/club"));
 app.use("/api/event", require("./src/controller/event"));
 app.use("/api/registration", require("./src/controller/registration"));
-app.use("/api/club", require("./src/controller/club"));
+app.use("/api/checkin", require("./src/controller/checkin"));
+app.use("/api/form", require("./src/controller/form"));
 app.use("/api/appUser", require("./src/controller/appUser"));
 
 app.get("/api/version", (req, res) => {

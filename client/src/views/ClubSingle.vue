@@ -34,6 +34,7 @@ onMounted(async () => {
         <v-card
           v-if="club.id"
           class="mx-auto pa-5 my-2 rounded-xl bg-transparent"
+          density="compact"
           elevation="0"
           max-width="375"
           variant="flat"

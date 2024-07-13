@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const eventService = require("../service/event");
 const ApiResponse = require("../model/ApiResponse");
-const { auth, isAdmin } = require("../middleware/auth");
+const { auth, isAdmin, isAdminEventAuthor } = require("../middleware/auth");
 const { uploadEventBanner } = require("../middleware/upload");
 const compressImages = require("../middleware/compress");
 const { ifSudo } = require("../others/util");
@@ -14,7 +14,11 @@ router.post(
   compressImages,
   (req, res, next) => {
     eventService
-      .save({ body: req.body, files: req.files, currentUser: req.currentUser })
+      .save({
+        payload: req.body,
+        files: req.files,
+        currentUser: req.currentUser,
+      })
       .then((result) => {
         res.status(200).json(new ApiResponse("Event saved!", result));
       })
@@ -40,7 +44,7 @@ router.get("/getEventByEventIdnClubId", auth, (req, res, next) => {
     .catch((err) => next(err));
 });
 
-router.get("/removeEvent", auth, (req, res, next) => {
+router.get("/removeEvent", auth, isAdminEventAuthor, (req, res, next) => {
   const isRoleSudo = ifSudo(req.currentUser.role);
   eventService
     .removeEvent({

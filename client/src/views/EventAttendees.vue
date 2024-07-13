@@ -40,8 +40,9 @@ const updateAttendee = (registrationId) => {
   if (attendee.checkinStatus == editingAttendee.checkinStatus) return;
 
   store
-    .dispatch("registration/updateCheckinStatus", {
+    .dispatch("checkin/updateCheckinStatus", {
       editingAttendee,
+      eventId: route.params.eventId,
     })
     .finally(() => {
       attendeeDetailsDialog.value = !attendeeDetailsDialog.value;
@@ -69,11 +70,16 @@ const handleDownloadAttendees = () => {
 };
 
 const sendTicket = (registrationId) => {
-  store.dispatch("registration/sendTicket", { registrationId });
+  store.dispatch("registration/sendTicket", {
+    registrationId,
+    eventId: route.params.eventId,
+  });
 };
 
 const fetchData = () => {
-  store.dispatch("registration/setAttendees", route.params.eventId);
+  store.dispatch("registration/setAttendees", {
+    eventId: route.params.eventId,
+  });
 };
 onMounted(() => {
   fetchData();
@@ -195,6 +201,7 @@ onMounted(() => {
                 <v-list density="comfortable">
                   <v-list-item
                     density="compact"
+                    prepend-icon="mdi-email-fast"
                     title="Send Ticket"
                     @click="sendTicket(item.rId)"
                   ></v-list-item>

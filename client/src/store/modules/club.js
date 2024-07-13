@@ -59,7 +59,7 @@ export const actions = {
         });
     });
   },
-  saveClub({ commit }, request) {
+  save({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .post("/api/club/save", request)
