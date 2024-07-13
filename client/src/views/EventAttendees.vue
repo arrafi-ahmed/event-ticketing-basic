@@ -76,6 +76,13 @@ const sendTicket = (registrationId) => {
   });
 };
 
+const viewQr = (registration) => {
+  router.push({
+    name: "qr-viewer",
+    params: { registrationId: registration.rId, qrUuid: registration.qrUuid },
+  });
+};
+
 const fetchData = () => {
   store.dispatch("registration/setAttendees", {
     eventId: route.params.eventId,
@@ -204,6 +211,12 @@ onMounted(() => {
                     prepend-icon="mdi-email-fast"
                     title="Send Ticket"
                     @click="sendTicket(item.rId)"
+                  ></v-list-item>
+                  <v-list-item
+                    density="compact"
+                    prepend-icon="mdi-eye"
+                    title="View QR Code"
+                    @click="viewQr(item)"
                   ></v-list-item>
                 </v-list>
               </v-menu>

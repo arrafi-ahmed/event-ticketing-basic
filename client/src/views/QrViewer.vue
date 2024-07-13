@@ -25,10 +25,19 @@ const qrOptions = {
   type: "dot",
   color: theme.global.current.value.colors.primary,
 };
+
+const isSignedin = computed(() => store.getters["user/signedin"]);
 </script>
 <template>
   <v-container>
-    <page-title justify="space-between" title="QR Code Viewer"></page-title>
+    <page-title justify="space-between" title="QR Code Viewer">
+      <v-btn
+        v-if="isSignedin"
+        icon="mdi-arrow-left"
+        variant="text"
+        @click="$router.back()"
+      ></v-btn>
+    </page-title>
     <v-row align="center" justify="center">
       <v-col cols="auto mt-5">
         <QRCodeVue3

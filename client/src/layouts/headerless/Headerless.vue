@@ -3,6 +3,7 @@ import { computed, nextTick, onMounted, ref } from "vue";
 import FOG from "vanta/dist/vanta.fog.min";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
+import HeaderlessFooter from "./Footer.vue";
 
 const route = useRoute();
 const store = useStore();
@@ -49,6 +50,7 @@ onMounted(async () => {
         <router-view :key="route.fullPath" />
       </v-main>
     </div>
+    <headerless-footer></headerless-footer>
   </v-app>
 </template>
 
