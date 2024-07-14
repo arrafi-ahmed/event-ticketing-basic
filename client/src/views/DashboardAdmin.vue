@@ -32,12 +32,7 @@ onMounted(() => {
         <page-title justify="space-between" sub-title="Admin" title="Dashboard">
           <v-menu>
             <template v-slot:activator="{ props }">
-              <v-btn
-                class="ml-5"
-                icon="mdi-dots-vertical"
-                v-bind="props"
-                variant="text"
-              >
+              <v-btn icon="mdi-dots-vertical" v-bind="props" variant="text">
               </v-btn>
             </template>
             <v-list density="comfortable">
@@ -74,7 +69,7 @@ onMounted(() => {
 
     <v-row>
       <v-col>
-        <v-list v-if="events.length > 0" lines="two">
+        <v-list v-if="events.length > 0" lines="three">
           <template v-for="(item, index) in events">
             <v-list-item
               v-if="item"

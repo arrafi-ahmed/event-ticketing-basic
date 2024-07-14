@@ -110,63 +110,47 @@ onMounted(() => {
           justify="space-between"
           title="Attendee List"
         >
-          <div class="d-flex align-center">
-            <v-text-field
-              v-if="!xs"
-              v-model="searchKeyword"
-              :width="350"
-              append-inner-icon="mdi-magnify"
-              density="compact"
-              hide-details
-              label="Search by name/email/phone"
-              single-line
-              variant="solo"
-              @keydown.enter="handleSearchAttendee"
-              @click:append-inner="handleSearchAttendee"
-            ></v-text-field>
-            <!--            download btn for mobile-->
-            <v-btn
-              v-if="xs"
-              color="primary"
-              density="comfortable"
-              icon="mdi-download"
-              variant="tonal"
-              @click="handleDownloadAttendees"
-            ></v-btn>
-            <!--            download btn for desktop-->
-            <v-btn
-              v-else
-              class="ml-2 mr-1"
-              color="primary"
-              prepend-icon="mdi-download"
-              @click="handleDownloadAttendees"
-              >Download
-            </v-btn>
-            <v-btn
-              icon="mdi-arrow-left"
-              variant="text"
-              @click="$router.back()"
-            ></v-btn>
-          </div>
+          <v-btn
+            icon="mdi-arrow-left"
+            variant="text"
+            @click="$router.back()"
+          ></v-btn>
         </page-title>
       </v-col>
     </v-row>
 
-    <v-row v-if="xs">
-      <v-col>
-        <v-text-field
-          v-model="searchKeyword"
-          append-inner-icon="mdi-magnify"
-          density="compact"
-          hide-details
-          label="Search by name/email/phone"
-          single-line
-          variant="solo"
-          @keydown.enter="handleSearchAttendee"
-          @click:append-inner="handleSearchAttendee"
-        ></v-text-field>
-      </v-col>
-    </v-row>
+    <div class="d-flex align-center justify-end my-2 my-md-4">
+      <v-text-field
+        v-model="searchKeyword"
+        append-inner-icon="mdi-magnify"
+        density="compact"
+        hide-details
+        label="Search by name/email/phone"
+        single-line
+        variant="solo"
+        @keydown.enter="handleSearchAttendee"
+        @click:append-inner="handleSearchAttendee"
+      ></v-text-field>
+      <!--            download btn for mobile-->
+      <v-btn
+        v-if="xs"
+        color="primary"
+        icon="mdi-download"
+        variant="tonal"
+        rounded
+        class="ml-2"
+        @click="handleDownloadAttendees"
+      ></v-btn>
+      <!--            download btn for desktop-->
+      <v-btn
+        v-else
+        class="ml-2"
+        color="primary"
+        prepend-icon="mdi-download"
+        @click="handleDownloadAttendees"
+        >Download
+      </v-btn>
+    </div>
 
     <v-row v-if="attendees.length > 0">
       <v-col>

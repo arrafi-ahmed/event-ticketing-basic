@@ -8,8 +8,8 @@ const { title, subTitle, justify, customClass } = defineProps({
 </script>
 
 <template>
-  <v-row :class="customClass" :justify="justify" align="center">
-    <v-col cols="auto">
+  <v-row :class="customClass" :justify="justify" align="center" no-gutters>
+    <v-col cols="10">
       <div v-if="subTitle" class="text-overline">{{ subTitle }}</div>
       <h2 v-if="title">{{ title }}</h2>
     </v-col>

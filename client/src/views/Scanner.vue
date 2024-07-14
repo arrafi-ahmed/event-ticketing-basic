@@ -57,8 +57,8 @@ const onError = (err) => {
     </v-row>
 
     <v-row align="center" class="fill-height" justify="center" no-gutters>
-      <v-col cols="auto">
-        <v-card :max-width="500" class="bg-tertiary">
+      <v-col cols="12" lg="6" md="8" sm="10">
+        <v-card class="bg-tertiary">
           <v-card-title>Scan QR Code</v-card-title>
           <v-card-text>
             <qrcode-stream
@@ -71,7 +71,12 @@ const onError = (err) => {
       </v-col>
     </v-row>
 
-    <v-row align="center" class="fill-height" justify="center" no-gutters>
+    <v-row
+      align="center"
+      class="fill-height mt-2 mt-md-4"
+      justify="center"
+      no-gutters
+    >
       <v-col cols="12" lg="6" md="8" sm="10">
         <!--        show customer details-->
         <v-card>

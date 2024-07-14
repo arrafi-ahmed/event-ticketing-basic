@@ -90,7 +90,7 @@ exports.getAttendeesWcheckin = async ({ eventId }) => {
                  left join checkin c
                            on r.id = c.registration_id
         where event_id = ${eventId}
-        order by r.id desc `;
+        order by r.registration_time desc `;
 
   return attendees;
 };

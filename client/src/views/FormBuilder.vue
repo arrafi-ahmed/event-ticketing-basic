@@ -7,7 +7,7 @@ import { useDisplay } from "vuetify";
 import { input_fields } from "@/others/util";
 import FormItemsEditable from "@/components/FormItemsEditable.vue";
 
-const { mobile } = useDisplay();
+const { xs } = useDisplay();
 const route = useRoute();
 const router = useRouter();
 const store = useStore();
@@ -126,24 +126,6 @@ const event = computed(() =>
           justify="space-between"
           title="Form Builder"
         >
-          <v-menu>
-            <template v-slot:activator="{ props }">
-              <v-btn prepend-icon="mdi-plus" v-bind="props" variant="tonal"
-                >Add Question
-              </v-btn>
-            </template>
-            <v-list density="compact">
-              <v-list-item
-                v-for="item in formItemTypes"
-                :key="item.id"
-                :title="item.title"
-                density="compact"
-                link
-                @click="openDialog(item.id)"
-              ></v-list-item>
-            </v-list>
-          </v-menu>
-
           <v-btn
             icon="mdi-arrow-left"
             variant="text"
@@ -152,6 +134,25 @@ const event = computed(() =>
         </page-title>
       </v-col>
     </v-row>
+
+    <div class="d-flex justify-end">
+      <v-menu>
+        <template v-slot:activator="{ props }">
+          <v-btn icon="mdi-plus" v-bind="props" variant="tonal" rounded></v-btn>
+        </template>
+        <v-list density="compact">
+          <v-list-item
+            v-for="item in formItemTypes"
+            :key="item.id"
+            :title="item.title"
+            density="compact"
+            link
+            @click="openDialog(item.id)"
+          ></v-list-item>
+        </v-list>
+      </v-menu>
+    </div>
+
     <v-row>
       <v-col>
         <v-form
@@ -178,7 +179,7 @@ const event = computed(() =>
             <v-row class="mt-2 mt-md-4" justify="end">
               <v-col cols="auto">
                 <v-btn
-                  :density="mobile ? 'comfortable' : 'default'"
+                  :density="xs ? 'comfortable' : 'default'"
                   color="primary"
                   type="submit"
                   >Save
@@ -254,7 +255,7 @@ const event = computed(() =>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn
-              :density="mobile ? 'comfortable' : 'default'"
+              :density="xs ? 'comfortable' : 'default'"
               color="primary"
               type="submit"
               >Submit
