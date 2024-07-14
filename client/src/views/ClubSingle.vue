@@ -42,7 +42,7 @@ onMounted(async () => {
           <v-card-text>
             <logo
               :img-src-api="{ name: club.logo, type: 'club-logo' }"
-              :max-height="xs ? 100 : 300"
+              :max-height="100"
               :max-width="300"
               :title="!club.logo ? club.name : null"
               container-class="clickable"
