@@ -13,15 +13,13 @@ const scrollTo = (sectionId) => {
 </script>
 
 <template>
-  <v-container
-    fluid
-    :class="{ 'bg-mobile rounded-xl': xs }"
-    class="limit-max-width-xl fill-height landing"
-  >
+  <!--    :class="{ 'bg-mobile rounded-xl': xs }"-->
+  <v-container fluid class="limit-max-width-xl fill-height landing">
     <!--    section 1-->
     <v-row
       align="center"
       :class="{
+        'bg-mobile rounded-xl': xs,
         'bg-landing-color': !xs,
       }"
       class="rounded-xl"
@@ -81,7 +79,7 @@ const scrollTo = (sectionId) => {
               </v-col>
             </v-row>
 
-            <v-row align="center" justify="center" class="pt-4">
+            <v-row align="center" justify="center" class="py-4">
               <v-col cols="auto">
                 <v-img
                   :width="35"
@@ -89,7 +87,7 @@ const scrollTo = (sectionId) => {
                 ></v-img>
               </v-col>
               <v-col cols="auto">
-                <b>by Ferdinando Guzzo</b>
+                <small>by Ferdinando Guzzo Consulting</small>
               </v-col>
             </v-row>
           </v-col>
@@ -460,13 +458,21 @@ const scrollTo = (sectionId) => {
                   <p>
                     Email:
                     <a href="mailto:contact@clickevent.it"
-                      >eventi@clickevent.it</a
+                      >ferdinandoguzzo@gmail.com</a
                     >
                     <br />
-                    Telefono: <a href="tel:+393273471259">3273471259</a> <br />
+                    Telefono: <a href="tel:+393273471259">+393273471259</a>
+                    <br />
                     Sito Web:
                     <a href="http://www.clickevent.it" target="_blank"
-                      >www.clickevent.it</a
+                      >www.ferdinandoguzzo.it</a
+                    >
+                    <br />
+                    Linkedin:
+                    <a
+                      href="https://www.linkedin.com/in/ferdinandoguzzo/"
+                      target="_blank"
+                      >ferdinandoguzzo</a
                     >
                     <br />
                   </p>
