@@ -6,12 +6,18 @@ const { xs } = useDisplay();
 </script>
 
 <template>
-  <v-sheet :class="{ 'bg-mobile': xs }" class="bg-landing-color max-width-lg">
+  <v-sheet
+    :class="{ 'bg-mobile': xs }"
+    class="bg-landing-color limit-max-width-xl"
+  >
     <v-row align="center" :class="{ 'bg-overlay-mobile': xs }">
       <v-col cols="5" class="d-none d-sm-flex">
         <v-row>
           <v-col cols="11">
-            <v-img :src="getClientPublicImgUrl('landing1.png')"></v-img>
+            <v-img
+              :src="getClientPublicImgUrl('landing1.png')"
+              rounded="xl"
+            ></v-img>
           </v-col>
         </v-row>
       </v-col>
@@ -57,7 +63,7 @@ const { xs } = useDisplay();
   </v-sheet>
 </template>
 
-<style scoped>
+<style>
 .bg-landing-color {
   background-color: #eeeeee;
 }

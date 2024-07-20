@@ -6,9 +6,4 @@
     </div>
   </v-main>
 </template>
-<style>
-.limit-max-width-xl {
-  max-width: 1400px !important;
-  margin: 0 auto;
-}
-</style>
+<style></style>

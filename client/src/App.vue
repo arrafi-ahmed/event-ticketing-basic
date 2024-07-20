@@ -68,4 +68,9 @@ body,
   background: rgb(var(--v-theme-primary));
   color: rgb(var(--v-theme-tertiary));
 }
+
+.limit-max-width-xl {
+  max-width: 1400px !important;
+  margin: 0 auto;
+}
 </style>
