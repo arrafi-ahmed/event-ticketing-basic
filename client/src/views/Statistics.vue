@@ -56,13 +56,13 @@ onMounted(() => {
           <v-card-text v-if="statistics">
             <div class="text-body-1">
               Total Registration:
-              <v-chip color="primary">
+              <v-chip color="primary" size="x-large" rounded="sm">
                 {{ statistics.totalRegistrationCount || 0 }}
               </v-chip>
             </div>
             <div class="text-body-1 pt-2">
               Total Checkin:
-              <v-chip color="primary">
+              <v-chip color="primary" size="x-large" rounded="sm">
                 {{ statistics.totalCheckinCount || 0 }}
               </v-chip>
             </div>
@@ -86,13 +86,13 @@ onMounted(() => {
           <v-card-text v-if="statistics">
             <div class="text-body-1">
               Registration:
-              <v-chip color="primary">
+              <v-chip color="primary" size="x-large" rounded="sm">
                 {{ statistics.historicalRegistrationCount || 0 }}
               </v-chip>
             </div>
             <div class="text-body-1 pt-2">
               Checkin:
-              <v-chip color="primary">
+              <v-chip color="primary" size="x-large" rounded="sm">
                 {{ statistics.historicalCheckinCount || 0 }}
               </v-chip>
             </div>

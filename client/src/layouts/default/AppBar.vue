@@ -22,6 +22,9 @@ const getGreetings = computed(() => {
   const hour = new Date().getHours();
   return `Good ${hour < 12 ? "morning" : hour < 18 ? "afternoon" : "evening"}!`;
 });
+const logoDest = computed(() =>
+  store.getters["user/signedin"] ? calcHome.value : { name: "landing" }
+);
 </script>
 
 <template>
@@ -31,7 +34,7 @@ const getGreetings = computed(() => {
       container-class="clickable"
       img-class="mx-auto"
       img-src-client="logo.png"
-      @click="router.push(calcHome)"
+      @click="router.push(logoDest)"
     ></logo>
 
     <template v-slot:append>

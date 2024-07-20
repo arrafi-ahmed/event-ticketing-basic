@@ -45,7 +45,6 @@ watch(
         :label="label"
         :rules="rules"
         :variant="variant"
-        density="compact"
         hide-details="auto"
         prepend-inner-icon="mdi-calendar"
         readonly

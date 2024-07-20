@@ -51,12 +51,7 @@ onMounted(() => {
 
             <v-menu>
               <template v-slot:activator="{ props }">
-                <v-btn
-                  class="ml-5"
-                  icon="mdi-dots-vertical"
-                  v-bind="props"
-                  variant="text"
-                >
+                <v-btn icon="mdi-dots-vertical" v-bind="props" variant="text">
                 </v-btn>
               </template>
               <v-list density="compact">

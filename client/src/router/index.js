@@ -190,7 +190,8 @@ const routes = [
   },
   {
     path: "",
-    redirect: { name: "signin" },
+    name: "landing",
+    component: () => import("@/views/Landing.vue"),
   },
   {
     path: "/not-found/:status?/:message?",

@@ -4,13 +4,14 @@ import { useRoute, useRouter } from "vue-router";
 import { clientBaseUrl, sendToWhatsapp } from "@/others/util";
 import { useStore } from "vuex";
 import QRCodeVue3 from "qrcode-vue3";
-import { useTheme } from "vuetify";
+import { useDisplay, useTheme } from "vuetify";
 import Logo from "@/components/Logo.vue";
 
 const store = useStore();
 const route = useRoute();
 const router = useRouter();
 const theme = useTheme();
+const { xs } = useDisplay();
 
 const club = computed(() => store.state.club.club);
 const registration = computed(() => store.state.registration.registration);
@@ -46,8 +47,8 @@ onUnmounted(() => {
         <logo
           v-if="club.logo"
           :img-src-api="{ name: club.logo, type: 'club-logo' }"
-          :max-height="100"
-          :max-width="300"
+          :max-height="xs ? 65 : 100"
+          :max-width="xs ? 200 : 300"
           :title="!club.logo ? club.name : null"
           container-class="clickable"
           img-class="mx-auto"

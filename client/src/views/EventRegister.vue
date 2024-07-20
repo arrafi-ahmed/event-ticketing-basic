@@ -6,10 +6,12 @@ import { useStore } from "vuex";
 import Logo from "@/components/Logo.vue";
 import Phone from "@/components/Phone.vue";
 import FormItems from "@/components/FormItems.vue";
+import { useDisplay } from "vuetify";
 
 const store = useStore();
 const route = useRoute();
 const router = useRouter();
+const { xs } = useDisplay();
 
 const club = computed(() => store.state.club.club);
 const event = computed(() =>
@@ -91,8 +93,8 @@ onMounted(async () => {
             <logo
               v-if="club.logo"
               :img-src-api="{ name: club.logo, type: 'club-logo' }"
-              :max-height="100"
-              :max-width="300"
+              :max-height="xs ? 65 : 100"
+              :max-width="xs ? 200 : 300"
               :title="!club.logo ? club.name : null"
               container-class="clickable"
               img-class="mx-auto"
