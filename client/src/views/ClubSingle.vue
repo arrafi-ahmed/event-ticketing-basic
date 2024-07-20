@@ -29,11 +29,11 @@ onMounted(async () => {
 </script>
 <template>
   <v-container class="fill-height">
-    <v-row align="center" justify="center">
+    <v-row align="center" justify="center" no-gutters>
       <v-col cols="12" sm="10">
         <v-card
           v-if="club.id"
-          class="mx-auto pa-5 my-2 rounded-xl bg-transparent"
+          class="mx-auto pa-0 pa-md-5 my-0 my-md-2 rounded-xl bg-transparent"
           density="compact"
           elevation="0"
           max-width="375"
@@ -54,10 +54,10 @@ onMounted(async () => {
                 })
               "
             ></logo>
-            <v-card-title class="text-center text-wrap mt-5">
+            <v-card-title class="text-center text-wrap mt-2 mt-md-5">
               Prossimi eventi
             </v-card-title>
-            <v-card-subtitle class="text-center mb-8"
+            <v-card-subtitle class="text-center mb-4 mb-md-8"
               >Seleziona e prenota il tuo ingresso
             </v-card-subtitle>
 

@@ -61,14 +61,14 @@ onUnmounted(() => {
         ></logo>
         <v-card
           v-if="registration.id"
-          class="mx-auto pa-2 my-2 rounded-xl bg-transparent"
+          class="mx-auto pa-0 pa-md-2 my-0 my-md-2 rounded-xl bg-transparent"
           color=""
           elevation="0"
           max-width="500"
           variant="flat"
         >
           <v-card-text>
-            <v-card-title class="text-center text-wrap mt-5 mb-2">
+            <v-card-title class="text-center text-wrap mt-2 mt-md-5">
               Iscrizione completata correttamente
             </v-card-title>
 
@@ -86,7 +86,7 @@ onUnmounted(() => {
             <div class="d-flex justify-center">
               <v-btn
                 :width="250"
-                class="mt-2"
+                class="mt-1 mt-md-2"
                 color="primary"
                 size="small"
                 variant="flat"

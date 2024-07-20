@@ -83,7 +83,7 @@ onMounted(async () => {
     <v-row align="center" justify="center">
       <v-col cols="12" md="5" sm="6">
         <v-card
-          class="mx-auto pa-5 my-2 rounded-xl bg-transparent"
+          class="mx-auto pa-0 pa-md-5 my-0 my-md-2 rounded-xl bg-transparent"
           color=""
           elevation="0"
           max-width="500"
@@ -105,10 +105,13 @@ onMounted(async () => {
                 })
               "
             ></logo>
-            <v-card-title v-if="event" class="text-center text-wrap mt-5">
+            <v-card-title
+              v-if="event"
+              class="text-center text-wrap mt-2 mt-md-5"
+            >
               {{ event.name }}
             </v-card-title>
-            <v-card-subtitle class="text-center mt-4 mb-8"
+            <v-card-subtitle class="text-center mb-4 mb-md-8"
               >Registrati per inviare la tua richiesta
             </v-card-subtitle>
             <v-form
@@ -128,7 +131,7 @@ onMounted(async () => {
                 class="mt-2 mt-md-4 input-color-primary"
                 clearable
                 color="tertiary"
-                density="default"
+                :density="xs ? 'comfortable' : 'default'"
                 hide-details="auto"
                 label="Full Name"
                 rounded="lg"
@@ -151,7 +154,7 @@ onMounted(async () => {
                 class="mt-2 mt-md-4 input-color-primary"
                 clearable
                 color="tertiary"
-                density="default"
+                :density="xs ? 'comfortable' : 'default'"
                 hide-details="auto"
                 rounded="lg"
                 variant="solo-filled"
@@ -171,7 +174,7 @@ onMounted(async () => {
                   options: getCountryList('all'),
                 }"
                 custom-class="mt-2 mt-md-4 input-color-primary"
-                density="default"
+                :density="xs ? 'comfortable' : 'default'"
                 rounded="lg"
                 variant="solo-filled"
                 @update-phone="handleUpdatePhone"
@@ -190,7 +193,7 @@ onMounted(async () => {
                 />
               </div>
 
-              <div class="pb-3 pl-1 mt-7 my-1">
+              <div class="pb-1 pb-md-3 pl-1 mt-3 mt-md-7 my-1">
                 *Iscrivendoti accetti i Termini di servizio
               </div>
 
@@ -198,7 +201,7 @@ onMounted(async () => {
               <v-btn
                 block
                 color="primary"
-                density="default"
+                :density="xs ? 'comfortable' : 'default'"
                 rounded="lg"
                 size="x-large"
                 @click="registerUser"

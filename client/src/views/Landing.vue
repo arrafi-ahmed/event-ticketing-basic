@@ -37,7 +37,7 @@ const { xs } = useDisplay();
         <v-row align="center" justify="center">
           <v-col>
             <v-row
-              class="mt-2 mt-md-0"
+              class="mt-7 mt-md-0"
               :class="{ 'bg-overlay-mobile-logo rounded': xs }"
             >
               <v-col cols="12" md="9">
