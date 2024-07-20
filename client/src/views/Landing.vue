@@ -6,22 +6,34 @@ const { xs } = useDisplay();
 </script>
 
 <template>
-  <v-sheet
-    :class="{ 'bg-mobile': xs, 'bg-landing-color': !xs }"
-    class="limit-max-width-xl"
+  <v-container
+    fluid
+    :class="{ 'bg-mobile rounded-xl': xs }"
+    class="limit-max-width-xl fill-height"
   >
-    <v-row align="center" :class="{ 'bg-overlay-mobile': xs }">
+    <v-row
+      align="center"
+      :class="{
+        'bg-landing-color': !xs,
+      }"
+      class="rounded-xl"
+      no-gutters
+    >
       <v-col cols="5" class="d-none d-sm-flex">
-        <v-row>
+        <v-row no-gutters>
           <v-col cols="11">
-            <v-img
-              :src="getClientPublicImgUrl('landing1.png')"
-              rounded="xl"
-            ></v-img>
+            <v-img :src="getClientPublicImgUrl('landing1.png')"></v-img>
           </v-col>
         </v-row>
       </v-col>
-      <v-col cols="12" md="7" class="px-10" :class="{ 'text-white': xs }">
+      <v-col
+        cols="12"
+        md="7"
+        class="px-10"
+        :class="{
+          'bg-overlay-mobile text-white rounded-xl': xs,
+        }"
+      >
         <v-row align="center" justify="center">
           <v-col>
             <v-row
@@ -60,12 +72,12 @@ const { xs } = useDisplay();
         </v-row>
       </v-col>
     </v-row>
-  </v-sheet>
+  </v-container>
 </template>
 
 <style>
 .bg-landing-color {
-  background-color: #eeeeee;
+  background-color: #eeeeee !important;
 }
 
 .bg-mobile {
@@ -75,10 +87,10 @@ const { xs } = useDisplay();
 }
 
 .bg-overlay-mobile {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.5) !important;
 }
 
 .bg-overlay-mobile-logo {
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.9) !important;
 }
 </style>
