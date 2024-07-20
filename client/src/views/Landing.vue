@@ -7,8 +7,8 @@ const { xs } = useDisplay();
 
 <template>
   <v-sheet
-    :class="{ 'bg-mobile': xs }"
-    class="bg-landing-color limit-max-width-xl"
+    :class="{ 'bg-mobile': xs, 'bg-landing-color': !xs }"
+    class="limit-max-width-xl"
   >
     <v-row align="center" :class="{ 'bg-overlay-mobile': xs }">
       <v-col cols="5" class="d-none d-sm-flex">
@@ -69,9 +69,9 @@ const { xs } = useDisplay();
 }
 
 .bg-mobile {
-  background: url("/img/landing1.png");
-  background-size: cover;
-  position: relative;
+  background: url("/img/landing1.png") !important;
+  background-size: cover !important;
+  position: relative !important;
 }
 
 .bg-overlay-mobile {
