@@ -2,13 +2,15 @@
 node_modules
 /dist
 
-api/public/blog/*
-api/public/event/*
+api/public/club-logo/*
+api/public/event-banner/*
+api/public/tmp/*
 api/public/user/*
 
 # allow all the folders themselves to be tracked
-!api/public/blog/.gitkeep
-!api/public/event/.gitkeep
+!api/public/club-logo/.gitkeep
+!api/public/event-banner/.gitkeep
+!api/public/tmp/.gitkeep
 !api/public/user/.gitkeep
 
 # env files
