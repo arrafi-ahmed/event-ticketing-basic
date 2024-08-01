@@ -31,6 +31,7 @@ CREATE TABLE event
     name               VARCHAR(100) NOT NULL,
     description        TEXT,
     location           VARCHAR(255) NOT NULL,
+    ticket_price       INT DEFAULT 0, -- added
     max_attendees      INT,
     registration_count INT,
     start_date         date         NOT NULL,
@@ -39,12 +40,21 @@ CREATE TABLE event
     club_id            INT          NOT NULL REFERENCES club (id) ON DELETE CASCADE,
     created_by         INT          NOT NULL REFERENCES app_user (id)
 );
+-- added
+CREATE TABLE stripe_product
+(
+    id         SERIAL PRIMARY KEY,
+    event_id   INT          NOT NULL REFERENCES event (id) ON DELETE CASCADE,
+    product_id VARCHAR(255) NOT NULL,
+    price_id   VARCHAR(255) NOT NULL
+);
 
 CREATE TABLE registration
 (
     id                SERIAL PRIMARY KEY,
-    registration_data jsonb, --name, email, phone, others:{...rest}
+    registration_data jsonb,   --name, email, phone, others:{...rest}
     registration_time TIMESTAMP,
+    status            BOOLEAN, -- added
     qr_uuid           VARCHAR(255) UNIQUE NOT NULL,
     event_id          INT                 NOT NULL REFERENCES event (id) ON DELETE CASCADE,
     club_id           INT                 NOT NULL REFERENCES club (id) ON DELETE CASCADE
@@ -53,18 +63,18 @@ CREATE TABLE registration
 --added
 CREATE TABLE form_question
 (
-    id                   SERIAL PRIMARY KEY,
-    type_id              SMALLINT NOT NULL,
-    text                 TEXT     NOT NULL,
-    required             BOOLEAN  NOT NULL,
-    options              jsonb,
+    id       SERIAL PRIMARY KEY,
+    type_id  SMALLINT NOT NULL,
+    text     TEXT     NOT NULL,
+    required BOOLEAN  NOT NULL,
+    options  jsonb,
     event_id INTEGER REFERENCES event ON DELETE CASCADE
 );
 
 CREATE TABLE checkin
 (
     id              SERIAL PRIMARY KEY,
-    checkin_status  BOOLEAN,
+    status          BOOLEAN, -- updated
     checkin_time    TIMESTAMP,
     registration_id INT NOT NULL REFERENCES registration (id) ON DELETE CASCADE,
     checkedin_by    INT NOT NULL REFERENCES app_user (id) ON DELETE CASCADE

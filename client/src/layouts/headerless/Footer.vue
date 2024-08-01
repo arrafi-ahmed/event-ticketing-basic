@@ -1,6 +1,5 @@
 <script setup>
-import { appInfo, getToLink } from "@/others/util";
-import { computed } from "vue";
+import { appInfo } from "@/others/util";
 import { useStore } from "vuex";
 
 const store = useStore();

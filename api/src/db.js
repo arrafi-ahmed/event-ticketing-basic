@@ -1,5 +1,5 @@
 const postgres = require("postgres");
-const { DB_HOST, DB_PORT, DB_DATABASE, DB_USER, DB_PASSWORD, DB_ENDPOINT_ID } =
+const { DB_HOST, DB_PORT, DB_DATABASE, DB_USER, DB_PASSWORD, NODE_ENV } =
   process.env;
 
 let sql = postgres({
@@ -12,7 +12,7 @@ let sql = postgres({
     ...postgres.camel,
     undefined: null,
   },
-  ssl: false,
+  ssl: NODE_ENV === "development",
   // waitForConnections: true,
   // connectionLimit: 10,
   // queueLimit: 0,

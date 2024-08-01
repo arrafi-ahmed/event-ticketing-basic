@@ -1,11 +1,17 @@
 <script setup>
 import { computed, onMounted, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { clientBaseUrl, sendToWhatsapp } from "@/others/util";
+import {
+  clientBaseUrl,
+  getQueryParam,
+  removeQueryParams,
+  sendToWhatsapp,
+} from "@/others/util";
 import { useStore } from "vuex";
 import QRCodeVue3 from "qrcode-vue3";
 import { useDisplay, useTheme } from "vuetify";
 import Logo from "@/components/Logo.vue";
+import { toast } from "vue-sonner";
 
 const store = useStore();
 const route = useRoute();
@@ -35,6 +41,50 @@ const handleSendToWhatsapp = () => {
 };
 onMounted(() => {
   if (!club.value?.id) store.dispatch("club/setClub", route.params.clubId);
+
+  // if landed from stripe payment
+  if (getQueryParam("redirect_stripe") === "1") {
+    const registrationId = getQueryParam("registration_id");
+    const uuid = getQueryParam("uuid");
+    const sessionId = getQueryParam("session_id");
+
+    if (!registrationId || !uuid || !sessionId) return;
+
+    store.dispatch("registration/setRegistration", { registrationId, uuid });
+    store
+      .dispatch("registration/getPaymentStatus", { sessionId })
+      .then((result) => {
+        let action = "";
+        let msg = "";
+        if (result == "complete") {
+          action = "success";
+          msg = "Payment succeeded!";
+
+          store.dispatch("registration/updateStatus", {
+            registrationId,
+            uuid,
+            status: true,
+          });
+        } else if (result == "open") {
+          action = "success";
+          msg = "Payment failed!";
+        }
+        toast[action](msg);
+      })
+      .finally(() => {
+        window.location.href = removeQueryParams(window.location.href, [
+          "redirect_stripe",
+          "session_id",
+        ]);
+      });
+  }
+  // if page reloaded
+  else if (!registration.value?.id) {
+    const registrationId = getQueryParam("registration_id");
+    const uuid = getQueryParam("uuid");
+
+    store.dispatch("registration/setRegistration", { registrationId, uuid });
+  }
 });
 onUnmounted(() => {
   store.commit("registration/resetRegistration");

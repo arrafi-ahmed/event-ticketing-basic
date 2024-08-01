@@ -28,7 +28,8 @@ const newEventInit = {
   name: null,
   description: null,
   location: null,
-  maxAttendees: null,
+  ticketPrice: 0,
+  maxAttendees: 1000,
   startDate: new Date(),
   endDate: new Date(),
   banner: null,
@@ -61,6 +62,7 @@ const handleSubmitEditEvent = async () => {
   formData.append("name", newEvent.name);
   formData.append("description", newEvent.description);
   formData.append("location", newEvent.location);
+  formData.append("ticketPrice", newEvent.ticketPrice);
   formData.append("maxAttendees", newEvent.maxAttendees);
   formData.append(
     "startDate",
@@ -83,10 +85,9 @@ const handleSubmitEditEvent = async () => {
 };
 const fetchData = async () => {
   if (!event.value?.id) {
-    await store.dispatch(
-      "event/setEventByEventIdnClubId",
-      route.params.eventId
-    );
+    await store.dispatch("event/setEventByEventIdnClubId", {
+      eventId: route.params.eventId,
+    });
   }
 };
 onMounted(async () => {
@@ -162,8 +163,29 @@ onMounted(async () => {
           ></v-text-field>
 
           <v-text-field
+            v-model="newEvent.ticketPrice"
+            :rules="[
+              (v) =>
+                (v !== null && v !== undefined && v !== '') ||
+                'Ticket Price is required!',
+            ]"
+            class="mt-2 mt-md-4"
+            clearable
+            density="compact"
+            hide-details="auto"
+            label="Ticket Price"
+            prepend-inner-icon="mdi-currency-eur"
+            required
+            type="number"
+          ></v-text-field>
+
+          <v-text-field
             v-model="newEvent.maxAttendees"
-            :rules="[(v) => !!v || 'Max Attendees is required!']"
+            :rules="[
+              (v) =>
+                (v !== null && v !== undefined && v !== '') ||
+                'Max Attendees is required!',
+            ]"
             class="mt-2 mt-md-4"
             clearable
             density="compact"

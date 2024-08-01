@@ -134,11 +134,11 @@ onMounted(() => {
       <!--            download btn for mobile-->
       <v-btn
         v-if="xs"
+        class="ml-2"
         color="primary"
         icon="mdi-download"
-        variant="tonal"
         rounded
-        class="ml-2"
+        variant="tonal"
         @click="handleDownloadAttendees"
       ></v-btn>
       <!--            download btn for desktop-->

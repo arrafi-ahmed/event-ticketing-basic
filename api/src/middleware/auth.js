@@ -72,10 +72,25 @@ const isAdminClubAuthor = async (req, res, next) => {
   }
 };
 
+const isAuthenticated = (req, res, next) => {
+  try {
+    const token = req.header("authorization");
+    if (!token) throw new Error();
+    const { currentUser } = jwt.verify(token, process.env.TOKEN_SECRET);
+    req.currentUser = currentUser;
+    req.isLoggedIn = true;
+  } catch (error) {
+    req.isLoggedIn = false;
+  } finally {
+    next();
+  }
+};
+
 module.exports = {
   auth,
   isSudo,
   isAdmin,
+  isAuthenticated,
   isAdminEventAuthor,
   isAdminClubAuthor,
 };

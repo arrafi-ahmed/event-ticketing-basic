@@ -25,6 +25,7 @@ app.use("/api/registration", require("./src/controller/registration"));
 app.use("/api/checkin", require("./src/controller/checkin"));
 app.use("/api/form", require("./src/controller/form"));
 app.use("/api/appUser", require("./src/controller/appUser"));
+app.use("/api/stripe", require("./src/controller/stripe"));
 
 app.get("/api/version", (req, res) => {
   res.status(200).json(appInfo);

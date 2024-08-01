@@ -1,22 +1,22 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, nextTick, onMounted, onUnmounted, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getCountryList, isValidEmail } from "@/others/util";
+import { getCountryList, isValidEmail, stripePublic } from "@/others/util";
 import { useStore } from "vuex";
 import Logo from "@/components/Logo.vue";
 import Phone from "@/components/Phone.vue";
 import FormItems from "@/components/FormItems.vue";
 import { useDisplay } from "vuetify";
+import { loadStripe } from "@stripe/stripe-js/pure";
 
 const store = useStore();
 const route = useRoute();
 const router = useRouter();
 const { xs } = useDisplay();
 
+const registration = computed(() => store.state.registration.registration);
 const club = computed(() => store.state.club.club);
-const event = computed(() =>
-  store.getters["event/getEventById"](route.params.eventId)
-);
+const event = computed(() => store.state.event.event);
 const registrationInit = {
   registrationData: {
     name: null,
@@ -27,7 +27,7 @@ const registrationInit = {
   eventId: null,
   clubId: null,
 };
-const registration = reactive({ ...registrationInit });
+const newRegistration = reactive({ ...registrationInit });
 
 const form = ref(null);
 const isFormValid = ref(true);
@@ -36,10 +36,10 @@ const registerUser = async () => {
   await form.value.validate();
   if (!isFormValid.value) return;
 
-  registration.eventId = route.params.eventId;
-  registration.clubId = route.params.clubId;
+  newRegistration.eventId = route.params.eventId;
+  newRegistration.clubId = route.params.clubId;
 
-  registration.registrationData.others = additionalAnswers.value.map(
+  newRegistration.registrationData.others = additionalAnswers.value.map(
     (item, index) => ({
       qId: formQuestions.value?.[index]?.id,
       question: formQuestions.value?.[index]?.text,
@@ -47,14 +47,53 @@ const registerUser = async () => {
     })
   );
 
-  await store.dispatch("registration/addRegistration", { registration });
-  router.push({
-    name: "event-register-success",
-    params: { clubId: route.params.clubId, eventId: route.params.eventId },
-  });
+  // if free ticket
+  if (isEventFree.value) {
+    newRegistration.status = true;
+    await store.dispatch("registration/saveRegistration", newRegistration);
+    router.push({
+      name: "event-register-success",
+      params: { clubId: route.params.clubId, eventId: route.params.eventId },
+      query: {
+        registration_id: registration.value?.id,
+        uuid: registration.value?.qrUuid,
+      },
+    });
+  } else {
+    newRegistration.status = false;
+    const insertedRegistraion = await store.dispatch(
+      "registration/saveRegistration",
+      newRegistration
+    );
+
+    if (!insertedRegistraion || !insertedRegistraion.id) return;
+
+    const { clientSecret } = await store.dispatch(
+      "registration/createCheckout",
+      {
+        clubId: route.params.clubId,
+        eventId: route.params.eventId,
+        registrationId: insertedRegistraion.id,
+        uuid: insertedRegistraion.qrUuid,
+      }
+    );
+    showCheckout.value = true;
+    await nextTick();
+
+    if (!checkout.value) {
+      checkout.value = await stripe.initEmbeddedCheckout({
+        clientSecret,
+      });
+      // Mount Checkout
+      checkout.value.mount("#checkout");
+    } else {
+      console.warn("Checkout already mounted. Ignoring.");
+    }
+  }
 };
+let checkout = ref(null);
 const handleUpdatePhone = ({ formattedPhone }) => {
-  registration.registrationData.phone = formattedPhone;
+  newRegistration.registrationData.phone = formattedPhone;
 };
 
 const formQuestions = computed(() => store.state.registration.formQuestions);
@@ -63,19 +102,31 @@ const handleUpdateAdditionalAnswers = ({ newVal }) => {
   additionalAnswers.value = newVal;
 };
 
+let stripe = null;
+const showCheckout = ref(false);
+const isEventFree = computed(() => event.value?.ticketPrice == 0);
+
 onMounted(async () => {
-  if (!event.value?.id) {
-    await store.dispatch(
-      "event/setEventByEventIdnClubId",
-      route.params.eventId
-    );
-  }
+  await store.dispatch("event/setEventByEventIdnClubId", {
+    eventId: route.params.eventId,
+    clubId: route.params.clubId,
+  });
   await store.dispatch("form/setFormQuestions", {
     eventId: route.params.eventId,
   });
   if (!club.value?.id) {
     await store.dispatch("club/setClub", route.params.clubId);
   }
+  if (!isEventFree.value) {
+    stripe = await loadStripe(stripePublic);
+  }
+});
+
+onUnmounted(() => {
+  if (checkout.value) {
+    checkout.value.destroy();
+  }
+  // checkout = null;
 });
 </script>
 <template>
@@ -115,6 +166,7 @@ onMounted(async () => {
               >Registrati per inviare la tua richiesta
             </v-card-subtitle>
             <v-form
+              v-if="!showCheckout"
               ref="form"
               v-model="isFormValid"
               fast-fail
@@ -122,7 +174,8 @@ onMounted(async () => {
             >
               <!-- Full Name -->
               <v-text-field
-                v-model="registration.registrationData.name"
+                v-model="newRegistration.registrationData.name"
+                :density="xs ? 'comfortable' : 'default'"
                 :rules="[
                   (v) => !!v || 'required!',
                   (v) =>
@@ -131,7 +184,6 @@ onMounted(async () => {
                 class="mt-2 mt-md-4 input-color-primary"
                 clearable
                 color="tertiary"
-                :density="xs ? 'comfortable' : 'default'"
                 hide-details="auto"
                 label="Full Name"
                 rounded="lg"
@@ -146,7 +198,8 @@ onMounted(async () => {
               </v-text-field>
 
               <v-text-field
-                v-model="registration.registrationData.email"
+                v-model="newRegistration.registrationData.email"
+                :density="xs ? 'comfortable' : 'default'"
                 :rules="[
                   (v) => !!v || 'required!',
                   (v) => isValidEmail(v) || 'Invalid Email',
@@ -154,7 +207,6 @@ onMounted(async () => {
                 class="mt-2 mt-md-4 input-color-primary"
                 clearable
                 color="tertiary"
-                :density="xs ? 'comfortable' : 'default'"
                 hide-details="auto"
                 rounded="lg"
                 variant="solo-filled"
@@ -168,13 +220,13 @@ onMounted(async () => {
               </v-text-field>
 
               <phone
+                :density="xs ? 'comfortable' : 'default'"
                 :input-item="{
                   text: 'Telefono',
                   required: true,
                   options: getCountryList('all'),
                 }"
                 custom-class="mt-2 mt-md-4 input-color-primary"
-                :density="xs ? 'comfortable' : 'default'"
                 rounded="lg"
                 variant="solo-filled"
                 @update-phone="handleUpdatePhone"
@@ -199,13 +251,13 @@ onMounted(async () => {
 
               <!-- Register Button -->
               <v-btn
+                :density="xs ? 'comfortable' : 'default'"
                 block
                 color="primary"
-                :density="xs ? 'comfortable' : 'default'"
                 rounded="lg"
                 size="x-large"
                 @click="registerUser"
-                >Registrati
+                >{{ isEventFree ? "Registrati" : "Procedere" }}
               </v-btn>
               <div class="d-flex justify-center">
                 <v-btn
@@ -220,6 +272,7 @@ onMounted(async () => {
                 </v-btn>
               </div>
             </v-form>
+            <div v-else id="checkout"></div>
           </v-card-text>
         </v-card>
       </v-col>

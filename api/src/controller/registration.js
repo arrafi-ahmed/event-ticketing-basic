@@ -1,16 +1,38 @@
 const router = require("express").Router();
 const registrationService = require("../service/registration");
 const ApiResponse = require("../model/ApiResponse");
-const { auth, isAdminEventAuthor } = require("../middleware/auth");
+const {
+  auth,
+  isAdminEventAuthor,
+  isAuthenticated,
+} = require("../middleware/auth");
 
 router.post("/save", (req, res, next) => {
   registrationService
-    .save({ body: req.body })
+    .save({ payload: req.body })
     .then((results) => {
-      res
-        .status(200)
-        .json(new ApiResponse("Registration successful!", results));
+      res.status(200).json(new ApiResponse(null, results));
     })
+    .catch((err) => next(err));
+});
+
+router.post("/updateStatus", (req, res, next) => {
+  registrationService
+    .updateStatus({ payload: req.body })
+    .then((results) => {
+      res.status(200).json(new ApiResponse(null, results));
+    })
+    .catch((err) => next(err));
+});
+
+router.get("/getRegistration", isAuthenticated, (req, res, next) => {
+  registrationService
+    .getRegistration({
+      registrationId: req.query.registrationId,
+      uuid: req.query.uuid,
+      isLoggedIn: req.isLoggedIn,
+    })
+    .then((results) => res.status(200).json(new ApiResponse(null, results)))
     .catch((err) => next(err));
 });
 

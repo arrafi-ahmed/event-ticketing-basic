@@ -68,7 +68,7 @@ export const actions = {
     return new Promise((resolve, reject) => {
       $axios
         .get("/api/event/getEventByEventIdnClubId", {
-          params: { eventId: request },
+          params: { eventId: request.eventId, clubId: request.clubId },
         })
         .then((response) => {
           commit("setEvent", response.data?.payload);

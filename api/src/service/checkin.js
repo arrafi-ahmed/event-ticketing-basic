@@ -24,7 +24,8 @@ exports.validateQrCode = async ({ id, qrUuid, eventId }) => {
         from registration r
                  left join checkin c on r.id = c.registration_id
         where r.id = ${id}
-          and r.event_id = ${eventId}`;
+          and r.event_id = ${eventId}
+          and r.status = true`;
 
   if (!registration || registration.qrUuid != qrUuid) {
     throw new CustomError("Invalid QR Code", 401, registration);
@@ -43,7 +44,7 @@ exports.scanByRegistrationId = async ({ qrCodeData, eventId, userId }) => {
     registrationId: id,
     checkedinBy: userId,
   };
-  const updatedCheckin = await exports.saveCheckin({ newCheckin });
+  const updatedCheckin = await exports.save({ newCheckin });
   return registration;
 };
 
@@ -53,13 +54,16 @@ exports.getStatistics = async ({ eventId, date }) => {
                                   WHEN r.registration_time::date = ${date}::date
                                       THEN r.id END) AS historical_registration_count,
                COUNT(DISTINCT CASE
-                                  WHEN r.registration_time::date = ${date}::date
+                                  WHEN r.registration_time::date = ${date}::date AND c.checkin_status = true
                                       THEN c.id END) AS historical_checkin_count,
                COUNT(DISTINCT r.id)                  AS total_registration_count,
-               COUNT(DISTINCT c.id)                  AS total_checkin_count
+               COUNT(DISTINCT CASE
+                                  WHEN c.checkin_status = true
+                                      THEN c.id END) AS total_checkin_count
         FROM registration r
                  LEFT JOIN checkin c ON r.id = c.registration_id
         WHERE r.event_id = ${eventId};
+
     `;
 
   return counts;

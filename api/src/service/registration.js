@@ -7,12 +7,12 @@ const emailContentService = require("../service/emailContent");
 const sendMailService = require("../service/sendMail");
 const formService = require("../service/form");
 
-exports.save = async ({ body: { registration } }) => {
-  registration.registrationTime = new Date();
-  registration.qrUuid = uuidv4();
+exports.save = async ({ payload }) => {
+  payload.registrationTime = new Date();
+  payload.qrUuid = uuidv4();
 
   const [insertedRegistration] = await sql`
-        INSERT INTO registration ${sql(registration)}
+        INSERT INTO registration ${sql(payload)}
             returning *;
     `;
 
@@ -20,11 +20,11 @@ exports.save = async ({ body: { registration } }) => {
   const [updatedEvent] = await sql`
         update event
         set registration_count = registration_count + 1
-        where id = ${registration.eventId}
+        where id = ${payload.eventId}
         returning *;`;
 
   //send to email
-  if (registration.registrationData.email) {
+  if (payload.registrationData.email) {
     const { attachment, emailBody } =
       await emailContentService.generateTicketContent(
         insertedRegistration,
@@ -32,13 +32,38 @@ exports.save = async ({ body: { registration } }) => {
       );
 
     sendMailService.sendMailWAttachment(
-      registration.registrationData.email,
+      payload.registrationData.email,
       `Ticket for ${updatedEvent.name}`,
       emailBody,
       attachment
     );
   }
   return insertedRegistration;
+};
+
+exports.updateStatus = async ({ payload }) => {
+  const { registrationId, uuid, status } = payload;
+  const [registration] = await sql`
+        update registration
+        set status = ${status}
+        where id = ${registrationId}
+          and qr_uuid = ${uuid}
+        returning *`;
+  ``;
+  return registration;
+};
+
+exports.getRegistration = async ({ registrationId, uuid, isLoggedIn }) => {
+  const [registration] = await sql`
+        select *
+        from registration r
+        where r.id = ${registrationId} ${
+    !isLoggedIn
+      ? sql` and qr_uuid =
+                        ${uuid}`
+      : sql``
+  }`;
+  return registration;
 };
 
 exports.sendTicket = async ({ registrationId }) => {
@@ -89,7 +114,8 @@ exports.getAttendeesWcheckin = async ({ eventId }) => {
         from registration r
                  left join checkin c
                            on r.id = c.registration_id
-        where event_id = ${eventId}
+        where r.event_id = ${eventId}
+          and r.status = true
         order by r.registration_time desc `;
 
   return attendees;

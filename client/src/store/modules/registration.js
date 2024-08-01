@@ -35,10 +35,28 @@ export const mutations = {
 };
 
 export const actions = {
-  addRegistration({ commit }, request) {
+  saveRegistration({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .post("/api/registration/save", request)
+        .then((response) => {
+          commit("setRegistration", response.data?.payload);
+          resolve(response.data?.payload);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
+  setRegistration({ commit }, request) {
+    return new Promise((resolve, reject) => {
+      $axios
+        .get("/api/registration/getRegistration", {
+          params: {
+            registrationId: request.registrationId,
+            uuid: request.uuid,
+          },
+        })
         .then((response) => {
           commit("setRegistration", response.data?.payload);
           resolve(response.data?.payload);
@@ -133,6 +151,47 @@ export const actions = {
         .then((response) => {
           commit("removeRegistration", request.registrationId);
           resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
+  getPaymentStatus({ commit }, request) {
+    return new Promise((resolve, reject) => {
+      $axios
+        .get("/api/stripe/sessionStatus", {
+          params: {
+            sessionId: request.sessionId,
+          },
+        })
+        .then((response) => {
+          resolve(response.data?.payload);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
+  updateStatus({ commit }, request) {
+    return new Promise((resolve, reject) => {
+      $axios
+        .post("/api/registration/updateStatus", request)
+        .then((response) => {
+          resolve(response.data?.payload);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
+  createCheckout({ commit }, request) {
+    return new Promise((resolve, reject) => {
+      $axios
+        .post("/api/stripe/createCheckout", request)
+        .then((response) => {
+          // commit("setRegistration", response.data?.payload);
+          resolve(response.data?.payload);
         })
         .catch((err) => {
           reject(err);

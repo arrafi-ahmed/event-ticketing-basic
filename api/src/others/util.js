@@ -2,8 +2,9 @@ const fs = require("fs").promises;
 const fsSync = require("fs");
 const path = require("path");
 const qr = require("qrcode");
-const { API_BASE_URL, VUE_BASE_URL, ANDROID_BASE_URL } = process.env;
+const { API_BASE_URL, VUE_BASE_URL, ANDROID_BASE_URL, NODE_ENV } = process.env;
 
+const isProd = NODE_ENV === "production";
 const ifSudo = (role) => role === "sudo";
 const ifAdmin = (role) => role === "admin";
 
@@ -24,6 +25,11 @@ const formatDate = (inputDate) => {
   const year = date.getFullYear();
   return `${day}/${month}/${year}`;
 };
+
+const getApiPublicImgUrl = (imageName, type) =>
+  isProd
+    ? `${API_BASE_URL}/api/${type}/${imageName}` //for some hosting: `${API_BASE_URL}/api/${type}/${imageName}`
+    : `${API_BASE_URL}/${type}/${imageName}`;
 
 const generatePassResetContent = (token, CLIENT_BASE_URL) => {
   return `
@@ -108,6 +114,7 @@ module.exports = {
   ANDROID_BASE_URL,
   dirMap,
   appInfo,
+  getApiPublicImgUrl,
   generateQrCode,
   getCurrencySymbol,
   generatePassResetContent,

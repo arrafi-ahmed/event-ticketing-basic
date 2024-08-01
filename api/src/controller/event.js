@@ -1,7 +1,12 @@
 const router = require("express").Router();
 const eventService = require("../service/event");
 const ApiResponse = require("../model/ApiResponse");
-const { auth, isAdmin, isAdminEventAuthor } = require("../middleware/auth");
+const {
+  auth,
+  isAdmin,
+  isAdminEventAuthor,
+  isAuthenticated,
+} = require("../middleware/auth");
 const { uploadEventBanner } = require("../middleware/upload");
 const compressImages = require("../middleware/compress");
 const { ifSudo } = require("../others/util");
@@ -33,7 +38,7 @@ router.get("/getAllEvents", (req, res, next) => {
     .catch((err) => next(err));
 });
 
-router.get("/getEventByEventIdnClubId", auth, (req, res, next) => {
+router.get("/getEventByEventIdnClubId", isAuthenticated, (req, res, next) => {
   const isRoleSudo = ifSudo(req.currentUser.role);
   eventService
     .getEventByEventIdnClubId({

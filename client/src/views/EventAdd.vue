@@ -15,7 +15,8 @@ const newEventInit = {
   name: null,
   description: null,
   location: null,
-  maxAttendees: null,
+  ticketPrice: 0,
+  maxAttendees: 1000,
   startDate: new Date(),
   endDate: new Date(),
   banner: null,
@@ -39,6 +40,7 @@ const handleAddEvent = async () => {
   formData.append("name", newEvent.name);
   formData.append("description", newEvent.description);
   formData.append("location", newEvent.location);
+  formData.append("ticketPrice", newEvent.ticketPrice);
   formData.append("maxAttendees", newEvent.maxAttendees);
   formData.append(
     "startDate",
@@ -119,8 +121,29 @@ const handleAddEvent = async () => {
           ></v-text-field>
 
           <v-text-field
+            v-model="newEvent.ticketPrice"
+            :rules="[
+              (v) =>
+                (v !== null && v !== undefined && v !== '') ||
+                'Ticket Price is required!',
+            ]"
+            class="mt-2 mt-md-4"
+            clearable
+            density="compact"
+            hide-details="auto"
+            label="Ticket Price"
+            prepend-inner-icon="mdi-currency-eur"
+            required
+            type="number"
+          ></v-text-field>
+
+          <v-text-field
             v-model="newEvent.maxAttendees"
-            :rules="[(v) => !!v || 'Max Attendees is required!']"
+            :rules="[
+              (v) =>
+                (v !== null && v !== undefined && v !== '') ||
+                'Max Attendees is required!',
+            ]"
             class="mt-2 mt-md-4"
             clearable
             density="compact"

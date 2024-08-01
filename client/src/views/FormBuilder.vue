@@ -138,7 +138,7 @@ const event = computed(() =>
     <div class="d-flex justify-end">
       <v-menu>
         <template v-slot:activator="{ props }">
-          <v-btn icon="mdi-plus" v-bind="props" variant="tonal" rounded></v-btn>
+          <v-btn icon="mdi-plus" rounded v-bind="props" variant="tonal"></v-btn>
         </template>
         <v-list density="compact">
           <v-list-item
