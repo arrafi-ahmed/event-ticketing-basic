@@ -60,7 +60,6 @@ CREATE TABLE registration
     club_id           INT                 NOT NULL REFERENCES club (id) ON DELETE CASCADE
 );
 
---added
 CREATE TABLE form_question
 (
     id       SERIAL PRIMARY KEY,
