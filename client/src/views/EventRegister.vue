@@ -106,6 +106,12 @@ let stripe = null;
 const showCheckout = ref(false);
 const isEventFree = computed(() => event.value?.ticketPrice == 0);
 
+const hardcodedStripePublic =
+  "pk_live_51PkVUZP8Mi3pFx1CQX7p4pgznT26qaZsY7wAy1PPixNiTqYbarHIhQ3lzg3kDOCwgtk01sgx3fOhTFfz4zqefB8O00B2sXbdUj";
+const mustLoadStripePublic = computed(
+  () => stripePublic || hardcodedStripePublic
+);
+
 onMounted(async () => {
   await store.dispatch("event/setEventByEventIdnClubId", {
     eventId: route.params.eventId,
@@ -118,7 +124,7 @@ onMounted(async () => {
     await store.dispatch("club/setClub", route.params.clubId);
   }
   if (!isEventFree.value) {
-    stripe = await loadStripe(stripePublic);
+    stripe = await loadStripe(mustLoadStripePublic.value);
   }
 });
 
