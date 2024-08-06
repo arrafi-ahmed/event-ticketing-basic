@@ -14,9 +14,10 @@ api/public/user/*
 !api/public/user/.gitkeep
 
 # env files
-.env
-.env.development
-.env.production
+client/.env
+client/.env.development
+api/.env.development
+api/.env.production
 
 # skip ignoring production env as its used in build on prod server
 !client/.env.production
