@@ -70,7 +70,7 @@ export const actions = {
     return new Promise((resolve, reject) => {
       $axios
         .get("/api/registration/getAttendeesWcheckin", {
-          params: { eventId: request.eventId },
+          params: { eventId: request.eventId, sortBy: request?.sortBy },
         })
         .then((response) => {
           commit("setAttendees", response.data?.payload);

@@ -91,9 +91,17 @@ const viewQr = (registration) => {
   });
 };
 
+const sortByCheckin = () => {
+  store.dispatch("registration/setAttendees", {
+    eventId: route.params.eventId,
+    sortBy: "checkin",
+  });
+};
+
 const fetchData = () => {
   store.dispatch("registration/setAttendees", {
     eventId: route.params.eventId,
+    sortBy: "registration",
   });
 };
 onMounted(() => {
@@ -160,8 +168,16 @@ onMounted(() => {
               <th class="text-start">ID</th>
               <th class="text-start">Name</th>
               <th v-if="!xs" class="text-start">Phone</th>
-              <th v-if="!xs" class="text-start">Registration Time</th>
-              <th class="text-start">Check-in Status</th>
+              <th
+                v-if="!xs"
+                class="text-start v-label--clickable"
+                @click="fetchData"
+              >
+                Registration Time
+              </th>
+              <th class="text-start v-label--clickable" @click="sortByCheckin">
+                Check-in Status
+              </th>
               <th></th>
             </tr>
           </thead>

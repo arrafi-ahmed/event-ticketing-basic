@@ -108,7 +108,14 @@ exports.searchAttendees = async ({ searchKeyword, eventId }) => {
   return attendees;
 };
 
-exports.getAttendeesWcheckin = async ({ eventId }) => {
+exports.getAttendeesWcheckin = async ({ eventId, sortBy }) => {
+  const sort =
+    sortBy === "registration"
+      ? "r.registration_time"
+      : sortBy === "checkin"
+      ? "c.checkin_time"
+      : null;
+
   const attendees = await sql`
         select *, r.id as r_id, c.id as c_id
         from registration r
@@ -116,7 +123,13 @@ exports.getAttendeesWcheckin = async ({ eventId }) => {
                            on r.id = c.registration_id
         where r.event_id = ${eventId}
           and r.status = true
-        order by r.registration_time desc `;
+        order by ${
+          sortBy === "registration"
+            ? sql`r.registration_time desc`
+            : sortBy === "checkin"
+            ? sql`c.checkin_time asc`
+            : sql``
+        }`;
 
   return attendees;
 };

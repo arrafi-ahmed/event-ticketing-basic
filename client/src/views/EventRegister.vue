@@ -252,7 +252,23 @@ onUnmounted(() => {
               </div>
 
               <div class="pb-1 pb-md-3 pl-1 mt-3 mt-md-7 my-1">
-                *Iscrivendoti accetti i Termini di servizio
+                *Registrandoti accetti i
+                <router-link
+                  :to="{ name: 'page-info', params: { type: 'terms' } }"
+                  >Termini e condizioni </router-link
+                >,
+                <router-link
+                  :to="{
+                    name: 'page-info',
+                    params: { type: 'privacy-policy' },
+                  }"
+                  >l'Informativa sulla privacy
+                </router-link>
+                &
+                <router-link
+                  :to="{ name: 'page-info', params: { type: 'cookie-policy' } }"
+                  >l'Informativa sui cookie
+                </router-link>
               </div>
 
               <!-- Register Button -->

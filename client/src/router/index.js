@@ -156,6 +156,11 @@ const routes = [
           title: "QrCode Viewer",
         },
       },
+      {
+        path: "page/:type",
+        name: "page-info",
+        component: () => import("@/views/PageStatic.vue"),
+      },
     ],
   },
   {

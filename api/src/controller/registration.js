@@ -42,7 +42,10 @@ router.get(
   isAdminEventAuthor,
   (req, res, next) => {
     registrationService
-      .getAttendeesWcheckin({ eventId: req.query.eventId })
+      .getAttendeesWcheckin({
+        eventId: req.query.eventId,
+        sortBy: req.query.sortBy,
+      })
       .then((results) => res.status(200).json(new ApiResponse(null, results)))
       .catch((err) => next(err));
   }
