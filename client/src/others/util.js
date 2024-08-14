@@ -4,7 +4,9 @@ import { countries } from "@/others/country-list";
 export const appInfo = { name: "Click Event", version: 1.0 };
 export const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 export const clientBaseUrl = import.meta.env.VITE_BASE_URL;
-export const stripePublic = import.meta.env.VITE_STRIPE_PUBLIC;
+export const stripePublic =
+  import.meta.env.VITE_STRIPE_PUBLIC ||
+  "pk_live_51PkVUZP8Mi3pFx1CQX7p4pgznT26qaZsY7wAy1PPixNiTqYbarHIhQ3lzg3kDOCwgtk01sgx3fOhTFfz4zqefB8O00B2sXbdUj";
 export const isProd = import.meta.env.PROD;
 
 export const sendToWhatsapp = (phone, message) => {

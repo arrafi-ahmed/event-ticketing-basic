@@ -106,11 +106,7 @@ let stripe = null;
 const showCheckout = ref(false);
 const isEventFree = computed(() => event.value?.ticketPrice == 0);
 
-const hardcodedStripePublic =
-  "pk_live_51PkVUZP8Mi3pFx1CQX7p4pgznT26qaZsY7wAy1PPixNiTqYbarHIhQ3lzg3kDOCwgtk01sgx3fOhTFfz4zqefB8O00B2sXbdUj";
-const mustLoadStripePublic = computed(
-  () => stripePublic || hardcodedStripePublic
-);
+const mustLoadStripePublic = computed(() => stripePublic);
 
 onMounted(async () => {
   await store.dispatch("event/setEventByEventIdnClubId", {
@@ -255,8 +251,9 @@ onUnmounted(() => {
                 *Registrandoti accetti i
                 <router-link
                   :to="{ name: 'page-info', params: { type: 'terms' } }"
-                  >Termini e condizioni </router-link
-                >,
+                  >Termini e condizioni
+                </router-link>
+                ,
                 <router-link
                   :to="{
                     name: 'page-info',
