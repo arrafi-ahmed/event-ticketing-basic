@@ -72,6 +72,8 @@ exports.save = async ({ payload, files, currentUser }) => {
         price: newPrice,
       });
     }
+    if (!stripeProduct) return insertedEvent;
+
     const retrievedProduct = await stripeService.retrieveProduct({
       id: stripeProduct.productId,
     });
