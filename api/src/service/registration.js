@@ -109,13 +109,6 @@ exports.searchAttendees = async ({ searchKeyword, eventId }) => {
 };
 
 exports.getAttendeesWcheckin = async ({ eventId, sortBy }) => {
-  const sort =
-    sortBy === "registration"
-      ? "r.registration_time"
-      : sortBy === "checkin"
-      ? "c.checkin_time"
-      : null;
-
   const attendees = await sql`
         select *, r.id as r_id, c.id as c_id
         from registration r

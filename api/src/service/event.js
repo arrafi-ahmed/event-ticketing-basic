@@ -129,13 +129,18 @@ exports.removeEvent = async ({ eventId, clubId }) => {
   }
   return deletedEvent;
 };
+exports.getEvent = async ({ eventId }) => {
+  return sql`
+        select *
+        from event
+        where id = ${eventId}`;
+};
 exports.getEventByEventIdnClubId = async ({ clubId, eventId }) => {
   return sql`
         select *
         from event
         where id = ${eventId}
-          and club_id = ${clubId}
-        order by id desc`;
+          and club_id = ${clubId}`;
 };
 exports.getAllEvents = async ({ clubId }) => {
   return sql`

@@ -38,8 +38,17 @@ router.get("/getAllEvents", (req, res, next) => {
     .catch((err) => next(err));
 });
 
+router.get("/getEvent", (req, res, next) => {
+  eventService
+    .getEvent({
+      eventId: req.query.eventId,
+    })
+    .then((results) => res.status(200).json(new ApiResponse(null, results[0])))
+    .catch((err) => next(err));
+});
+
 router.get("/getEventByEventIdnClubId", isAuthenticated, (req, res, next) => {
-  const isRoleSudo = ifSudo(req.currentUser.role);
+  const isRoleSudo = ifSudo(req.currentUser?.role);
   eventService
     .getEventByEventIdnClubId({
       clubId: isRoleSudo ? req.query.clubId : req.currentUser.clubId,

@@ -64,6 +64,21 @@ export const actions = {
         });
     });
   },
+  setEvent({ commit }, request) {
+    return new Promise((resolve, reject) => {
+      $axios
+        .get("/api/event/getEvent", {
+          params: { eventId: request.eventId },
+        })
+        .then((response) => {
+          commit("setEvent", response.data?.payload);
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
   setEventByEventIdnClubId({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios

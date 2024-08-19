@@ -109,9 +109,8 @@ const isEventFree = computed(() => event.value?.ticketPrice == 0);
 const mustLoadStripePublic = computed(() => stripePublic);
 
 onMounted(async () => {
-  await store.dispatch("event/setEventByEventIdnClubId", {
+  await store.dispatch("event/setEvent", {
     eventId: route.params.eventId,
-    clubId: route.params.clubId,
   });
   await store.dispatch("form/setFormQuestions", {
     eventId: route.params.eventId,
