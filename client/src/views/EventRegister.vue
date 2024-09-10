@@ -96,7 +96,7 @@ const handleUpdatePhone = ({ formattedPhone }) => {
   newRegistration.registrationData.phone = formattedPhone;
 };
 
-const formQuestions = computed(() => store.state.registration.formQuestions);
+const formQuestions = computed(() => store.state.form.formQuestions);
 const additionalAnswers = ref([]);
 const handleUpdateAdditionalAnswers = ({ newVal }) => {
   additionalAnswers.value = newVal;
