@@ -12,30 +12,28 @@ exports.save = async ({ payload }) => {
   payload.qrUuid = uuidv4();
 
   const [insertedRegistration] = await sql`
-        INSERT INTO registration ${sql(payload)}
-            returning *;
+        INSERT INTO registration ${sql(payload)} returning *;
     `;
 
   //increase registration_count in event
   const [updatedEvent] = await sql`
         update event
         set registration_count = registration_count + 1
-        where id = ${payload.eventId}
-        returning *;`;
+        where id = ${payload.eventId} returning *;`;
 
   //send to email
   if (payload.registrationData.email) {
     const { attachment, emailBody } =
       await emailContentService.generateTicketContent(
         insertedRegistration,
-        updatedEvent
+        updatedEvent,
       );
 
     sendMailService.sendMailWAttachment(
       payload.registrationData.email,
       `Ticket for ${updatedEvent.name}`,
       emailBody,
-      attachment
+      attachment,
     );
   }
   return insertedRegistration;
@@ -47,8 +45,7 @@ exports.updateStatus = async ({ payload }) => {
         update registration
         set status = ${status}
         where id = ${registrationId}
-          and qr_uuid = ${uuid}
-        returning *`;
+          and qr_uuid = ${uuid} returning *`;
   ``;
   return registration;
 };
@@ -58,11 +55,11 @@ exports.getRegistration = async ({ registrationId, uuid, isLoggedIn }) => {
         select *
         from registration r
         where r.id = ${registrationId} ${
-    !isLoggedIn
-      ? sql` and qr_uuid =
+          !isLoggedIn
+            ? sql` and qr_uuid =
                         ${uuid}`
-      : sql``
-  }`;
+            : sql``
+        }`;
   return registration;
 };
 
@@ -90,7 +87,7 @@ exports.sendTicket = async ({ registrationId }) => {
     result.registrationData.email,
     `Ticket for ${event.name}`,
     emailBody,
-    attachment
+    attachment,
   );
 };
 
@@ -116,13 +113,13 @@ exports.getAttendeesWcheckin = async ({ eventId, sortBy }) => {
                            on r.id = c.registration_id
         where r.event_id = ${eventId}
           and r.status = true
-        order by ${
-          sortBy === "registration"
-            ? sql`r.registration_time desc`
-            : sortBy === "checkin"
-            ? sql`c.checkin_time asc`
-            : sql``
-        }`;
+            ${
+              sortBy === "registration"
+                ? sql` order by r.registration_time desc`
+                : sortBy === "checkin"
+                  ? sql` order by c.checkin_time asc`
+                  : sql``
+            }`;
 
   return attendees;
 };
@@ -132,8 +129,7 @@ exports.removeRegistration = async ({ eventId, registrationId }) => {
         delete
         from registration
         where id = ${registrationId}
-          and event_id = ${eventId}
-        returning *;`;
+          and event_id = ${eventId} returning *;`;
 
   return deletedEvent;
 };
