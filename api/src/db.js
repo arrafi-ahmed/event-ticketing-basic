@@ -12,7 +12,7 @@ let sql = postgres({
     ...postgres.camel,
     undefined: null,
   },
-  ssl: NODE_ENV === "development",
+  ssl: false,
   // waitForConnections: true,
   // connectionLimit: 10,
   // queueLimit: 0,

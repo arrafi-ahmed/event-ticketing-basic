@@ -14,19 +14,19 @@
   "dependencies": {
     "busboy": "^1.6.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.5.0",
     "exceljs": "^4.4.0",
-    "express": "^4.20.0",
-    "gm": "^1.25.0",
+    "express": "^4.21.2",
+    "gm": "^1.25.1",
     "jsonwebtoken": "^9.0.2",
-    "jspdf": "^2.5.1",
-    "nodemailer": "^6.9.15",
-    "postgres": "^3.4.4",
+    "jspdf": "^2.5.2",
+    "nodemailer": "^6.10.1",
+    "postgres": "^3.4.5",
     "qrcode": "^1.5.4",
-    "stripe": "^16.10.0",
+    "stripe": "^16.12.0",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.10"
   }
 }

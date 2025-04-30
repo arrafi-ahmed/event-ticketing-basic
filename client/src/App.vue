@@ -6,6 +6,10 @@ import { useRoute } from "vue-router";
 import { appInfo } from "@/others/util";
 
 const route = useRoute();
+const toastOptions = {
+  class: "pa-3",
+  style: { fontFamily: "'Poppins', sans-serif" },
+};
 
 watch(route, (to) => {
   document.title =
@@ -15,7 +19,7 @@ watch(route, (to) => {
 <template>
   <progress-loader />
   <Toaster
-    class="custom-toast"
+    :toast-options="toastOptions"
     closeButton
     expand
     position="bottom-left"

@@ -41,6 +41,26 @@ CREATE TABLE event
     created_by         INT          NOT NULL REFERENCES app_user (id)
 );
 -- added
+CREATE TABLE voucher
+(
+    id          SERIAL PRIMARY KEY,
+    name        VARCHAR(100) NOT NULL,
+    description TEXT,
+    price       INT,   -- added
+    content     jsonb, -- [{item, quantity}]
+    event_id    INT          NOT NULL REFERENCES event (id) ON DELETE CASCADE
+);
+-- added
+CREATE TABLE voucher_purchase
+(
+    id          SERIAL PRIMARY KEY,
+    name        VARCHAR(100) NOT NULL,
+    description TEXT,
+    price       INT,   -- added
+    content     jsonb, -- [{item, quantity}]
+    event_id    INT          NOT NULL REFERENCES event (id) ON DELETE CASCADE
+);
+-- added
 CREATE TABLE stripe_product
 (
     id         SERIAL PRIMARY KEY,
