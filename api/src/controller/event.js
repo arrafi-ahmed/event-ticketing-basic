@@ -28,8 +28,20 @@ router.post(
         res.status(200).json(new ApiResponse("Event saved!", result));
       })
       .catch((err) => next(err));
-  }
+  },
 );
+
+router.post("/saveExtras", auth, isAdmin, (req, res, next) => {
+  eventService
+    .saveExtras({
+      payload: req.body,
+      currentUser: req.currentUser,
+    })
+    .then((result) => {
+      res.status(200).json(new ApiResponse("Voucher saved!", result));
+    })
+    .catch((err) => next(err));
+});
 
 router.get("/getAllEvents", (req, res, next) => {
   eventService
@@ -66,7 +78,7 @@ router.get("/removeEvent", auth, isAdminEventAuthor, (req, res, next) => {
       eventId: req.query.eventId,
     })
     .then((results) =>
-      res.status(200).json(new ApiResponse("Event deleted!", results))
+      res.status(200).json(new ApiResponse("Event deleted!", results)),
     )
     .catch((err) => next(err));
 });
@@ -77,6 +89,25 @@ router.get("/getAllActiveEvents", (req, res, next) => {
       clubId: req.query.clubId,
       currentDate: req.query.currentDate,
     })
+    .then((results) => res.status(200).json(new ApiResponse(null, results)))
+    .catch((err) => next(err));
+});
+
+router.post("/saveExtras", auth, isAdmin, (req, res, next) => {
+  eventService
+    .saveExtras({
+      payload: req.body,
+      currentUser: req.currentUser,
+    })
+    .then((result) => {
+      res.status(200).json(new ApiResponse("Voucher saved!", result));
+    })
+    .catch((err) => next(err));
+});
+
+router.get("/getExtras", (req, res, next) => {
+  eventService
+    .getExtrasByEventId({ eventId: req.query.eventId })
     .then((results) => res.status(200).json(new ApiResponse(null, results)))
     .catch((err) => next(err));
 });

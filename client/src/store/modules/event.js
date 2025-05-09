@@ -5,6 +5,7 @@ export const namespaced = true;
 export const state = {
   events: [],
   event: {},
+  extras: [],
 };
 
 export const mutations = {
@@ -22,13 +23,24 @@ export const mutations = {
       state.events.unshift(payload);
     }
   },
+  saveExtras(state, payload) {
+    const foundIndex = state.extras.findIndex((item) => item.id == payload.id);
+    if (foundIndex !== -1) {
+      state.extras[foundIndex] = payload;
+    } else {
+      state.extras.unshift(payload);
+    }
+  },
   removeEvent(state, payload) {
     const foundIndex = state.events.findIndex(
-      (item) => item.id == payload.eventId
+      (item) => item.id == payload.eventId,
     );
     if (foundIndex !== -1) {
       state.events.splice(foundIndex, 1);
     }
+  },
+  setExtras(state, payload) {
+    state.extras = payload;
   },
 };
 
@@ -115,6 +127,32 @@ export const actions = {
         })
         .then((response) => {
           commit("removeEvent", request);
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
+  saveExtras({ commit }, request) {
+    return new Promise((resolve, reject) => {
+      $axios
+        .post("/api/event/saveExtras", request)
+        .then((response) => {
+          commit("saveExtras", response.data?.payload);
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
+  setExtras({ commit }, request) {
+    return new Promise((resolve, reject) => {
+      $axios
+        .get("/api/event/getExtras", { params: { eventId: request } })
+        .then((response) => {
+          commit("setExtras", response.data?.payload);
           resolve(response);
         })
         .catch((err) => {

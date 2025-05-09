@@ -1,57 +1,32 @@
 <script setup>
 import { useDisplay } from "vuetify";
-import {
-  appInfo,
-  getApiPublicImgUrl,
-  getClientPublicImgUrl,
-} from "@/others/util";
-import { computed } from "vue";
+import { appInfo } from "@/others/util";
 
-const { mobile } = useDisplay();
-const {
-  imgSrcApi,
-  imgSrcClient,
-  title,
-  imgClass,
-  containerClass,
-  width,
-  maxWidth,
-  maxHeight,
-} = defineProps({
-  imgSrcApi: { type: Object },
-  imgSrcClient: { type: String },
-  title: { type: String },
-  imgClass: { type: String },
-  containerClass: { type: String },
-  width: { type: Number },
-  maxWidth: { type: Number },
-  maxHeight: { type: Number },
-});
-
-const imgSrc = computed(() =>
-  imgSrcClient
-    ? getClientPublicImgUrl(imgSrcClient)
-    : imgSrcApi?.name
-    ? getApiPublicImgUrl(imgSrcApi.name, imgSrcApi.type)
-    : null
-);
+const { xs } = useDisplay();
+const { imgSrc, title, imgClass, containerClass, maxWidth, width } =
+  defineProps([
+    "imgSrc",
+    "title",
+    "imgClass",
+    "containerClass",
+    "maxWidth",
+    "width",
+  ]);
 </script>
 
 <template>
-  <div :class="`d-flex justify-center align-center ${containerClass}`">
-    <!--    c-{{ imgSrcClient }} a-{{ imgSrcApi?.name }}-->
+  <div :class="`d-flex align-center ${containerClass}`">
     <v-img
       v-if="imgSrc"
-      :class="`${imgClass}`"
-      :max-height="maxHeight"
+      :class="` ${imgClass}`"
       :max-width="maxWidth"
       :src="imgSrc"
       :width="width"
-    ></v-img>
+    />
 
-    <div v-if="title" :class="{ 'pl-2': imgSrc }">
-      <component :is="mobile ? 'h2' : 'h1'">
-        <span class="text-primary">{{ title || appInfo.name }}</span>
+    <div v-if="title" class="pl-2">
+      <component :is="xs ? 'h3' : 'h2'">
+        <span class="text-primary">{{ appInfo.name }}</span>
       </component>
     </div>
   </div>

@@ -60,8 +60,8 @@ const routes = [
           return role === "sudo"
             ? { name: "dashboard-sudo" }
             : role === "admin"
-            ? { name: "dashboard-admin" }
-            : { name: "not-found" };
+              ? { name: "dashboard-admin" }
+              : { name: "not-found" };
         },
         meta: {
           requiresAuth: true,
@@ -128,6 +128,15 @@ const routes = [
         meta: {
           requiresAdmin: true,
           title: "Attendee List",
+        },
+      },
+      {
+        path: "event/:eventId/vouchers",
+        name: "event-extras",
+        component: () => import("@/views/EventExtras.vue"),
+        meta: {
+          requiresAdmin: true,
+          title: "Vouchers",
         },
       },
       {

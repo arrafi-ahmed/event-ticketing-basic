@@ -5,7 +5,7 @@ import { useStore } from "vuex";
 import PageTitle from "@/components/PageTitle.vue";
 import { useDisplay } from "vuetify";
 import { getClubImageUrl } from "@/others/util";
-import RemoveEntity from "@/components/RemoveEntity.vue";
+import ConfirmationDialog from "@/components/ConfirmationDialog.vue";
 
 const { mobile } = useDisplay();
 
@@ -148,13 +148,16 @@ onMounted(() => {
 
                           <v-divider></v-divider>
 
-                          <remove-entity
-                            custom-class="text-error"
-                            label="Delete"
-                            prepend-icon="mdi-delete"
-                            variant="list"
-                            @remove-entity="deleteClub(item.id)"
-                          ></remove-entity>
+                          <confirmation-dialog @confirm="deleteClub(item.id)">
+                            <template #activator="{ onClick }">
+                              <v-list-item
+                                class="text-error"
+                                prepend-icon="mdi-delete"
+                                title="Delete"
+                                @click.stop="onClick"
+                              ></v-list-item>
+                            </template>
+                          </confirmation-dialog>
                         </v-list>
                       </v-menu>
                     </template>

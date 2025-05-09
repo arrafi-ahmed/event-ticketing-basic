@@ -9,11 +9,13 @@ exports.save = async ({ payload, files, currentUser }) => {
     clubId: currentUser.clubId,
     createdBy: currentUser.id,
   };
-  //if add event
+  // create event
   if (!newEvent.id) {
     newEvent.registrationCount = 0;
-  } else if (currentUser.role != "sudo") {
-    //if updating event make sure user is authorized
+  }
+  //update event
+  else if (currentUser.role != "sudo") {
+    //if updating event, make sure user is authorized
     const [event] = await exports.getEventByEventIdnClubId({
       eventId: newEvent.id,
       clubId: currentUser.clubId,
@@ -32,9 +34,9 @@ exports.save = async ({ payload, files, currentUser }) => {
     if (!newEvent.banner) newEvent.banner = null;
   }
   const [insertedEvent] = await sql`
-        insert into event ${sql(newEvent)}
-        on conflict (id)
-        do update set ${sql(newEvent)} returning *`;
+        insert into event ${sql(newEvent)} on conflict (id)
+        do
+        update set ${sql(newEvent)} returning *`;
 
   // stripe product
   const eventBanner = getApiPublicImgUrl(newEvent.banner, "event-banner");
@@ -118,25 +120,137 @@ exports.save = async ({ payload, files, currentUser }) => {
   return insertedEvent;
 };
 
+exports.saveExtras = async ({ payload, currentUser }) => {
+  // check authorization
+  if (currentUser.role != "sudo") {
+    //if updating event, make sure user is authorized
+    const [event] = await exports.getEventByEventIdnClubId({
+      eventId: payload.newExtras.eventId,
+      clubId: currentUser.clubId,
+    });
+    if (!event || !event.id) throw new CustomError("Access denied", 401);
+  }
+  // stripe product
+  const newProduct = {
+    name: payload.newExtras.name,
+    description: payload.newExtras.description,
+    images: [],
+    metadata: {},
+  };
+  const newPrice = {
+    currency: "eur",
+    unit_amount: Math.round(Number(payload.newExtras.price) * 100),
+  };
+  // if add event
+  if (!payload.newExtras.id && payload.newExtras.price > 0) {
+    const insertedProduct = await stripeService.createProduct({
+      payload: newProduct,
+    });
+    newPrice.product = insertedProduct.id;
+    //create stripe price
+    const insertedPrice = await stripeService.createPrice({
+      payload: newPrice,
+    });
+    payload.newExtras.stripeProductId = insertedProduct.id;
+    payload.newExtras.stripePriceId = insertedPrice.id;
+  }
+  // if edit event
+  else if (payload.newExtras.id) {
+    let extras = await exports.getExtrasById({
+      extrasId: payload.newExtras.id,
+    });
+    // if before it's free event and no stripe product created, create now
+    if (!extras.stripeProductId && payload.newExtras?.price > 0) {
+      const insertedProduct = await stripeService.createProduct({
+        payload: newProduct,
+      });
+      newPrice.product = insertedProduct.id;
+      //create stripe price
+      const insertedPrice = await stripeService.createPrice({
+        payload: newPrice,
+      });
+    }
+    if (!extras.stripeProductId) {
+      const [insertedExtra] = await sql`
+                insert into extras ${sql(payload.newExtras)} on conflict (id)
+        do
+                update set ${sql(payload.newExtras)} returning *`;
+      return insertedExtra;
+    }
+
+    const retrievedProduct = await stripeService.retrieveProduct({
+      id: extras.stripeProductId,
+    });
+    if (retrievedProduct) {
+      // update stripe api product if old product != new product
+      if (
+        newProduct.name !== retrievedProduct.name ||
+        newProduct.description !== retrievedProduct.description
+      ) {
+        await stripeService.updateProduct({
+          id: extras.stripeProductId,
+          payload: newProduct,
+        });
+      }
+      // update stripe api price if old price != new price
+      if (newProduct.price != retrievedProduct.price) {
+        // create new price
+        const createdPrice = await stripeService.createPrice({
+          payload: { ...newPrice, product: newProduct.productId },
+        });
+
+        //deactivate old price
+        await stripeService.updatePrice({
+          id: newProduct.priceId,
+          payload: { active: false },
+        });
+      }
+    }
+  }
+  const [insertedExtra] = await sql`
+        insert into extras ${sql(payload.newExtras)} on conflict (id)
+        do
+        update set ${sql(payload.newExtras)} returning *`;
+
+  return insertedExtra;
+};
+
+exports.getExtrasById = async ({ extrasId }) => {
+  const [extra] = await sql`
+        select *
+        from extras
+        where id = ${extrasId}`;
+  return extra;
+};
+
+exports.getExtrasByEventId = async ({ eventId }) => {
+  const extras = await sql`
+        select *
+        from extras
+        where event_id = ${eventId}`;
+  return extras;
+};
+
 exports.removeEvent = async ({ eventId, clubId }) => {
   const [deletedEvent] = await sql`
         delete
         from event
         where id = ${eventId}
-          and club_id = ${clubId}
-        returning *;`;
+          and club_id = ${clubId} returning *;`;
 
   if (deletedEvent.banner) {
     await removeImages([deletedEvent.banner]);
   }
   return deletedEvent;
 };
+
 exports.getEvent = async ({ eventId }) => {
   return sql`
         select *
         from event
         where id = ${eventId}`;
 };
+
 exports.getEventByEventIdnClubId = async ({ clubId, eventId }) => {
   return sql`
         select *
@@ -144,6 +258,7 @@ exports.getEventByEventIdnClubId = async ({ clubId, eventId }) => {
         where id = ${eventId}
           and club_id = ${clubId}`;
 };
+
 exports.getAllEvents = async ({ clubId }) => {
   return sql`
         select *
@@ -154,7 +269,6 @@ exports.getAllEvents = async ({ clubId }) => {
 
 exports.getAllActiveEvents = async ({ clubId, currentDate }) => {
   // const currentDate = new Date().toISOString().split("T")[0]; // Format the date as YYYY-MM-DD
-
   const results = await sql`
         SELECT *
         FROM event

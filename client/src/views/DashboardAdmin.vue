@@ -4,7 +4,7 @@ import { computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { formatDate, getEventImageUrl } from "@/others/util";
 import { useRoute, useRouter } from "vue-router";
-import RemoveEntity from "@/components/RemoveEntity.vue";
+import ConfirmationDialog from "@/components/ConfirmationDialog.vue";
 
 const store = useStore();
 const route = useRoute();
@@ -69,7 +69,12 @@ onMounted(() => {
 
     <v-row>
       <v-col>
-        <v-list v-if="events.length > 0" lines="three">
+        <v-list
+          v-if="events.length > 0"
+          lines="three"
+          bg-color="grey-lighten-3"
+          rounded
+        >
           <template v-for="(item, index) in events">
             <v-list-item
               v-if="item"
@@ -163,16 +168,31 @@ onMounted(() => {
                         })
                       "
                     ></v-list-item>
+                    <v-list-item
+                      prepend-icon="mdi-puzzle-plus"
+                      title="Vouchers"
+                      @click="
+                        router.push({
+                          name: 'event-extras',
+                          params: {
+                            eventId: item.id,
+                          },
+                        })
+                      "
+                    ></v-list-item>
 
                     <v-divider></v-divider>
 
-                    <remove-entity
-                      custom-class="text-error"
-                      label="Delete"
-                      prepend-icon="mdi-delete"
-                      variant="list"
-                      @remove-entity="deleteEvent(item.id)"
-                    ></remove-entity>
+                    <confirmation-dialog @confirm="deleteEvent(item.id)">
+                      <template #activator="{ onClick }">
+                        <v-list-item
+                          class="text-error"
+                          prepend-icon="mdi-delete"
+                          title="Delete"
+                          @click.stop="onClick"
+                        ></v-list-item>
+                      </template>
+                    </confirmation-dialog>
                   </v-list>
                 </v-menu>
               </template>
@@ -180,7 +200,7 @@ onMounted(() => {
                 <div>
                   {{
                     `Date: ${formatDate(item.startDate)} - ${formatDate(
-                      item.endDate
+                      item.endDate,
                     )}`
                   }}
                   <br />

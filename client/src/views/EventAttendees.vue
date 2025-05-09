@@ -5,7 +5,7 @@ import { useRoute, useRouter } from "vue-router";
 import PageTitle from "@/components/PageTitle.vue";
 import { formatDateTime, padStr } from "@/others/util";
 import { useDisplay } from "vuetify";
-import RemoveEntity from "@/components/RemoveEntity.vue";
+import ConfirmationDialog from "@/components/ConfirmationDialog.vue";
 
 const store = useStore();
 const route = useRoute();
@@ -13,7 +13,7 @@ const router = useRouter();
 const { xs } = useDisplay();
 
 const event = computed(() =>
-  store.getters["event/getEventById"](route.params.eventId)
+  store.getters["event/getEventById"](route.params.eventId),
 );
 const attendees = computed(() =>
   store.state.registration.attendees.map((item) => ({
@@ -22,7 +22,7 @@ const attendees = computed(() =>
       typeof item.registrationData === "string"
         ? JSON.parse(item.registrationData)
         : item.registrationData,
-  }))
+  })),
 );
 const editingAttendee = reactive({});
 const attendeeDetailsDialog = ref(false);
@@ -227,13 +227,16 @@ onMounted(() => {
                     @click="viewQr(item)"
                   ></v-list-item>
                   <v-divider></v-divider>
-                  <remove-entity
-                    custom-class="text-error"
-                    label="Delete"
-                    prepend-icon="mdi-delete"
-                    variant="list"
-                    @remove-entity="removeRegistration(item.rId)"
-                  ></remove-entity>
+                  <confirmation-dialog @confirm="removeRegistration(item.rId)">
+                    <template #activator="{ onClick }">
+                      <v-list-item
+                        class="text-error"
+                        prepend-icon="mdi-delete"
+                        title="Delete"
+                        @click.stop="onClick"
+                      ></v-list-item>
+                    </template>
+                  </confirmation-dialog>
                 </v-list>
               </v-menu>
             </tr>
