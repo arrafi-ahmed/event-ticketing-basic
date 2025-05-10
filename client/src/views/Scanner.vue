@@ -13,7 +13,7 @@ const route = useRoute();
 const isPaused = ref(false);
 
 const event = computed(() =>
-  store.getters["event/getEventById"](route.params.eventId)
+  store.getters["event/getEventById"](route.params.eventId),
 );
 const attendee = reactive({});
 const handleScan = async ([decodedString]) => {
@@ -58,7 +58,7 @@ const onError = (err) => {
 
     <v-row align="center" class="fill-height" justify="center" no-gutters>
       <v-col cols="12" lg="6" md="8" sm="10">
-        <v-card class="bg-tertiary">
+        <v-card>
           <v-card-title>Scan QR Code</v-card-title>
           <v-card-text>
             <qrcode-stream

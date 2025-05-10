@@ -69,12 +69,7 @@ onMounted(() => {
 
     <v-row>
       <v-col>
-        <v-list
-          v-if="events.length > 0"
-          lines="three"
-          bg-color="grey-lighten-3"
-          rounded
-        >
+        <v-list v-if="events.length > 0" lines="three" rounded>
           <template v-for="(item, index) in events">
             <v-list-item
               v-if="item"

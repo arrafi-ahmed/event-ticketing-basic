@@ -75,10 +75,10 @@ const drawer = ref(true);
 </script>
 
 <template>
-  <v-app-bar class="px-2 px-md-5 py-2 border-b" dense density="compact" flat>
+  <v-app-bar class="px-2 px-md-5 py-1 border-b" dense density="compact" flat>
     <logo
       :img-src="getClientPublicImgUrl('logo.png')"
-      :width="220"
+      :width="180"
       container-class="clickable"
       img-class="mx-auto"
       @click="router.push(calcHome)"
@@ -112,7 +112,7 @@ const drawer = ref(true);
   <v-navigation-drawer
     v-if="signedin"
     v-model="drawer"
-    :width="220"
+    :width="210"
     location="end"
     permanent
   >
@@ -128,13 +128,16 @@ const drawer = ref(true);
           <v-icon>{{ item.icon }}</v-icon>
         </template>
         <template #title>
-          <span class="text-body-1 ml-2 font-weight-medium">{{
-            item.title
-          }}</span>
+          <span class="font-size-1 font-weight-medium">{{ item.title }}</span>
         </template>
       </v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>
 
-<style scoped></style>
+<style scoped>
+.font-size-1 {
+  font-size: 1rem;
+  line-height: 1.2rem;
+}
+</style>
