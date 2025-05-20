@@ -86,7 +86,7 @@ exports.deleteProductPrice = async ({ id, productId, priceId }) => {
 
 exports.getStripeProductEventByEventId = async ({ eventId }) => {
   const [stripeProduct] = await sql`
-        select *
+        select *, sp.id as id, e.id as e_id
         from stripe_product sp
                  join event e on e.id = sp.event_id
         where e.id = ${eventId}`;
@@ -100,7 +100,7 @@ exports.createStripeCheckoutIfNeeded = async ({
   const stripeProductEvent = await exports.getStripeProductEventByEventId({
     eventId: savedRegistration.eventId,
   });
-  if (stripeProductEvent.ticketPrice > 0) {
+  if (stripeProductEvent?.ticketPrice > 0) {
     lineItems.push({ price: stripeProductEvent.priceId, quantity: 1 });
   }
   const stripeProductEventExtras = await eventService.getExtrasByIds({
@@ -117,6 +117,7 @@ exports.createStripeCheckoutIfNeeded = async ({
     extrasPurchase: savedExtrasPurchase,
     lineItems,
   };
+  if (lineItems.length < 1) return { clientSecret: "no-stripe" };
   return exports.createCheckout({
     payload: checkoutPayload,
   });
@@ -254,18 +255,6 @@ exports.webhook = async (req) => {
   return responseMsg;
 };
 /*
-stripe trigger checkout.session.completed --override='{
-"data": {
-  "object": {
-    "metadata": {
-      "registrationId": "70",
-      "uuid": "uuid-94",
-      "extrasPurchaseId": "53"
-    }
-  }
-}
-}'
-
 stripe trigger checkout.session.completed
 --override checkout_session:metadata.registrationId=70
 --override checkout_session:metadata.uuid=f3b157dd-7eab-46e1-90d1-e676c65948bb

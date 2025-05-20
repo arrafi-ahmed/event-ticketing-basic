@@ -94,7 +94,7 @@ exports.sendTicket = async ({ registrationId }) => {
       extrasPurchase,
     });
 
-  return sendMailService
+  sendMailService
     .sendMailWAttachment(
       result.registrationData.email,
       `Ticket for ${event.name}`,

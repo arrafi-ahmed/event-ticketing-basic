@@ -44,17 +44,21 @@ exports.generateTicketContent = async ({
       id: extrasPurchase.id,
       qrUuid: extrasPurchase.qrUuid,
     });
-    doc.addImage(extrasQr, "JPEG", 20, 60, 80, 80);
+    const posY = 40 + (extrasPurchase.extrasData.length - 1) * 10;
+    doc.addImage(extrasQr, "JPEG", 20, posY, 80, 80);
   }
 
   const emailBody = `Grazie per la registrazione!
 
-In allegato troverai il biglietto per l'ingresso e uno o più QR code separati per riscattare gli extra acquistati (bevande, cibo, ecc).
+In allegato trovi il tuo biglietto d’ingresso all’evento.
 
-⚠️ Ricorda: ogni QR degli extra è valido una sola volta per ciascun elemento acquistato, quindi non condividerli.
+Se hai acquistato voucher (come bevande o cibo), troverai anche QR code separati per riscattarli.
 
-Saluti,
-Click Event`;
+Ci vediamo all’evento!
+
+Saluti,  
+Click Event
+`;
 
   return { attachment: doc, emailBody };
 };

@@ -30,10 +30,25 @@ router.post("/initRegistration", async (req, res, next) => {
         extrasIds: req.body.extrasIds,
       },
     });
+    let responseMsg = null;
+    if (clientSecret === "no-stripe") {
+      // increase registration_count in event
+      await eventService.increaseRegistrationCount({
+        eventId: savedRegistration.eventId,
+      });
+      // send email
+      await registrationService.sendTicket({
+        registrationId: savedRegistration.id,
+      });
+      responseMsg = "Registration Successful!";
+    }
 
-    res
-      .status(200)
-      .json(new ApiResponse(null, { savedRegistration, clientSecret }));
+    res.status(200).json(
+      new ApiResponse(responseMsg, {
+        savedRegistration,
+        clientSecret,
+      }),
+    );
   } catch (err) {
     next(err);
   }

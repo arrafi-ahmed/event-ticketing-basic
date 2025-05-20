@@ -65,56 +65,74 @@ exports.save = async ({ payload, files, currentUser }) => {
   }
   // if edit event
   else if (newEvent.id) {
-    let stripeProduct = await stripeService.getStripeProductByEventId({
+    let stripeProduct = await stripeService.getStripeProductEventByEventId({
       eventId: insertedEvent.id,
     });
-    // if before it's free event and no stripe product created, create now
-    if (!stripeProduct && insertedEvent?.ticketPrice > 0) {
-      stripeProduct = await stripeService.createProductPrice({
-        product: newProduct,
-        price: newPrice,
+    // Only proceed if this is a paid event
+    if (insertedEvent?.ticketPrice > 0) {
+      // Get existing Stripe product
+      let stripeProduct = await stripeService.getStripeProductEventByEventId({
+        eventId: insertedEvent.id,
       });
+
+      // Free → Paid → Create new product & price
+      if (!stripeProduct) {
+        stripeProduct = await stripeService.createProductPrice({
+          product: newProduct,
+          price: newPrice,
+        });
+        return insertedEvent;
+      }
+
+      // Paid → Paid → Update if needed
+      const retrievedProduct = await stripeService.retrieveProduct({
+        id: stripeProduct.productId,
+      });
+
+      if (retrievedProduct) {
+        const shouldUpdateProduct =
+          newProduct.name !== retrievedProduct.name ||
+          newProduct.description !== retrievedProduct.description ||
+          (files && files.length > 0);
+
+        if (shouldUpdateProduct) {
+          await stripeService.updateProduct({
+            id: stripeProduct.productId,
+            payload: newProduct,
+          });
+        }
+
+        const oldPrice = Number(retrievedProduct.metadata.ticketPrice);
+        const newPriceAmount = Number(insertedEvent.ticketPrice);
+
+        if (oldPrice !== newPriceAmount) {
+          const createdPrice = await stripeService.createPrice({
+            payload: { ...newPrice, product: stripeProduct.productId },
+          });
+
+          await stripeService.updatePrice({
+            id: stripeProduct.priceId,
+            payload: { active: false },
+          });
+
+          await stripeService.saveStripeProduct({
+            payload: {
+              id: stripeProduct.id,
+              eventId: stripeProduct.eventId,
+              productId: stripeProduct.productId,
+              priceId: createdPrice.id,
+            },
+          });
+        }
+      }
     }
-    if (!stripeProduct) return insertedEvent;
-
-    const retrievedProduct = await stripeService.retrieveProduct({
-      id: stripeProduct.productId,
-    });
-    if (retrievedProduct) {
-      // update stripe api product if old product != new product
-      if (
-        newProduct.name != retrievedProduct.name ||
-        newProduct.description != retrievedProduct.description ||
-        (files && files.length > 0)
-      ) {
-        await stripeService.updateProduct({
-          id: stripeProduct.productId,
-          payload: newProduct,
-        });
-      }
-      // update stripe api price if old price != new price
-      if (
-        newProduct.metadata.ticketPrice != retrievedProduct.metadata.ticketPrice
-      ) {
-        // create new price
-        const createdPrice = await stripeService.createPrice({
-          payload: { ...newPrice, product: stripeProduct.productId },
-        });
-
-        //deactivate old price
-        await stripeService.updatePrice({
-          id: stripeProduct.priceId,
-          payload: { active: false },
-        });
-
-        // update stripe_product
-        await stripeService.saveStripeProduct({
-          payload: {
-            ...stripeProduct,
-            priceId: createdPrice.id,
-          },
-        });
-      }
+    //  paid event -> free event
+    else if (insertedEvent.ticketPrice === 0 && stripeProduct?.priceId) {
+      await stripeService.updatePrice({
+        id: stripeProduct.priceId,
+        payload: { active: false },
+      });
+      await stripeService.deleteStripeProduct({ id: stripeProduct.id });
     }
   }
 

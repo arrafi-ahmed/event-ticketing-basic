@@ -67,8 +67,8 @@ CREATE TABLE extras
     description       TEXT,
     price             INT,   -- added
     content           jsonb, -- [{name, quantity}]
-    stripe_product_id VARCHAR(255) NOT NULL,
-    stripe_price_id   VARCHAR(255) NOT NULL,
+    stripe_product_id VARCHAR(255),
+    stripe_price_id   VARCHAR(255),
     event_id          INT          NOT NULL REFERENCES event (id) ON DELETE CASCADE
 );
 -- added

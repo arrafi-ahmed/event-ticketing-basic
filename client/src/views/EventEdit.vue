@@ -94,6 +94,7 @@ onMounted(async () => {
   await fetchData();
   Object.assign(newEvent, {
     ...event.value,
+    banner: null,
     startDate: new Date(event.value.startDate),
     endDate: new Date(event.value.endDate),
   });
@@ -220,7 +221,7 @@ onMounted(async () => {
           <v-row align="center" justify="start" no-gutters>
             <v-col class="mt-5" cols="12" sm="3">
               <v-img
-                :src="getEventImageUrl(newEvent.banner)"
+                :src="getEventImageUrl(event.banner)"
                 aspect-ratio="1"
                 class="position-relative mx-1 border"
                 cover
@@ -238,13 +239,15 @@ onMounted(async () => {
                 >
                 </v-btn>
               </v-img>
-
+              {{ newEvent }}
               <v-file-input
                 :rules="[
                   (v) =>
+                    !v ||
                     (Array.isArray(v) ? v : [v]).every((file) =>
                       isValidImage(file),
-                    ) || 'Only jpg/jpeg/png allowed!',
+                    ) ||
+                    'Only jpg/jpeg/png allowed!',
                 ]"
                 accept="image/*"
                 class="mx-1"

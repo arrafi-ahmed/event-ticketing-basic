@@ -120,8 +120,9 @@ export const isValidEmail = (email) => {
 };
 
 export const isValidImage = (file) => {
+  if (!file || typeof file !== "object") return false;
   const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
-  return allowedTypes.includes(file?.type);
+  return allowedTypes.includes(file.type);
 };
 
 export const deepCopy = (aObject) => {

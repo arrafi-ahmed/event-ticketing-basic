@@ -1,7 +1,7 @@
 <script setup>
 import { computed, nextTick, onMounted, onUnmounted, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getCountryList, isValidEmail, stripePublic } from "@/others/util";
+import { isValidEmail, stripePublic } from "@/others/util";
 import { useStore } from "vuex";
 import Logo from "@/components/Logo.vue";
 import Phone from "@/components/Phone.vue";
@@ -54,10 +54,24 @@ const registerUser = async () => {
     newRegistration,
     extrasIds: selectedExtrasId.value,
   };
-  const { clientSecret } = await store.dispatch(
+  const { savedRegistration, clientSecret } = await store.dispatch(
     "registration/initRegistration",
     payload,
   );
+
+  if (clientSecret === "no-stripe") {
+    return router.push({
+      name: "event-register-success",
+      params: {
+        clubId: savedRegistration.clubId,
+        eventId: savedRegistration.eventId,
+      },
+      query: {
+        registration_id: savedRegistration.id,
+        uuid: savedRegistration.uuid,
+      },
+    });
+  }
 
   showCheckout.value = true;
   await nextTick();

@@ -24,22 +24,20 @@ const sendMail = async (to, subject, html) => {
 
 const sendMailWAttachment = (to, subject, text, pdf) => {
   const pdfBuffer = Buffer.from(pdf.output(), "binary");
-
-  return new Promise((resolve, reject) => {
-    transporter.sendMail({
-      from: `Click Event <${SMTP_USER}>`,
-      to,
-      // bcc: '',
-      subject,
-      text,
-      attachments: [
-        {
-          filename: "attachment.pdf",
-          content: pdfBuffer,
-        },
-      ],
-    });
-  });
+  const mailOptions = {
+    from: `Click Event <${SMTP_USER}>`,
+    to,
+    // bcc: '',
+    subject,
+    text,
+    attachments: [
+      {
+        filename: "attachment.pdf",
+        content: pdfBuffer,
+      },
+    ],
+  };
+  return transporter.sendMail(mailOptions);
 };
 
 module.exports = {
