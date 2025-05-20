@@ -3,8 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "setup": "npm install && npm update --save",
-    "dev": "vite --host",
+    "in": "npm install",
+    "up": "npm update --save",
+    "clear-cache": "rm -rf node_modules/.cache node_modules/.vite",
+    "dev": "npm run clear-cache && vite --host",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint  --fix --ignore-path .gitignore"

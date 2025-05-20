@@ -3,9 +3,10 @@
 echo "----- Deployment script started ---"
 # Define variables for directories and repositories
 REPO_NAME="event-ticketing-basic"
-PROJECT_ROOT="/usr/local/lsws/clickevent"
+VHOST_NAME="clickevent"
 
 # Auto generated
+PROJECT_ROOT="/usr/local/lsws/$VHOST_NAME"
 REPO_URL="https://github.com/arrafi-ahmed/$REPO_NAME.git"
 REPO_DIR="$PROJECT_ROOT/$REPO_NAME"
 HTML_DIR="$PROJECT_ROOT/html"
@@ -13,7 +14,7 @@ HTML_DIR="$PROJECT_ROOT/html"
 # Exit immediately if a command exits with a non-zero status
 set -e
 
-# Function to remove existing files and directories in HTML DIR
+# Function to remove existing files and directories in /usr/local/lsws/wayzaway/html
 remove_existing_files() {
   local files=(
     assets
@@ -50,7 +51,7 @@ echo "----- Git clone done..."
 
 # Navigate to the client directory, setup the client environment, and build the client application
 cd "$REPO_DIR/client" && \
-npm run setup && \
+npm run in && \
 npm run build && \
 remove_existing_files && \
 mv dist/* "$HTML_DIR" && \
@@ -62,12 +63,17 @@ find . -mindepth 1 -maxdepth 1 ! -name 'public' -exec rm -rf {} + && \
 echo "----- Project Node dir cleaned..."
 
 # Sync API files to the node directory (excluding 'public' folder)
-rsync -av --progress --exclude public "$REPO_DIR/api/" "$HTML_DIR/node" && \
-echo "----- Project Node synced..."
+if [ -d "$HTML_DIR/node/public" ]; then
+  rsync -av --progress --exclude public "$REPO_DIR/api/" "$HTML_DIR/node" && \
+  echo "----- Project Node synced (with exclusion)..."
+else
+  rsync -av --progress "$REPO_DIR/api/" "$HTML_DIR/node" && \
+  echo "----- Project Node synced (no exclusion)..."
+fi
 
 # Navigate to the node directory and setup the node environment
 cd "$HTML_DIR/node" && \
-npm run setup && \
+npm run in && \
 echo "----- Api setup done..." && \
 
 if [ -d "$REPO_DIR" ]; then

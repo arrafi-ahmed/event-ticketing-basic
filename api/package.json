@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "setup": "npm install && npm update --save",
+    "in": "npm install",
+    "up": "npm update --save",
     "dev": "NODE_ENV=development nodemon app.js",
     "prod": "NODE_ENV=production node app.js",
     "build": ""
