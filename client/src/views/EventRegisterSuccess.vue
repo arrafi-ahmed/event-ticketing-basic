@@ -1,7 +1,12 @@
 <script setup>
 import { computed, onMounted, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { clientBaseUrl, getQueryParam, sendToWhatsapp } from "@/others/util";
+import {
+  clientBaseUrl,
+  getApiPublicImgUrl,
+  getQueryParam,
+  sendToWhatsapp,
+} from "@/others/util";
 import { useStore } from "vuex";
 import QRCodeVue3 from "qrcode-vue3";
 import { useDisplay, useTheme } from "vuetify";
@@ -54,9 +59,8 @@ onUnmounted(() => {
       <v-col cols="12" md="5" sm="6">
         <logo
           v-if="club.logo"
-          :img-src-api="{ name: club.logo, type: 'club-logo' }"
-          :max-height="xs ? 65 : 100"
-          :max-width="xs ? 200 : 300"
+          :img-src="getApiPublicImgUrl(club.logo, 'club-logo')"
+          :max-width="sm ? 200 : 300"
           :title="!club.logo ? club.name : null"
           container-class="clickable"
           img-class="mx-auto"

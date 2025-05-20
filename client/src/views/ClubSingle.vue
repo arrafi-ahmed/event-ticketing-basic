@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getEventImageUrl } from "@/others/util";
+import { getApiPublicImgUrl, getEventImageUrl } from "@/others/util";
 import { useStore } from "vuex";
 import Logo from "@/components/Logo.vue";
 import { useDisplay } from "vuetify";
@@ -9,7 +9,7 @@ import { useDisplay } from "vuetify";
 const store = useStore();
 const route = useRoute();
 const router = useRouter();
-const { xs } = useDisplay();
+const { sm } = useDisplay();
 
 const club = computed(() => store.state.club.club);
 const events = computed(() => store.state.event.events);
@@ -41,9 +41,9 @@ onMounted(async () => {
         >
           <v-card-text>
             <logo
-              :img-src-api="{ name: club.logo, type: 'club-logo' }"
-              :max-height="xs ? 65 : 100"
-              :max-width="xs ? 200 : 300"
+              v-if="club.logo"
+              :img-src="getApiPublicImgUrl(club.logo, 'club-logo')"
+              :max-width="sm ? 200 : 300"
               :title="!club.logo ? club.name : null"
               container-class="clickable"
               img-class="mx-auto"
