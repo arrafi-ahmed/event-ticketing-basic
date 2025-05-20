@@ -1,7 +1,12 @@
 <script setup>
 import { computed, nextTick, onMounted, onUnmounted, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getCountryList, isValidEmail, stripePublic } from "@/others/util";
+import {
+  getApiPublicImgUrl,
+  getCountryList,
+  isValidEmail,
+  stripePublic,
+} from "@/others/util";
 import { useStore } from "vuex";
 import Logo from "@/components/Logo.vue";
 import Phone from "@/components/Phone.vue";
@@ -12,7 +17,7 @@ import { loadStripe } from "@stripe/stripe-js/pure";
 const store = useStore();
 const route = useRoute();
 const router = useRouter();
-const { xs } = useDisplay();
+const { xs, sm } = useDisplay();
 
 const registration = computed(() => store.state.registration.registration);
 const club = computed(() => store.state.club.club);
@@ -152,9 +157,8 @@ onUnmounted(() => {
           <v-card-text>
             <logo
               v-if="club.logo"
-              :img-src-api="{ name: club.logo, type: 'club-logo' }"
-              :max-height="xs ? 65 : 100"
-              :max-width="xs ? 200 : 300"
+              :img-src="getApiPublicImgUrl(club.logo, 'club-logo')"
+              :max-width="sm ? 200 : 300"
               :title="!club.logo ? club.name : null"
               container-class="clickable"
               img-class="mx-auto"

@@ -71,7 +71,7 @@ const menuItems = computed(() => {
   return items;
 });
 
-const drawer = ref(true);
+const drawer = ref(!mobile.value);
 </script>
 
 <template>
@@ -114,7 +114,7 @@ const drawer = ref(true);
     v-model="drawer"
     :width="210"
     location="end"
-    permanent
+    temporary
   >
     <v-list class="mt-4" color="primary" density="compact" nav>
       <v-list-item
