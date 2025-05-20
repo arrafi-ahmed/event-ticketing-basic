@@ -18,7 +18,7 @@ set -e
 remove_existing_files() {
   local files=(
     assets
-    favicon.ico
+    favicon.ico QQQQ
     img
     index.html
     maintanance.html
