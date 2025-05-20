@@ -11,12 +11,12 @@ const route = useRoute();
 const router = useRouter();
 const theme = useTheme();
 
-const registrationId = computed(() => route.params.registrationId);
+const id = computed(() => route.params.id);
 const qrUuid = computed(() => route.params.qrUuid);
 
 const qrCode = computed(() => {
   return JSON.stringify({
-    id: registrationId.value,
+    id: id.value,
     qrUuid: qrUuid.value,
   });
 });
@@ -41,7 +41,7 @@ const isSignedin = computed(() => store.getters["user/signedin"]);
     <v-row align="center" justify="center">
       <v-col cols="auto mt-5">
         <QRCodeVue3
-          v-if="registrationId && qrUuid"
+          v-if="id && qrUuid"
           :cornersSquareOptions="qrOptions"
           :dotsOptions="qrOptions"
           :download="true"

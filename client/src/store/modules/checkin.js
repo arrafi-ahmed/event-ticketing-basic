@@ -31,26 +31,29 @@ export const actions = {
         });
     });
   },
-  updateCheckinStatus({ commit }, request) {
+  save({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
         .post("/api/checkin/save", {
           payload: {
-            id: request.editingAttendee.cId,
-            checkinStatus: request.editingAttendee.checkinStatus,
-            registrationId: request.editingAttendee.rId,
+            newCheckin: request.newCheckin,
+            eventId: request.eventId,
           },
-          eventId: request.eventId,
         })
         .then((response) => {
           commit(
             "registration/updateAttendee",
             {
-              ...request.editingAttendee,
-              ...response.data?.payload,
-              cId: response.data?.payload.id,
+              checkin: {
+                id: response.data.payload?.id,
+                status: response.data.payload?.status,
+                checkinTime: response.data.payload?.checkinTime,
+              },
+              registration: {
+                id: response.data.payload?.registrationId,
+              },
             },
-            { root: true }
+            { root: true },
           );
           resolve(response.data?.payload);
         })

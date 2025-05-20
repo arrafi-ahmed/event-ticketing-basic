@@ -10,7 +10,7 @@ const store = useStore();
 const route = useRoute();
 
 const event = computed(() =>
-  store.getters["event/getEventById"](route.params.eventId)
+  store.getters["event/getEventById"](route.params.eventId),
 );
 const statistics = computed(() => store.state.checkin.statistics);
 const inputDate = ref(null);

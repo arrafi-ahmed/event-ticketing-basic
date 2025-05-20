@@ -1,5 +1,7 @@
 const router = require("express").Router();
 const registrationService = require("../service/registration");
+const eventService = require("../service/event");
+const stripeService = require("../service/stripe");
 const ApiResponse = require("../model/ApiResponse");
 const {
   auth,
@@ -7,9 +9,39 @@ const {
   isAuthenticated,
 } = require("../middleware/auth");
 
+router.post("/initRegistration", async (req, res, next) => {
+  try {
+    const savedRegistration = await registrationService.defaultSave({
+      payload: req.body.newRegistration,
+    });
+
+    let savedExtrasPurchase = null;
+    if (req.body.extrasIds?.length) {
+      savedExtrasPurchase = await eventService.saveExtrasPurchase({
+        extrasIds: req.body.extrasIds,
+        registrationId: savedRegistration.id,
+      });
+    }
+
+    const { clientSecret } = await stripeService.createStripeCheckoutIfNeeded({
+      payload: {
+        savedRegistration,
+        savedExtrasPurchase,
+        extrasIds: req.body.extrasIds,
+      },
+    });
+
+    res
+      .status(200)
+      .json(new ApiResponse(null, { savedRegistration, clientSecret }));
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.post("/save", (req, res, next) => {
   registrationService
-    .save({ payload: req.body })
+    .defaultSave({ payload: req.body })
     .then((results) => {
       res.status(200).json(new ApiResponse(null, results));
     })
@@ -36,20 +68,16 @@ router.get("/getRegistration", isAuthenticated, (req, res, next) => {
     .catch((err) => next(err));
 });
 
-router.get(
-  "/getAttendeesWcheckin",
-  auth,
-  isAdminEventAuthor,
-  (req, res, next) => {
-    registrationService
-      .getAttendeesWcheckin({
-        eventId: req.query.eventId,
-        sortBy: req.query.sortBy,
-      })
-      .then((results) => res.status(200).json(new ApiResponse(null, results)))
-      .catch((err) => next(err));
-  }
-);
+router.get("/getAttendees", auth, isAdminEventAuthor, (req, res, next) => {
+  registrationService
+    .getAttendees({
+      eventId: req.query.eventId,
+      searchKeyword: req.query.searchKeyword,
+      sortBy: req.query.sortBy,
+    })
+    .then((results) => res.status(200).json(new ApiResponse(null, results)))
+    .catch((err) => next(err));
+});
 
 router.get(
   "/removeRegistration",
@@ -62,10 +90,10 @@ router.get(
         eventId: req.query.eventId,
       })
       .then((results) =>
-        res.status(200).json(new ApiResponse("Registration deleted!", results))
+        res.status(200).json(new ApiResponse("Registration deleted!", results)),
       )
       .catch((err) => next(err));
-  }
+  },
 );
 
 router.get("/downloadAttendees", auth, isAdminEventAuthor, (req, res, next) => {
@@ -74,25 +102,15 @@ router.get("/downloadAttendees", auth, isAdminEventAuthor, (req, res, next) => {
     .then(async (workbook) => {
       res.setHeader(
         "Content-Type",
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       );
       res.setHeader(
         "Content-Disposition",
-        "attachment; filename=" + "attendee-report.xlsx"
+        "attachment; filename=" + "attendee-report.xlsx",
       );
       await workbook.xlsx.write(res);
       res.end();
     })
-    .catch((err) => next(err));
-});
-
-router.get("/searchAttendees", auth, isAdminEventAuthor, (req, res, next) => {
-  registrationService
-    .searchAttendees({
-      searchKeyword: req.query.searchKeyword,
-      eventId: req.query.eventId,
-    })
-    .then((results) => res.status(200).json(new ApiResponse(null, results)))
     .catch((err) => next(err));
 });
 
@@ -102,9 +120,25 @@ router.get("/sendTicket", auth, isAdminEventAuthor, (req, res, next) => {
       registrationId: req.query.registrationId,
     })
     .then((results) =>
-      res.status(200).json(new ApiResponse("Ticket sent to email!", results))
+      res.status(200).json(new ApiResponse("Ticket sent to email!", results)),
     )
     .catch((err) => next(err));
 });
+
+router.post(
+  "/scanByExtrasPurchaseId",
+  auth,
+  isAdminEventAuthor,
+  (req, res, next) => {
+    registrationService
+      .scanByExtrasPurchaseId({
+        ...req.body.payload,
+      })
+      .then((results) =>
+        res.status(200).json(new ApiResponse("Ticket sent to email!", results)),
+      )
+      .catch((err) => next(err));
+  },
+);
 
 module.exports = router;

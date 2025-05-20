@@ -10,7 +10,7 @@ const route = useRoute();
 
 const admins = computed(() => store.state.appUser.admins);
 const club = computed(() =>
-  store.getters["club/getClubById"](route.params.clubId)
+  store.getters["club/getClubById"](route.params.clubId),
 );
 
 const accordion = ref(["admins"]);
@@ -66,7 +66,7 @@ const handleSubmitCredential = async (type) => {
 // };
 const copyToClipboard = async (item) => {
   await navigator.clipboard.writeText(
-    `Username: ${item.username}, Password: ${item.password}`
+    `Username: ${item.username}, Password: ${item.password}`,
   );
   toast.info("Copied to clipboard!");
 };

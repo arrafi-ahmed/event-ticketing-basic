@@ -44,7 +44,7 @@ const handleAddEvent = async () => {
   formData.append("maxAttendees", newEvent.maxAttendees);
   formData.append(
     "startDate",
-    toLocalISOString(newEvent.startDate).slice(0, 10)
+    toLocalISOString(newEvent.startDate).slice(0, 10),
   );
   formData.append("endDate", toLocalISOString(newEvent.endDate).slice(0, 10));
 
@@ -179,7 +179,7 @@ const handleAddEvent = async () => {
             :rules="[
               (v) =>
                 (Array.isArray(v) ? v : [v]).every((file) =>
-                  isValidImage(file)
+                  isValidImage(file),
                 ) || 'Only jpg/jpeg/png allowed!',
             ]"
             accept="image/*"

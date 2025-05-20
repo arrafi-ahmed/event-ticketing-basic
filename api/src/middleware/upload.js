@@ -28,8 +28,8 @@ function createUpload(prefix) {
         return next(
           new CustomError(
             "Invalid file type! Only .jpg, .jpeg, and .png files are allowed.",
-            415
-          )
+            415,
+          ),
         );
       }
 

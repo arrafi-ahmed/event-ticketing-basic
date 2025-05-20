@@ -16,14 +16,14 @@ const targetClubId = computed(() =>
   currentUser.value.role === "sudo"
     ? route.params.clubId
     : currentUser.value.role === "admin"
-    ? currentUser.value.clubId
-    : null
+      ? currentUser.value.clubId
+      : null,
 );
 const prefetchedClub = computed(() =>
-  store.getters["club/getClubById"](targetClubId.value)
+  store.getters["club/getClubById"](targetClubId.value),
 );
 const club = computed(() =>
-  prefetchedClub.value?.id ? prefetchedClub.value : store.state.club.club
+  prefetchedClub.value?.id ? prefetchedClub.value : store.state.club.club,
 );
 
 const newClubInit = {
@@ -54,8 +54,8 @@ const redirectDestination = computed(() =>
   currentUser.value.role === "sudo"
     ? "dashboard-sudo"
     : currentUser.value.role === "admin"
-    ? "dashboard-admin"
-    : null
+      ? "dashboard-admin"
+      : null,
 );
 
 const handleEditClub = async () => {
@@ -169,7 +169,7 @@ onMounted(async () => {
                 :rules="[
                   (v) =>
                     (Array.isArray(v) ? v : [v]).every((file) =>
-                      isValidImage(file)
+                      isValidImage(file),
                     ) || 'Only jpg/jpeg/png allowed!',
                 ]"
                 accept="image/*"

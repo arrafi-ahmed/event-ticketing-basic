@@ -86,7 +86,7 @@ export const getters = {
     return state.currentUser.role === "sudo"
       ? { name: "dashboard-sudo" }
       : state.currentUser.role === "admin"
-      ? { name: "dashboard-admin" }
-      : { name: "signout" };
+        ? { name: "dashboard-admin" }
+        : { name: "signout" };
   },
 };

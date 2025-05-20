@@ -39,6 +39,14 @@ export const mutations = {
       state.events.splice(foundIndex, 1);
     }
   },
+  removeExtras(state, payload) {
+    const foundIndex = state.extras.findIndex(
+      (item) => item.id == payload.extrasId,
+    );
+    if (foundIndex !== -1) {
+      state.extras.splice(foundIndex, 1);
+    }
+  },
   setExtras(state, payload) {
     state.extras = payload;
   },
@@ -134,6 +142,21 @@ export const actions = {
         });
     });
   },
+  removeExtras({ commit }, request) {
+    return new Promise((resolve, reject) => {
+      $axios
+        .get("/api/event/removeExtras", {
+          params: { extrasId: request.extrasId, eventId: request.eventId },
+        })
+        .then((response) => {
+          commit("removeExtras", request);
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
   saveExtras({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
@@ -166,4 +189,5 @@ export const getters = {
   getEventById: (state) => (id) => {
     return state.events.find((item) => item.id == id);
   },
+  isEventFree: () => {},
 };

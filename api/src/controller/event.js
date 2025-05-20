@@ -83,6 +83,18 @@ router.get("/removeEvent", auth, isAdminEventAuthor, (req, res, next) => {
     .catch((err) => next(err));
 });
 
+router.get("/removeExtras", auth, isAdminEventAuthor, (req, res, next) => {
+  eventService
+    .removeExtras({
+      eventId: req.query.eventId,
+      extrasId: req.query.extrasId,
+    })
+    .then((results) =>
+      res.status(200).json(new ApiResponse("Voucher deleted!", results)),
+    )
+    .catch((err) => next(err));
+});
+
 router.get("/getAllActiveEvents", (req, res, next) => {
   eventService
     .getAllActiveEvents({

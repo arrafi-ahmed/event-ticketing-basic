@@ -2,6 +2,7 @@ const CustomError = require("../model/CustomError");
 const { sql } = require("../db");
 const { removeImages, getApiPublicImgUrl } = require("../others/util");
 const stripeService = require("../service/stripe");
+const { v4: uuidv4 } = require("uuid");
 
 exports.save = async ({ payload, files, currentUser }) => {
   const newEvent = {
@@ -215,12 +216,57 @@ exports.saveExtras = async ({ payload, currentUser }) => {
   return insertedExtra;
 };
 
+exports.saveExtrasPurchase = async ({
+  extrasIds,
+  registrationId,
+  status = false,
+}) => {
+  const extras = await exports.getExtrasByIds({ extrasIds });
+  const newExtrasPurchase = {
+    extrasData: [],
+    status,
+    qrUuid: uuidv4(),
+    scannedAt: null,
+    registrationId,
+  };
+  newExtrasPurchase.extrasData = extras.map((item, index) => ({
+    name: item.name,
+    price: item.price,
+    content: item.content,
+  }));
+  const savedExtrasPurchase =
+    await sql`insert into extras_purchase ${sql(newExtrasPurchase)} returning *`;
+
+  return savedExtrasPurchase;
+};
+
+exports.updateExtrasPurchaseStatus = async ({ payload: { id, status } }) => {
+  const extras = await sql`
+        UPDATE extras_purchase
+        SET status     = ${status},
+            scanned_at = CASE
+                             WHEN ${status} = TRUE THEN NOW() -- Set to current timestamp if status is true
+                             ELSE scanned_at -- Otherwise, keep its existing value
+                END
+        WHERE id = ${id} RETURNING *;
+    `;
+  return extras;
+};
+
 exports.getExtrasById = async ({ extrasId }) => {
   const [extra] = await sql`
         select *
         from extras
         where id = ${extrasId}`;
   return extra;
+};
+
+exports.getExtrasByIds = async ({ extrasIds }) => {
+  const extras = await sql`
+        select *
+        from extras
+        where id in ${sql(extrasIds)}`;
+  return extras;
 };
 
 exports.getExtrasByEventId = async ({ eventId }) => {
@@ -244,6 +290,16 @@ exports.removeEvent = async ({ eventId, clubId }) => {
   return deletedEvent;
 };
 
+exports.removeExtras = async ({ eventId, extrasId }) => {
+  const [deletedExtras] = await sql`
+        delete
+        from extras
+        where id = ${extrasId}
+          and event_id = ${eventId} returning *;`;
+
+  return deletedExtras;
+};
+
 exports.getEvent = async ({ eventId }) => {
   return sql`
         select *
@@ -265,6 +321,22 @@ exports.getAllEvents = async ({ clubId }) => {
         from event
         where club_id = ${clubId}
         order by id desc`;
+};
+
+exports.getAllEvents = async ({ clubId }) => {
+  return sql`
+        select *
+        from event
+        where club_id = ${clubId}
+        order by id desc`;
+};
+
+exports.increaseRegistrationCount = async ({ eventId }) => {
+  const [updatedEvent] = await sql`
+        update event
+        set registration_count = registration_count + 1
+        where id = ${eventId} returning *;`;
+  return updatedEvent;
 };
 
 exports.getAllActiveEvents = async ({ clubId, currentDate }) => {

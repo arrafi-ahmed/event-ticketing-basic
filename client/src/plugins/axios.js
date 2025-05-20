@@ -36,7 +36,7 @@ $axios.interceptors.response.use(
       toast.error(err.response?.data?.msg);
     }
     return Promise.reject(err);
-  }
+  },
 );
 
 export default $axios;

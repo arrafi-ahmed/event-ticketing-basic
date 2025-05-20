@@ -69,29 +69,17 @@ onMounted(() => {
 
     <v-row>
       <v-col>
-        <v-list v-if="events.length > 0" lines="three" rounded>
+        <div v-if="events.length > 0" lines="three" rounded>
           <template v-for="(item, index) in events">
-            <v-list-item
-              v-if="item"
-              :key="index"
-              :title="item?.name"
-              @click="
-                router.push({
-                  name: 'event-attendees',
-                  params: {
-                    eventId: item.id,
-                  },
-                })
-              "
-            >
-              <template v-slot:prepend="{}">
+            <v-card v-if="item" :key="index" :title="item?.name" class="mt-2">
+              <template #prepend>
                 <v-avatar
                   :image="getEventImageUrl(item.banner)"
                   :size="80"
                   rounded="sm"
                 ></v-avatar>
               </template>
-              <template v-slot:append="{}">
+              <template #append>
                 <v-menu>
                   <template v-slot:activator="{ props }">
                     <v-btn
@@ -129,12 +117,26 @@ onMounted(() => {
                     ></v-list-item>
                     <v-list-item
                       prepend-icon="mdi-qrcode"
-                      title="Scanner"
+                      title="Main Scanner"
                       @click="
                         router.push({
                           name: 'scanner',
                           params: {
                             eventId: item.id,
+                            variant: 'main',
+                          },
+                        })
+                      "
+                    ></v-list-item>
+                    <v-list-item
+                      prepend-icon="mdi-qrcode"
+                      title="Voucher Scanner"
+                      @click="
+                        router.push({
+                          name: 'scanner',
+                          params: {
+                            eventId: item.id,
+                            variant: 'voucher',
                           },
                         })
                       "
@@ -164,7 +166,7 @@ onMounted(() => {
                       "
                     ></v-list-item>
                     <v-list-item
-                      prepend-icon="mdi-puzzle-plus"
+                      prepend-icon="mdi-puzzle"
                       title="Vouchers"
                       @click="
                         router.push({
@@ -191,7 +193,7 @@ onMounted(() => {
                   </v-list>
                 </v-menu>
               </template>
-              <template v-slot:subtitle="{}">
+              <template #subtitle>
                 <div>
                   {{
                     `Date: ${formatDate(item.startDate)} - ${formatDate(
@@ -202,9 +204,9 @@ onMounted(() => {
                   {{ `Location: ${item.location}` }}
                 </div>
               </template>
-            </v-list-item>
+            </v-card>
           </template>
-        </v-list>
+        </div>
         <v-alert v-else border="start" closable density="compact"
           >No items found!
         </v-alert>

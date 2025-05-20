@@ -11,10 +11,16 @@ const {
 const { appInfo } = require("./src/others/util");
 const port = process.env.PORT || 3000;
 
+// Uncomment if Stripe webhook is needed
+app.post(
+  "/api/stripe/webhook",
+  express.raw({ type: "application/json" }),
+  require("./src/controller/stripe").webhook,
+);
+
 //middlewares
 app.use(customCors);
 app.use(express.static(path.join(__dirname, "public")));
-
 app.use(express.json());
 
 //routes
@@ -25,7 +31,7 @@ app.use("/api/registration", require("./src/controller/registration"));
 app.use("/api/checkin", require("./src/controller/checkin"));
 app.use("/api/form", require("./src/controller/form"));
 app.use("/api/appUser", require("./src/controller/appUser"));
-app.use("/api/stripe", require("./src/controller/stripe"));
+app.use("/api/stripe", require("./src/controller/stripe").router);
 
 app.get("/api/version", (req, res) => {
   res.status(200).json(appInfo);

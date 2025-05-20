@@ -26,13 +26,13 @@ watch(
   (newVal) => {
     selectedDate.value = new Date(newVal);
     selectedDate.value = newVal ? formatDate(newVal) : "";
-  }
+  },
 );
 watch(
   () => model.value,
   () => {
     menu.value = false;
-  }
+  },
 );
 </script>
 

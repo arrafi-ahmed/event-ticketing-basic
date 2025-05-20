@@ -33,8 +33,10 @@ const isAddExtrasFormValid = ref(true);
 
 const openEditVoucherDialog = ({ id }) => {
   editExtrasDialog.value = !editExtrasDialog.value;
-  const targetExtra = extras;
-  Object.assign(newExtras, { ...extras.value });
+  const foundExtra = extras.value.find((item) => item.id === id);
+  if (foundExtra) {
+    Object.assign(newExtras, { ...foundExtra });
+  }
 };
 const editExtrasDialog = ref(false);
 const editExtrasForm = ref(null);
@@ -45,9 +47,14 @@ const addMoreVoucherItems = () => {
     ...new ExtrasItem(),
   });
 };
-const handleExtrasAdd = async () => {
-  await addExtrasForm.value.validate();
-  if (!isAddExtrasFormValid.value) return;
+const handleExtrasSave = async () => {
+  if (addExtrasDialog.value) {
+    await addExtrasForm.value.validate();
+    if (!isAddExtrasFormValid.value) return;
+  } else if (editExtrasDialog.value) {
+    await editExtrasForm.value.validate();
+    if (!isEditExtrasFormValid.value) return;
+  }
 
   newExtras.eventId = route.params.eventId;
 
@@ -56,9 +63,21 @@ const handleExtrasAdd = async () => {
     Object.assign(newExtras, {
       ...new Extras(),
     });
-    addExtrasDialog.value = !addExtrasDialog.value;
+    if (addExtrasDialog.value) {
+      addExtrasDialog.value = !addExtrasDialog.value;
+    } else if (editExtrasDialog.value) {
+      editExtrasDialog.value = !editExtrasDialog.value;
+    }
   });
 };
+
+const deleteExtras = async ({ extrasId }) => {
+  await store.dispatch("event/removeExtras", {
+    extrasId,
+    eventId: route.params.eventId,
+  });
+};
+
 const fetchData = async () => {
   await Promise.allSettled([
     store.dispatch("club/setClub", targetClubId.value),
@@ -75,16 +94,16 @@ onMounted(async () => {
     <v-row>
       <v-col>
         <page-title
-          justify="space-between"
           :sub-title="club.name"
+          justify="space-between"
           title="Vouchers"
         >
           <div class="d-flex align-center">
             <v-btn
-              prepend-icon="mdi-plus"
-              color="primary"
-              rounded="lg"
               class="mr-2"
+              color="primary"
+              prepend-icon="mdi-plus"
+              rounded="lg"
               @click="openAddVoucherDialog"
             >
               Create
@@ -116,8 +135,8 @@ onMounted(async () => {
     </v-row>
 
     <v-row align="stretch">
-      <v-col cols="12" sm="6" md="4" lg="3" v-for="(extra, index) in extras">
-        <v-card rounded="lg" class="fill-height">
+      <v-col v-for="(extra, index) in extras" cols="12" lg="3" md="4" sm="6">
+        <v-card class="fill-height" rounded="lg">
           <v-card-title>
             <div class="d-flex justify-space-between align-center">
               <div>{{ extra.name }}</div>
@@ -142,20 +161,23 @@ onMounted(async () => {
           </v-card-text>
           <v-card-actions class="justify-space-between">
             <v-btn
-              prepend-icon="mdi-square-edit-outline"
-              variant="outlined"
-              rounded="lg"
               class="border-grey"
+              prepend-icon="mdi-square-edit-outline"
+              rounded="lg"
+              variant="outlined"
               @click="openEditVoucherDialog({ id: extra.id })"
               >Edit
             </v-btn>
-            <confirmation-dialog>
+            <confirmation-dialog
+              @confirm="deleteExtras({ extrasId: extra.id })"
+            >
               <template #activator="{ onClick }">
                 <v-btn
-                  prepend-icon="mdi-close"
-                  variant="flat"
                   color="error"
+                  prepend-icon="mdi-close"
                   rounded="lg"
+                  variant="flat"
+                  @click="onClick"
                   >Delete
                 </v-btn>
               </template>
@@ -182,7 +204,7 @@ onMounted(async () => {
           ref="addExtrasForm"
           v-model="isAddExtrasFormValid"
           fast-fail
-          @submit.prevent="handleExtrasAdd"
+          @submit.prevent="handleExtrasSave"
         >
           <v-text-field
             v-model="newExtras.name"
@@ -236,8 +258,8 @@ onMounted(async () => {
                 class="mt-2 mt-md-4 ml-2"
                 density="comfortable"
                 hide-details="auto"
-                type="number"
                 min="0"
+                type="number"
               />
             </v-col>
           </v-row>
@@ -275,7 +297,7 @@ onMounted(async () => {
           ref="editExtrasForm"
           v-model="isEditExtrasFormValid"
           fast-fail
-          @submit.prevent="handleExtrasAdd"
+          @submit.prevent="handleExtrasSave"
         >
           <v-text-field
             v-model="newExtras.name"
@@ -329,8 +351,8 @@ onMounted(async () => {
                 class="mt-2 mt-md-4 ml-2"
                 density="comfortable"
                 hide-details="auto"
-                type="number"
                 min="0"
+                type="number"
               />
             </v-col>
           </v-row>

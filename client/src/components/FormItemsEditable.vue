@@ -11,14 +11,14 @@ watch(
   (newItems) => {
     inputResponses.value = newItems;
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 watch(
   () => inputResponses.value,
   (newVal) => {
     emit("update", { newVal });
-  }
+  },
 );
 
 const removeQuestion = (qId, index) => {

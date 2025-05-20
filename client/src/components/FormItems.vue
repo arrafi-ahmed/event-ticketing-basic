@@ -1,9 +1,9 @@
 <script setup>
-import {defineEmits, defineProps, ref, watch} from "vue";
+import { defineEmits, defineProps, ref, watch } from "vue";
 import Phone from "@/components/Phone.vue";
-import {isValidEmail} from "@/others/util";
+import { isValidEmail } from "@/others/util";
 
-const {items, overAllIndex, quantityIndex, type} = defineProps([
+const { items, overAllIndex, quantityIndex, type } = defineProps([
   "items",
   "overAllIndex",
   "quantityIndex",
@@ -13,7 +13,7 @@ const inputResponses = ref([]);
 
 const emit = defineEmits(["update"]);
 
-const handleUpdatePhone = ({formattedPhone, index}) => {
+const handleUpdatePhone = ({ formattedPhone, index }) => {
   inputResponses.value[index] = formattedPhone;
 };
 
@@ -22,14 +22,14 @@ watch(
   (newVal) => {
     if (newVal) {
       inputResponses.value = newVal.map((item) =>
-        item?.typeId == 3 ? [] : null
+        item?.typeId == 3 ? [] : null,
       );
     }
   },
-  {immediate: true}
+  { immediate: true },
 );
 watch(inputResponses.value, (newVal) => {
-  emit("update", {newVal, overAllIndex, quantityIndex});
+  emit("update", { newVal, overAllIndex, quantityIndex });
 });
 </script>
 

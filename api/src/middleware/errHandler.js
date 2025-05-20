@@ -28,6 +28,9 @@ const uncaughtErrHandler = () => {
   process.on("uncaughtException", (err) => {
     printError("UNCAUGHT", err);
   });
+  process.on("unhandledRejection", (reason, promise) => {
+    printError("UNHANDLED REJECTION", reason);
+  });
 };
 
 module.exports = { globalErrHandler, uncaughtErrHandler };

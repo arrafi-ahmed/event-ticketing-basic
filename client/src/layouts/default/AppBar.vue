@@ -116,7 +116,7 @@ const drawer = ref(true);
     location="end"
     permanent
   >
-    <v-list color="primary" density="compact" nav class="mt-4">
+    <v-list class="mt-4" color="primary" density="compact" nav>
       <v-list-item
         v-for="(item, index) in menuItems"
         :key="index"

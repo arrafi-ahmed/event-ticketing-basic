@@ -64,7 +64,7 @@ const compressImages = async (req, res, next) => {
         req.files.map(async (file) => {
           file = await compressAndRotateImage(file);
           return file;
-        })
+        }),
       );
     }
     next();

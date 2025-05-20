@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import PageTitle from "@/components/PageTitle.vue";
 import termsContent from "@/others/content/terms.html?raw";
 import privacyPolicyContent from "@/others/content/privacy-policy.html?raw";
@@ -12,25 +12,25 @@ const pageTitle = computed(() =>
   route.params.type === "terms"
     ? "Terms & Condition"
     : route.params.type === "privacy-policy"
-    ? "Privacy Policy"
-    : route.params.type === "cookie-policy"
-    ? "Cookie Policy"
-    : null
+      ? "Privacy Policy"
+      : route.params.type === "cookie-policy"
+        ? "Cookie Policy"
+        : null,
 );
 
 const staticContent = computed(() =>
   route.params.type === "terms"
     ? termsContent
     : route.params.type === "privacy-policy"
-    ? privacyPolicyContent
-    : route.params.type === "cookie-policy"
-    ? cookiePolicyContent
-    : null
+      ? privacyPolicyContent
+      : route.params.type === "cookie-policy"
+        ? cookiePolicyContent
+        : null,
 );
 </script>
 <template>
   <v-container>
-    <page-title justify="space-between" :title="pageTitle">
+    <page-title :title="pageTitle" justify="space-between">
       <v-btn
         icon="mdi-arrow-left"
         variant="text"

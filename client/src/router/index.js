@@ -140,7 +140,7 @@ const routes = [
         },
       },
       {
-        path: "event/:eventId/scanner",
+        path: "event/:eventId/scanner/:variant",
         name: "scanner",
         component: () => import("@/views/Scanner.vue"),
         meta: {
@@ -158,7 +158,7 @@ const routes = [
         },
       },
       {
-        path: "qr/:registrationId/:qrUuid",
+        path: "qr/:id/:qrUuid",
         name: "qr-viewer",
         component: () => import("@/views/QrViewer.vue"),
         meta: {

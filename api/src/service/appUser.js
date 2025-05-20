@@ -8,10 +8,10 @@ exports.save = async ({ payload }) => {
     payload.role == "sudo"
       ? 1
       : payload.role == "admin"
-      ? 2
-      : payload.role == "attendee"
-      ? 3
-      : null;
+        ? 2
+        : payload.role == "attendee"
+          ? 3
+          : null;
 
   // if add request
   if (!payload.id) {

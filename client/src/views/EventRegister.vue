@@ -17,6 +17,9 @@ const { xs } = useDisplay();
 const registration = computed(() => store.state.registration.registration);
 const club = computed(() => store.state.club.club);
 const event = computed(() => store.state.event.event);
+const extras = computed(() => store.state.event.extras);
+
+const selectedExtrasId = ref([]);
 const registrationInit = {
   registrationData: {
     name: null,
@@ -44,53 +47,32 @@ const registerUser = async () => {
       qId: formQuestions.value?.[index]?.id,
       question: formQuestions.value?.[index]?.text,
       answer: item,
-    })
+    }),
   );
 
-  // if free ticket
-  if (isEventFree.value) {
-    newRegistration.status = true;
-    await store.dispatch("registration/saveRegistration", newRegistration);
-    router.push({
-      name: "event-register-success",
-      params: { clubId: route.params.clubId, eventId: route.params.eventId },
-      query: {
-        registration_id: registration.value?.id,
-        uuid: registration.value?.qrUuid,
-      },
+  const payload = {
+    newRegistration,
+    extrasIds: selectedExtrasId.value,
+  };
+  const { clientSecret } = await store.dispatch(
+    "registration/initRegistration",
+    payload,
+  );
+
+  showCheckout.value = true;
+  await nextTick();
+
+  if (!checkout.value) {
+    checkout.value = await stripe.initEmbeddedCheckout({
+      clientSecret,
     });
+    // Mount Checkout
+    checkout.value.mount("#checkout");
   } else {
-    newRegistration.status = false;
-    const insertedRegistraion = await store.dispatch(
-      "registration/saveRegistration",
-      newRegistration
-    );
-
-    if (!insertedRegistraion || !insertedRegistraion.id) return;
-
-    const { clientSecret } = await store.dispatch(
-      "registration/createCheckout",
-      {
-        clubId: route.params.clubId,
-        eventId: route.params.eventId,
-        registrationId: insertedRegistraion.id,
-        uuid: insertedRegistraion.qrUuid,
-      }
-    );
-    showCheckout.value = true;
-    await nextTick();
-
-    if (!checkout.value) {
-      checkout.value = await stripe.initEmbeddedCheckout({
-        clientSecret,
-      });
-      // Mount Checkout
-      checkout.value.mount("#checkout");
-    } else {
-      console.warn("Checkout already mounted. Ignoring.");
-    }
+    console.warn("Checkout already mounted. Ignoring.");
   }
 };
+
 let checkout = ref(null);
 const handleUpdatePhone = ({ formattedPhone }) => {
   newRegistration.registrationData.phone = formattedPhone;
@@ -108,17 +90,29 @@ const isEventFree = computed(() => event.value?.ticketPrice == 0);
 
 const mustLoadStripePublic = computed(() => stripePublic);
 
-onMounted(async () => {
-  await store.dispatch("event/setEvent", {
-    eventId: route.params.eventId,
-  });
-  await store.dispatch("form/setFormQuestions", {
-    eventId: route.params.eventId,
-  });
-  if (!club.value?.id) {
-    await store.dispatch("club/setClub", route.params.clubId);
+const handleExtrasSelected = ({ extrasId }) => {
+  const foundIndex = selectedExtrasId.value.findIndex(
+    (item) => item === extrasId,
+  );
+  if (foundIndex === -1) {
+    selectedExtrasId.value.push(extrasId);
+  } else {
+    selectedExtrasId.value.splice(foundIndex, 1);
   }
-  if (!isEventFree.value) {
+};
+
+onMounted(async () => {
+  await Promise.allSettled([
+    store.dispatch("club/setClub", route.params.clubId),
+    store.dispatch("event/setEvent", {
+      eventId: route.params.eventId,
+    }),
+    store.dispatch("form/setFormQuestions", {
+      eventId: route.params.eventId,
+    }),
+    store.dispatch("event/setExtras", route.params.eventId),
+  ]);
+  if (!isEventFree.value || extras.value.length) {
     stripe = await loadStripe(mustLoadStripePublic.value);
   }
 });
@@ -291,6 +285,51 @@ onUnmounted(() => {
               </div>
             </v-form>
             <div v-else id="checkout"></div>
+          </v-card-text>
+        </v-card>
+      </v-col>
+
+      <v-col v-if="extras.length && !showCheckout" cols="12" md="4" sm="5">
+        <v-card
+          color="tertiary"
+          subtitle="Acquista i tuoi voucher per questo evento"
+          title="Voucher Disponibili"
+        >
+          <v-card-text>
+            <v-card
+              v-for="(extra, index) in extras"
+              :class="{ 'mt-2 mt-md-4': index > 0 }"
+              color="primary"
+              link
+              @click="handleExtrasSelected({ extrasId: extra.id })"
+            >
+              <v-badge
+                v-if="selectedExtrasId.includes(extra.id)"
+                class="ml-4"
+                color="success"
+                content="+ Added"
+                location="end"
+              >
+              </v-badge>
+              <v-card-title>
+                <div class="d-flex justify-space-between align-center">
+                  <div>{{ extra.name }}</div>
+                  <v-chip density="compact"> € {{ extra.price }}</v-chip>
+                </div>
+              </v-card-title>
+              <v-card-subtitle>
+                {{ extra.description }}
+              </v-card-subtitle>
+            </v-card>
+            <v-alert
+              class="mt-2 mt-md-4"
+              color="primary"
+              density="compact"
+              text="I voucher acquistati ti saranno inviati via email. Potrai mostrarli all'ingresso dell'evento per accedere."
+              title="Voucher"
+              type="info"
+              variant="tonal"
+            ></v-alert>
           </v-card-text>
         </v-card>
       </v-col>

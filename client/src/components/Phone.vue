@@ -33,7 +33,7 @@ const formatPhoneInput = () => {
 
 const formatSelectedDialCode = (selectedCode) => {
   const { flag, code, name, dialCode } = inputItem.options.find(
-    (item) => item.code == selectedCode
+    (item) => item.code == selectedCode,
   );
   Object.assign(selectedCountry, {
     ...selectedCountry,

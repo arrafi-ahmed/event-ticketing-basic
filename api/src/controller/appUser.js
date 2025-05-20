@@ -7,7 +7,7 @@ router.post("/save", auth, isSudo, (req, res, next) => {
   appUserService
     .save(req.body)
     .then((results) =>
-      res.status(200).json(new ApiResponse("Credential saved!", results))
+      res.status(200).json(new ApiResponse("Credential saved!", results)),
     )
     .catch((err) => next(err));
 });

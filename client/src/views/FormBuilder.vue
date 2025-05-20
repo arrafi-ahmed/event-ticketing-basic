@@ -92,7 +92,7 @@ const rmQIds = [];
 const handleRemoveQuestion = (qId, index) => {
   if (qId) {
     const filteredQuestions = newFormQuestions.value.filter(
-      (item) => item.id != qId
+      (item) => item.id != qId,
     );
     rmQIds.push(qId);
     newFormQuestions.value = [...filteredQuestions];
@@ -113,7 +113,7 @@ onMounted(() => {
 });
 
 const event = computed(() =>
-  store.getters["event/getEventById"](route.params.eventId)
+  store.getters["event/getEventById"](route.params.eventId),
 );
 </script>
 

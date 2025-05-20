@@ -1,5 +1,6 @@
 import $axios from "@/plugins/axios";
 import fileSaver from "file-saver";
+import { deepMerge } from "@/others/util";
 
 export const namespaced = true;
 
@@ -20,10 +21,10 @@ export const mutations = {
   },
   updateAttendee(state, payload) {
     const foundIndex = state.attendees.findIndex(
-      (item) => item.rId == payload.rId
+      (item) => item.registration.id == payload.registration.id,
     );
     if (foundIndex !== -1) {
-      state.attendees[foundIndex] = payload;
+      deepMerge(state.attendees[foundIndex], payload);
     }
   },
   removeRegistration(state, payload) {
@@ -35,6 +36,19 @@ export const mutations = {
 };
 
 export const actions = {
+  initRegistration({ commit }, request) {
+    return new Promise((resolve, reject) => {
+      $axios
+        .post("/api/registration/initRegistration", request)
+        .then((response) => {
+          commit("setRegistration", response.data?.payload);
+          resolve(response.data?.payload);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
   saveRegistration({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
@@ -69,25 +83,11 @@ export const actions = {
   setAttendees({ commit }, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .get("/api/registration/getAttendeesWcheckin", {
-          params: { eventId: request.eventId, sortBy: request?.sortBy },
-        })
-        .then((response) => {
-          commit("setAttendees", response.data?.payload);
-          resolve(response.data?.payload);
-        })
-        .catch((err) => {
-          reject(err);
-        });
-    });
-  },
-  searchAttendees({ commit }, request) {
-    return new Promise((resolve, reject) => {
-      $axios
-        .get("/api/registration/searchAttendees", {
+        .get("/api/registration/getAttendees", {
           params: {
-            searchKeyword: request.searchKeyword,
             eventId: request.eventId,
+            searchKeyword: request.searchKeyword,
+            sortBy: request?.sortBy,
           },
         })
         .then((response) => {
@@ -189,6 +189,19 @@ export const actions = {
     return new Promise((resolve, reject) => {
       $axios
         .post("/api/stripe/createCheckout", request)
+        .then((response) => {
+          // commit("setRegistration", response.data?.payload);
+          resolve(response.data?.payload);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
+  scanByExtrasPurchaseId({ commit }, request) {
+    return new Promise((resolve, reject) => {
+      $axios
+        .post("/api/registration/scanByExtrasPurchaseId", { payload: request })
         .then((response) => {
           // commit("setRegistration", response.data?.payload);
           resolve(response.data?.payload);

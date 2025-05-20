@@ -6,14 +6,13 @@ exports.save = async ({ newCheckin }) => {
     ...newCheckin,
     checkinTime: new Date(),
   };
-  if (!newCheckin.id) {
-    delete newCheckin.id;
-  }
+  if (!newCheckin.id) delete newCheckin.id;
+
   const [savedCheckin] = await sql`
-        insert into checkin ${sql(newCheckin)}
-        on conflict (id)
-        do update set ${sql(newCheckin)}
-        returning *;`;
+        insert into checkin ${sql(newCheckin)} on conflict (id)
+        do
+        update set ${sql(newCheckin)}
+            returning *;`;
 
   return savedCheckin;
 };
@@ -29,7 +28,7 @@ exports.validateQrCode = async ({ id, qrUuid, eventId }) => {
 
   if (!registration || registration.qrUuid != qrUuid) {
     throw new CustomError("Invalid QR Code", 401, registration);
-  } else if (registration.cId !== null) {
+  } else if (registration.status === true) {
     throw new CustomError("Already checked-in", 401, registration);
   }
   return registration;
@@ -40,10 +39,13 @@ exports.scanByRegistrationId = async ({ qrCodeData, eventId, userId }) => {
   const registration = await exports.validateQrCode({ id, qrUuid, eventId });
 
   const newCheckin = {
-    checkinStatus: true,
+    status: true,
     registrationId: id,
     checkedinBy: userId,
   };
+  if (registration.cId) {
+    newCheckin.id = registration.cId;
+  }
   const updatedCheckin = await exports.save({ newCheckin });
   return registration;
 };
@@ -51,15 +53,15 @@ exports.scanByRegistrationId = async ({ qrCodeData, eventId, userId }) => {
 exports.getStatistics = async ({ eventId, date }) => {
   const [counts] = await sql`
         SELECT COUNT(DISTINCT CASE
-                                  WHEN r.registration_time::date = ${date}::date
-                                      THEN r.id END) AS historical_registration_count,
+                                  WHEN r.registration_time:: date = ${date}::date
+                                      THEN r.id END)                                                                            AS historical_registration_count,
                COUNT(DISTINCT CASE
-                                  WHEN r.registration_time::date = ${date}::date AND c.checkin_status = true
+                                  WHEN r.registration_time:: date = ${date}::date AND c.status = true
                                       THEN c.id END) AS historical_checkin_count,
-               COUNT(DISTINCT r.id)                  AS total_registration_count,
+               COUNT(DISTINCT r.id)                                                                                             AS total_registration_count,
                COUNT(DISTINCT CASE
-                                  WHEN c.checkin_status = true
-                                      THEN c.id END) AS total_checkin_count
+                                  WHEN c.status = true
+                                      THEN c.id END)                                                                            AS total_checkin_count
         FROM registration r
                  LEFT JOIN checkin c ON r.id = c.registration_id
         WHERE r.event_id = ${eventId};

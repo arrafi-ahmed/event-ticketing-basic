@@ -17,10 +17,10 @@ const router = useRouter();
 const store = useStore();
 
 const prefetchedEvent = computed(() =>
-  store.getters["event/getEventById"](route.params.eventId)
+  store.getters["event/getEventById"](route.params.eventId),
 );
 const event = computed(() =>
-  prefetchedEvent.value?.id ? prefetchedEvent.value : store.state.event.event
+  prefetchedEvent.value?.id ? prefetchedEvent.value : store.state.event.event,
 );
 
 const newEventInit = {
@@ -66,7 +66,7 @@ const handleSubmitEditEvent = async () => {
   formData.append("maxAttendees", newEvent.maxAttendees);
   formData.append(
     "startDate",
-    toLocalISOString(newEvent.startDate).slice(0, 10)
+    toLocalISOString(newEvent.startDate).slice(0, 10),
   );
   formData.append("endDate", toLocalISOString(newEvent.endDate).slice(0, 10));
 
@@ -243,7 +243,7 @@ onMounted(async () => {
                 :rules="[
                   (v) =>
                     (Array.isArray(v) ? v : [v]).every((file) =>
-                      isValidImage(file)
+                      isValidImage(file),
                     ) || 'Only jpg/jpeg/png allowed!',
                 ]"
                 accept="image/*"

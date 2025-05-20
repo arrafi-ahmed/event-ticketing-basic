@@ -32,7 +32,7 @@ watch(
     inputValue.startTime = newVal.startTime;
     inputValue.endDate = newVal.endDate;
     inputValue.endTime = newVal.endTime;
-  }
+  },
 );
 
 const start = ref(null);
@@ -68,10 +68,10 @@ const validate = (value, datetimeType) => {
     type === "date-time"
       ? /^\d{4}-\d{2}-\d{2} \d?\d:\d{2}( (AM|PM))?$/
       : type === "date"
-      ? /^\d{4}-\d{2}-\d{2}$/
-      : type === "time"
-      ? /^\d?\d:\d{2}( (AM|PM))?$/
-      : null;
+        ? /^\d{4}-\d{2}-\d{2}$/
+        : type === "time"
+          ? /^\d?\d:\d{2}( (AM|PM))?$/
+          : null;
   if (!regex.test(value)) {
     const msg = "Please enter a valid date and time";
     if (datetimeType === "start") error.start = msg;
@@ -149,19 +149,19 @@ const startLabel = computed(() =>
   type === "date-time"
     ? "Start Date-Time"
     : type === "date"
-    ? "Start Date"
-    : type === "time"
-    ? "Start Time"
-    : null
+      ? "Start Date"
+      : type === "time"
+        ? "Start Time"
+        : null,
 );
 const endLabel = computed(() =>
   type === "date-time"
     ? "End Date-Time"
     : type === "date"
-    ? "End Date"
-    : type === "time"
-    ? "End Time"
-    : null
+      ? "End Date"
+      : type === "time"
+        ? "End Time"
+        : null,
 );
 </script>
 <template>
@@ -268,7 +268,11 @@ const endLabel = computed(() =>
 }
 
 .text-box {
-  //display: flex; align-items: center; border: 1px solid var(--color-border); border-radius: 4px; padding: 4px;
+  //display: flex;
+  align-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 4px;
 }
 
 /*
@@ -298,7 +302,10 @@ const endLabel = computed(() =>
 }
 
 .clock {
-  //display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
+  //display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
 }
 
 .format {

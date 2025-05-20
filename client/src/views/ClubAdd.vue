@@ -96,7 +96,7 @@ const handleAddClub = async () => {
             :rules="[
               (v) =>
                 (Array.isArray(v) ? v : [v]).every((file) =>
-                  isValidImage(file)
+                  isValidImage(file),
                 ) || 'Only jpg/jpeg/png allowed!',
             ]"
             accept="image/*"

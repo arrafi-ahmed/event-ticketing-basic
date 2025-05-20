@@ -66,7 +66,7 @@ CREATE TABLE extras
     name              VARCHAR(100) NOT NULL,
     description       TEXT,
     price             INT,   -- added
-    content           jsonb, -- [{item, quantity}]
+    content           jsonb, -- [{name, quantity}]
     stripe_product_id VARCHAR(255) NOT NULL,
     stripe_price_id   VARCHAR(255) NOT NULL,
     event_id          INT          NOT NULL REFERENCES event (id) ON DELETE CASCADE
@@ -75,9 +75,13 @@ CREATE TABLE extras
 CREATE TABLE extras_purchase
 (
     id              SERIAL PRIMARY KEY,
-    extras_data     jsonb, -- [{item, quantity}]
-    registration_id INT NOT NULL REFERENCES registration (id) ON DELETE CASCADE
+    extras_data     jsonb,                       -- [{name, price, content:[{name, quantity}]}]
+    status          BOOLEAN,                     -- added // scan status
+    qr_uuid         VARCHAR(255) UNIQUE NOT NULL,-- added
+    scanned_at      TIMESTAMP DEFAULT NULL,      -- added
+    registration_id INT                 NOT NULL REFERENCES registration (id) ON DELETE CASCADE
 );
+
 CREATE TABLE form_question
 (
     id       SERIAL PRIMARY KEY,

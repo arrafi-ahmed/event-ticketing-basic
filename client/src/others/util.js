@@ -80,6 +80,17 @@ export const getToLink = (item) => {
   return item.to;
 };
 
+export const checkinItems = [
+  { title: "Pending", value: false },
+  { title: "Checked-in", value: true },
+];
+
+export const extrasItems = [
+  { title: "", value: null },
+  { title: "Not Redeemed", value: false },
+  { title: "Redeemed", value: true },
+];
+
 export const getQueryParam = (param) => {
   const queryParams = new URLSearchParams(window.location.search);
   return queryParams.get(param);
@@ -110,7 +121,39 @@ export const isValidEmail = (email) => {
 
 export const isValidImage = (file) => {
   const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
-  return allowedTypes.includes(file.type);
+  return allowedTypes.includes(file?.type);
+};
+
+export const deepCopy = (aObject) => {
+  // Prevent undefined objects
+  if (!aObject) return aObject;
+  let bObject = Array.isArray(aObject) ? [] : {};
+  let value;
+  for (const key in aObject) {
+    // Prevent self-references to parent object
+    if (Object.is(aObject[key], aObject)) continue;
+    value = aObject[key];
+    bObject[key] = typeof value === "object" ? deepCopy(value) : value;
+  }
+  return bObject;
+};
+
+export const deepMerge = (target, source) => {
+  for (const key in source) {
+    if (
+      source[key] &&
+      typeof source[key] === "object" &&
+      !Array.isArray(source[key])
+    ) {
+      if (!target[key] || typeof target[key] !== "object") {
+        target[key] = {};
+      }
+      deepMerge(target[key], source[key]);
+    } else {
+      target[key] = source[key];
+    }
+  }
+  return target;
 };
 
 export const isValidPass = [

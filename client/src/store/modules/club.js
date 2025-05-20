@@ -24,7 +24,7 @@ export const mutations = {
   },
   removeClub(state, payload) {
     const foundIndex = state.clubs.findIndex(
-      (item) => item.id == payload.clubId
+      (item) => item.id == payload.clubId,
     );
     if (foundIndex !== -1) {
       state.clubs.splice(foundIndex, 1);

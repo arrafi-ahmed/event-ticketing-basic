@@ -3,7 +3,13 @@ import { computed, onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import PageTitle from "@/components/PageTitle.vue";
-import { formatDateTime, padStr } from "@/others/util";
+import {
+  checkinItems,
+  deepCopy,
+  extrasItems,
+  formatDateTime,
+  padStr,
+} from "@/others/util";
 import { useDisplay } from "vuetify";
 import ConfirmationDialog from "@/components/ConfirmationDialog.vue";
 
@@ -15,54 +21,51 @@ const { xs } = useDisplay();
 const event = computed(() =>
   store.getters["event/getEventById"](route.params.eventId),
 );
-const attendees = computed(() =>
-  store.state.registration.attendees.map((item) => ({
-    ...item,
-    registrationData:
-      typeof item.registrationData === "string"
-        ? JSON.parse(item.registrationData)
-        : item.registrationData,
-  })),
-);
-const editingAttendee = reactive({});
+const attendees = computed(() => store.state.registration.attendees);
+const editingAttendeeInit = {
+  registration: null,
+  checkin: null,
+  extras: null,
+};
+const editingAttendee = reactive({ ...editingAttendeeInit });
 const attendeeDetailsDialog = ref(false);
 
 const openAtendeeDetailsDialog = (registrationId) => {
-  const attendee = attendees.value.find((item) => item.rId == registrationId);
-  Object.assign(editingAttendee, { ...attendee });
-  editingAttendee.checkinStatus = attendee.checkinStatus
-    ? checkinItems[1]
-    : checkinItems[0];
+  const attendee = attendees.value.find(
+    (item) => item.registration?.id == registrationId,
+  );
+  Object.assign(editingAttendee, deepCopy(attendee)); //deep clone
+  editingAttendee.checkin.status =
+    attendee.checkin?.status === true
+      ? checkinItems[1].value
+      : checkinItems[0].value;
   attendeeDetailsDialog.value = !attendeeDetailsDialog.value;
 };
 
-const updateAttendee = (registrationId) => {
-  const attendee = attendees.value.find((item) => item.rId == registrationId);
-  if (attendee.checkinStatus == editingAttendee.checkinStatus) return;
+const updateCheckinStatus = async (registrationId) => {
+  const attendee = attendees.value.find(
+    (item) => item.registration?.id == registrationId,
+  );
+  if (attendee.checkin?.status === editingAttendee.checkin?.status) return;
 
-  store
-    .dispatch("checkin/updateCheckinStatus", {
-      editingAttendee,
+  const newCheckin = {};
+  Object.assign(newCheckin, { ...editingAttendee.checkin, registrationId });
+
+  await store
+    .dispatch("checkin/save", {
+      newCheckin,
       eventId: route.params.eventId,
     })
     .finally(() => {
       attendeeDetailsDialog.value = !attendeeDetailsDialog.value;
+      Object.assign(editingAttendee, {
+        ...editingAttendeeInit,
+        checkin: { status: checkinItems[0].value },
+      });
     });
 };
 
-const checkinItems = [
-  { title: "Pending", value: false },
-  { title: "Checked-in", value: true },
-];
-
 const searchKeyword = ref(null);
-
-const handleSearchAttendee = () => {
-  store.dispatch("registration/searchAttendees", {
-    searchKeyword: searchKeyword.value,
-    eventId: route.params.eventId,
-  });
-};
 
 const handleDownloadAttendees = () => {
   store.dispatch("registration/downloadAttendees", {
@@ -84,16 +87,17 @@ const removeRegistration = (registrationId) => {
   });
 };
 
-const viewQr = (registration) => {
+const viewQr = (item) => {
   router.push({
     name: "qr-viewer",
-    params: { registrationId: registration.rId, qrUuid: registration.qrUuid },
+    params: { id: item.id, qrUuid: item.qrUuid },
   });
 };
 
 const sortByCheckin = () => {
   store.dispatch("registration/setAttendees", {
     eventId: route.params.eventId,
+    searchKeyword: searchKeyword.value,
     sortBy: "checkin",
   });
 };
@@ -101,9 +105,10 @@ const sortByCheckin = () => {
 const fetchData = () => {
   store.dispatch("registration/setAttendees", {
     eventId: route.params.eventId,
-    sortBy: "registration",
+    searchKeyword: searchKeyword.value,
   });
 };
+
 onMounted(() => {
   fetchData();
 });
@@ -136,8 +141,8 @@ onMounted(() => {
         label="Search by name/email/phone"
         single-line
         variant="solo"
-        @keydown.enter="handleSearchAttendee"
-        @click:append-inner="handleSearchAttendee"
+        @keydown.enter="fetchData"
+        @click:append-inner="fetchData"
       ></v-text-field>
       <!--            download btn for mobile-->
       <v-btn
@@ -178,6 +183,7 @@ onMounted(() => {
               <th class="text-start v-label--clickable" @click="sortByCheckin">
                 Check-in Status
               </th>
+              <th class="text-start">Voucher</th>
               <th></th>
             </tr>
           </thead>
@@ -186,22 +192,41 @@ onMounted(() => {
               v-for="(item, index) in attendees"
               :key="'r-' + index"
               class="clickable"
-              @click="openAtendeeDetailsDialog(item.rId)"
+              @click="openAtendeeDetailsDialog(item.registration.id)"
             >
-              <td>{{ padStr(item.rId, 5) }}</td>
-              <td>{{ item.registrationData?.name }}</td>
-              <td v-if="!xs">{{ item.registrationData?.phone }}</td>
-              <td v-if="!xs">{{ formatDateTime(item.registrationTime) }}</td>
+              <td>{{ padStr(item.registration.id, 5) }}</td>
+              <td>{{ item.registration.registrationData?.name }}</td>
+              <td v-if="!xs">
+                {{ item.registration.registrationData?.phone }}
+              </td>
+              <td v-if="!xs">
+                {{ formatDateTime(item.registration.registrationTime) }}
+              </td>
               <td class="text-capitalize">
                 <v-chip
-                  :color="!item.checkinStatus ? 'yellow' : 'success'"
+                  v-if="item.checkin?.status === true"
+                  color="success"
                   variant="flat"
-                  >{{
-                    !item.checkinStatus
-                      ? checkinItems[0].title
-                      : checkinItems[1].title
-                  }}
+                  >{{ checkinItems[1].title }}
                 </v-chip>
+                <v-chip v-else color="yellow" variant="flat"
+                  >{{ checkinItems[0].title }}
+                </v-chip>
+              </td>
+              <td class="text-capitalize">
+                <v-chip
+                  v-if="item.extras?.status === true"
+                  color="success"
+                  variant="flat"
+                  >{{ extrasItems[2].title }}
+                </v-chip>
+                <v-chip
+                  v-else-if="item.extras?.status === false"
+                  color="yellow"
+                  variant="flat"
+                  >{{ extrasItems[1].title }}
+                </v-chip>
+                <div v-else>{{ extrasItems[0].title }}</div>
               </td>
               <v-menu>
                 <template v-slot:activator="{ props }">
@@ -218,16 +243,24 @@ onMounted(() => {
                     density="compact"
                     prepend-icon="mdi-email-fast"
                     title="Send Ticket"
-                    @click="sendTicket(item.rId)"
+                    @click="sendTicket(item.registration.id)"
                   ></v-list-item>
                   <v-list-item
                     density="compact"
                     prepend-icon="mdi-eye"
-                    title="View QR Code"
-                    @click="viewQr(item)"
+                    title="Main QR Code"
+                    @click="viewQr(item.registration)"
+                  ></v-list-item>
+                  <v-list-item
+                    density="compact"
+                    prepend-icon="mdi-eye"
+                    title="Voucher QR Code"
+                    @click="viewQr(item.extras)"
                   ></v-list-item>
                   <v-divider></v-divider>
-                  <confirmation-dialog @confirm="removeRegistration(item.rId)">
+                  <confirmation-dialog
+                    @confirm="removeRegistration(item.registration.id)"
+                  >
                     <template #activator="{ onClick }">
                       <v-list-item
                         class="text-error"
@@ -263,33 +296,35 @@ onMounted(() => {
             <tr>
               <td class="rowTitle">Name</td>
               <td>
-                {{ editingAttendee.registrationData?.name }}
+                {{ editingAttendee.registration?.registrationData?.name }}
               </td>
             </tr>
             <tr>
               <td class="rowTitle">Email</td>
               <td>
-                {{ editingAttendee.registrationData?.email }}
+                {{ editingAttendee.registration?.registrationData?.email }}
               </td>
             </tr>
             <tr>
               <td class="rowTitle">Phone</td>
               <td>
-                {{ editingAttendee.registrationData?.phone }}
+                {{ editingAttendee.registration?.registrationData?.phone }}
               </td>
             </tr>
             <tr>
               <td class="rowTitle">Registration Time</td>
               <td>
-                {{ formatDateTime(editingAttendee.registrationTime) }}
+                {{
+                  formatDateTime(editingAttendee.registration?.registrationTime)
+                }}
               </td>
             </tr>
             <tr>
               <td class="rowTitle">Checkin Time</td>
               <td>
                 {{
-                  editingAttendee.checkinTime
-                    ? formatDateTime(editingAttendee.checkinTime)
+                  editingAttendee.checkin?.checkinTime
+                    ? formatDateTime(editingAttendee.checkin?.checkinTime)
                     : checkinItems[0].title
                 }}
               </td>
@@ -298,7 +333,7 @@ onMounted(() => {
               <td class="rowTitle">Checkin Status</td>
               <td class="text-capitalize">
                 <v-select
-                  v-model="editingAttendee.checkinStatus"
+                  v-model="editingAttendee.checkin.status"
                   :items="checkinItems"
                   class="text-capitalize"
                   density="compact"
@@ -308,7 +343,10 @@ onMounted(() => {
                 ></v-select>
               </td>
             </tr>
-            <template v-for="item in editingAttendee.registrationData?.others">
+            <template
+              v-for="item in editingAttendee.registration?.registrationData
+                ?.others"
+            >
               <tr>
                 <td class="rowTitle">{{ item.question }}</td>
                 <td>
@@ -319,12 +357,38 @@ onMounted(() => {
           </tbody>
         </v-table>
       </v-card-text>
+
+      <div v-if="editingAttendee.extras?.id">
+        <v-card-title>Purchased Extras</v-card-title>
+        <v-card-text>
+          <v-list v-if="editingAttendee.extras.extrasData?.length > 0">
+            <v-list-item
+              v-for="(item, index) in editingAttendee.extras.extrasData"
+            >
+              <v-divider class="mb-1"></v-divider>
+              <v-list-item-title class="d-flex justify-space-between">
+                <span>{{ item.name }}</span>
+                <span>€ {{ item.price }}</span>
+              </v-list-item-title>
+              <v-list-item-subtitle
+                v-for="(contentItem, contentIndex) in item.content"
+              >
+                <span>{{ contentItem.name }}</span> X
+                <span>{{ contentItem.quantity }}</span>
+              </v-list-item-subtitle>
+            </v-list-item>
+          </v-list>
+        </v-card-text>
+      </div>
+
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="error" @click="attendeeDetailsDialog = false"
           >Close
         </v-btn>
-        <v-btn color="primary" @click="updateAttendee(editingAttendee.rId)"
+        <v-btn
+          color="primary"
+          @click="updateCheckinStatus(editingAttendee.registration?.id)"
           >Update
         </v-btn>
       </v-card-actions>

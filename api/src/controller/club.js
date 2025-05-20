@@ -34,7 +34,7 @@ router.get("/removeClub", auth, isSudo, (req, res, next) => {
       clubId: req.query.clubId,
     })
     .then((results) =>
-      res.status(200).json(new ApiResponse("Club deleted!", results))
+      res.status(200).json(new ApiResponse("Club deleted!", results)),
     )
     .catch((err) => next(err));
 });
