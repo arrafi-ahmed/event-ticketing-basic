@@ -1,12 +1,7 @@
 <script setup>
 import { computed, nextTick, onMounted, onUnmounted, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import {
-  getApiPublicImgUrl,
-  getCountryList,
-  isValidEmail,
-  stripePublic,
-} from "@/others/util";
+import { getApiPublicImgUrl, isValidEmail, stripePublic } from "@/others/util";
 import { useStore } from "vuex";
 import Logo from "@/components/Logo.vue";
 import Phone from "@/components/Phone.vue";

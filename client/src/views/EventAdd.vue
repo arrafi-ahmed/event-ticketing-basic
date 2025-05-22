@@ -178,9 +178,11 @@ const handleAddEvent = async () => {
           <v-file-input
             :rules="[
               (v) =>
+                !v ||
                 (Array.isArray(v) ? v : [v]).every((file) =>
                   isValidImage(file),
-                ) || 'Only jpg/jpeg/png allowed!',
+                ) ||
+                'Only jpg/jpeg/png allowed!',
             ]"
             accept="image/*"
             class="mt-2 mt-md-4"

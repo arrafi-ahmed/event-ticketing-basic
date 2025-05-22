@@ -71,7 +71,7 @@ const menuItems = computed(() => {
   return items;
 });
 
-const drawer = ref(!mobile.value);
+const drawer = ref(false);
 </script>
 
 <template>

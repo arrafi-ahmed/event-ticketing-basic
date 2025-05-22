@@ -239,7 +239,6 @@ onMounted(async () => {
                 >
                 </v-btn>
               </v-img>
-              {{ newEvent }}
               <v-file-input
                 :rules="[
                   (v) =>

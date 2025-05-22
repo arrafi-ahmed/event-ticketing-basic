@@ -24,14 +24,14 @@ const extras = computed(() => store.state.event.extras);
 
 const newExtras = reactive({ ...new Extras() });
 
-const openAddVoucherDialog = () => {
+const openAddExtrasDialog = () => {
   addExtrasDialog.value = !addExtrasDialog.value;
 };
 const addExtrasDialog = ref(false);
 const addExtrasForm = ref(null);
 const isAddExtrasFormValid = ref(true);
 
-const openEditVoucherDialog = ({ id }) => {
+const openEditExtrasDialog = ({ id }) => {
   editExtrasDialog.value = !editExtrasDialog.value;
   const foundExtra = extras.value.find((item) => item.id === id);
   if (foundExtra) {
@@ -42,7 +42,7 @@ const editExtrasDialog = ref(false);
 const editExtrasForm = ref(null);
 const isEditExtrasFormValid = ref(true);
 
-const addMoreVoucherItems = () => {
+const addMoreExtrasItems = () => {
   newExtras.content = newExtras.content.concat({
     ...new ExtrasItem(),
   });
@@ -104,15 +104,10 @@ onMounted(async () => {
               color="primary"
               prepend-icon="mdi-plus"
               rounded="lg"
-              @click="openAddVoucherDialog"
+              @click="openAddExtrasDialog"
             >
               Create
             </v-btn>
-            <v-btn
-              icon="mdi-arrow-left"
-              variant="text"
-              @click="$router.back()"
-            ></v-btn>
           </div>
 
           <!--          <v-menu>-->
@@ -165,7 +160,7 @@ onMounted(async () => {
               prepend-icon="mdi-square-edit-outline"
               rounded="lg"
               variant="outlined"
-              @click="openEditVoucherDialog({ id: extra.id })"
+              @click="openEditExtrasDialog({ id: extra.id })"
               >Edit
             </v-btn>
             <confirmation-dialog
@@ -267,7 +262,7 @@ onMounted(async () => {
             class="mt-2"
             color="primary"
             size="small"
-            @click="addMoreVoucherItems"
+            @click="addMoreExtrasItems"
           >
             Add More Item
           </v-btn>
@@ -360,7 +355,7 @@ onMounted(async () => {
             class="mt-2"
             color="primary"
             size="small"
-            @click="addMoreVoucherItems"
+            @click="addMoreExtrasItems"
           >
             Add More Item
           </v-btn>

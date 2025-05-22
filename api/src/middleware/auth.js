@@ -3,39 +3,54 @@ const { getEventByEventIdnClubId } = require("../service/event");
 
 const auth = (req, res, next) => {
   const token = req.header("authorization");
-  if (!token) return res.status(401).json({ message: "Access denied" });
+  if (!token) {
+    console.error("Access denied in auth middleware");
+    return res.status(401).json({ msg: "Access denied" });
+  }
   try {
     const { currentUser } = jwt.verify(token, process.env.TOKEN_SECRET);
     req.currentUser = currentUser;
     next();
   } catch (error) {
-    return res.status(400).json({ message: "Invalid token" });
+    console.error("Invalid token in auth middleware", error);
+    return res.status(400).json({ msg: "Invalid token" });
   }
 };
 
 const isSudo = (req, res, next) => {
   const currentUser = req.currentUser;
-  if (!currentUser) res.status(400).json({ message: "Invalid request" });
+  if (!currentUser) {
+    console.log("Invalid request blocked in isSudo middleware");
+    res.status(400).json({ msg: "Invalid request" });
+  }
   try {
     if (currentUser.role.toLowerCase() === "sudo") next();
   } catch (error) {
-    return res.status(400).json({ message: "Invalid request" });
+    console.log("Invalid request blocked in isSudo middleware", error);
+    return res.status(400).json({ msg: "Invalid request" });
   }
 };
 
 const isAdmin = (req, res, next) => {
   const currentUser = req.currentUser;
-  if (!currentUser) res.status(400).json({ message: "Invalid request" });
+  if (!currentUser) {
+    console.log("Invalid request blocked in isAdmin middleware");
+    res.status(400).json({ msg: "Invalid request" });
+  }
   try {
     if (currentUser.role.toLowerCase() === "admin") next();
   } catch (error) {
-    return res.status(400).json({ message: "Invalid request" });
+    console.log("Invalid request blocked in isAdmin middleware", error);
+    return res.status(400).json({ msg: "Invalid request" });
   }
 };
 
 const isAdminEventAuthor = async (req, res, next) => {
   const currentUser = req.currentUser;
-  if (!currentUser) res.status(400).json({ message: "Invalid request" });
+  if (!currentUser) {
+    console.log("Invalid request blocked in isAdminEventAuthor middleware");
+    res.status(400).json({ msg: "Invalid request" });
+  }
   if (currentUser.role === "sudo") return true;
 
   const eventId =
@@ -44,18 +59,27 @@ const isAdminEventAuthor = async (req, res, next) => {
   const clubId = currentUser.clubId;
   try {
     const [event] = await getEventByEventIdnClubId({ eventId, clubId });
-    if (!event || !event.id)
-      return res.status(401).json({ message: "Access denied" });
+    if (!event || !event.id) {
+      console.log("Access denied in isAdminEventAuthor middleware");
+      return res.status(401).json({ msg: "Access denied" });
+    }
 
     next();
   } catch (error) {
-    return res.status(400).json({ message: "Invalid request" });
+    console.log(
+      "Invalid request blocked in isAdminEventAuthor middleware",
+      error,
+    );
+    return res.status(400).json({ msg: "Invalid request" });
   }
 };
 
 const isAdminClubAuthor = async (req, res, next) => {
   const currentUser = req.currentUser;
-  if (!currentUser) res.status(400).json({ message: "Invalid request" });
+  if (!currentUser) {
+    console.log("Invalid request blocked in isAdminClubAuthor middleware");
+    res.status(400).json({ msg: "Invalid request" });
+  }
   if (currentUser.role === "sudo") return true;
 
   const inputClubId =
@@ -63,12 +87,18 @@ const isAdminClubAuthor = async (req, res, next) => {
 
   const clubId = currentUser.clubId;
   try {
-    if (inputClubId != clubId)
-      return res.status(401).json({ message: "Access denied" });
+    if (inputClubId != clubId) {
+      console.log("Access denied in isAdminClubAuthor middleware");
+      return res.status(401).json({ msg: "Access denied" });
+    }
 
     next();
   } catch (error) {
-    return res.status(400).json({ message: "Invalid request" });
+    console.log(
+      "Invalid request blocked in isAdminClubAuthor middleware",
+      error,
+    );
+    return res.status(400).json({ msg: "Invalid request" });
   }
 };
 

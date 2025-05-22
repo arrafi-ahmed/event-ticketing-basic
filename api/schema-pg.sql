@@ -41,12 +41,12 @@ CREATE TABLE event
     created_by         INT          NOT NULL REFERENCES app_user (id)
 );
 -- added
-CREATE TABLE stripe_product
+CREATE TABLE event_stripe
 (
     id         SERIAL PRIMARY KEY,
     event_id   INT          NOT NULL REFERENCES event (id) ON DELETE CASCADE,
     product_id VARCHAR(255) NOT NULL,
-    price_id   VARCHAR(255) NOT NULL
+    price_id   VARCHAR(255) --updated
 );
 
 CREATE TABLE registration

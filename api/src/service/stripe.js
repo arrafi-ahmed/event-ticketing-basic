@@ -35,20 +35,20 @@ exports.updatePrice = async ({ id, payload }) => {
   return updatedPrice;
 };
 
-exports.saveStripeProduct = async ({ payload }) => {
-  const [insertedStripeProduct] = await sql`
-        insert into stripe_product ${sql(payload)} on conflict (id)
+exports.saveEventStripe = async ({ payload }) => {
+  const [insertedEventStripe] = await sql`
+    insert into event_stripe ${sql(payload)} on conflict (id)
         do
-        update set ${sql(payload)} returning *`;
-  return insertedStripeProduct;
+    update set ${sql(payload)} returning *`;
+  return insertedEventStripe;
 };
 
-exports.deleteStripeProduct = async ({ id }) => {
-  const [deletedStripeProduct] = await sql`
-        delete
-        from stripe_product
-        where id = ${id} returning *`;
-  return deletedStripeProduct;
+exports.deleteEventStripe = async ({ id }) => {
+  const [deletedEventStripe] = await sql`
+    delete
+    from event_stripe
+    where id = ${id} returning *`;
+  return deletedEventStripe;
 };
 
 exports.createProductPrice = async ({ product, price }) => {
@@ -61,43 +61,33 @@ exports.createProductPrice = async ({ product, price }) => {
   const insertedPrice = await exports.createPrice({
     payload: price,
   });
-  //insert into stripe_product
+  //insert into event_stripe
   const stripeProduct = {
     eventId: product.metadata.eventId,
     productId: insertedProduct.id,
     priceId: insertedPrice.id,
   };
-  const insertedStripeProduct = await exports.saveStripeProduct({
+  const insertedEventStripe = await exports.saveEventStripe({
     payload: stripeProduct,
   });
 
-  return insertedStripeProduct;
+  return insertedEventStripe;
 };
 
-exports.deleteProductPrice = async ({ id, productId, priceId }) => {
-  // const deletedProduct = await exports.deleteProduct({
-  //   id: productId,
-  // });
-  const deletedStripeProduct = await exports.deleteStripeProduct({
-    id,
-  });
-  return deletedStripeProduct;
-};
-
-exports.getStripeProductEventByEventId = async ({ eventId }) => {
-  const [stripeProduct] = await sql`
-        select *, sp.id as id, e.id as e_id
-        from stripe_product sp
-                 join event e on e.id = sp.event_id
-        where e.id = ${eventId}`;
-  return stripeProduct;
+exports.getEventStripe = async ({ eventId }) => {
+  const [eventStripe] = await sql`
+    select *, es.id as es_id, e.id as e_id
+    from event_stripe es
+           join event e on e.id = es.event_id
+    where e.id = ${eventId}`;
+  return eventStripe;
 };
 
 exports.createStripeCheckoutIfNeeded = async ({
   payload: { savedRegistration, savedExtrasPurchase, extrasIds },
 }) => {
   const lineItems = [];
-  const stripeProductEvent = await exports.getStripeProductEventByEventId({
+  const stripeProductEvent = await exports.getEventStripe({
     eventId: savedRegistration.eventId,
   });
   if (stripeProductEvent?.ticketPrice > 0) {
@@ -150,7 +140,6 @@ exports.sessionStatus = async ({ sessionId }) => {
   const session = await stripe.checkout.sessions.retrieve(sessionId);
   return session.status;
 };
-//http://localhost:3000/club/8/event/30/success?session_id=%7BCHECKOUT_SESSION_ID%7D&redirect_stripe=1&registration_id=221&uuid=0a956b62-0dc0-47fe-97be-8c7ab5fd7bb0
 
 exports.getPrice = async ({ planTitle }) => {
   const prices =

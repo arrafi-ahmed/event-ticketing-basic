@@ -17,7 +17,6 @@ app.post(
   express.raw({ type: "application/json" }),
   require("./src/controller/stripe").webhook,
 );
-
 //middlewares
 app.use(customCors);
 app.use(express.static(path.join(__dirname, "public")));
